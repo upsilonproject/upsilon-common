@@ -1,0 +1,9 @@
+Upsilon has 2 management protocols; JMX & REST
+
+JMX - Internal Management
+----
+- Changing the logging level
+- Shutting down 
+
+REST - External Management 
+----

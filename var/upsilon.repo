@@ -1,0 +1,6 @@
+[Upsilon]
+name=Upsilon
+baseurl=http://tydus.net/upsilonRepos/yum/
+enabled=1
+metadata_expire=1m
+gpgcheck=0

@@ -1,0 +1,10 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<book xml:id="simple_book" xmlns="http://docbook.org/ns/docbook" version="5.0">
+	<title>User Guide</title>
+
+	<chapter xml:id = "c1">
+		<title>Introduction</title>
+
+		<para>A paragraph about Upsilon.</para>
+	</chapter>
+</book>
