@@ -373,7 +373,7 @@ public class Configuration {
 		Matcher m = p.matcher(fingerprint);
 
 		if (!m.matches()) {
-			LOG.warn("Wont trust a dodgy looking \"SHA-1\" fingerprint: " + fingerprint);
+			LOG.warn("Wont trust a dodgy looking SHA-1 fingerprint: " + fingerprint);
 		} else {
 			this.trustedCertificates.add(fingerprint);
 
