@@ -13,7 +13,6 @@ import upsilon.Database;
 import upsilon.Main;
 import upsilon.dataStructures.CollectionOfStructures;
 import upsilon.dataStructures.StructureService;
-import upsilon.management.MainMBean;
 
 public class MainMBeanImpl extends StandardMBean implements MainMBean {
 	public MainMBeanImpl() throws NotCompliantMBeanException {

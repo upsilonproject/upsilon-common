@@ -1,4 +1,4 @@
-package upsilon.management;
+package upsilon.management.jmx;
 
 import javax.management.DescriptorKey;
 

@@ -62,11 +62,6 @@ public class Index {
 		}
 
 		@XmlElement
-		public int getQueueMaintainerSize() {
-			return Main.instance.queueMaintainer.size();
-		}
-
-		@XmlElement
 		public Date getStartTime() {
 			return new Date(ManagementFactory.getRuntimeMXBean().getStartTime());
 		}

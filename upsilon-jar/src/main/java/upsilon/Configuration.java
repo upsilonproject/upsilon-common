@@ -47,9 +47,7 @@ public class Configuration {
 
 	private String serviceWhitelist;
 	public Duration executorDelay = GlobalConstants.DEF_TIMER_EXECUTOR_DELAY;
-	private boolean daemonExecutorEnabled = true;
 	private boolean daemonRestEnabled = true;
-	private boolean daemonQueueMaintainerEnabled = true;
 	private boolean isCryptoEnabled = true;
 
 	public int restPort = 1337;
@@ -61,14 +59,6 @@ public class Configuration {
 
 	public boolean isCryptoEnabled() {
 		return this.isCryptoEnabled;
-	}
-
-	public boolean isDaemonExecutorEnabled() {
-		return this.daemonExecutorEnabled;
-	}
-
-	public boolean isDaemonQueueMaintainerEnabled() {
-		return this.daemonQueueMaintainerEnabled;
 	}
 
 	public boolean isDaemonRestEnabled() {
@@ -155,14 +145,12 @@ public class Configuration {
 	private void parseStructureConfig(Structure s) {
 		this.serviceWhitelist = s.getParameterValue("serviceWhitelist");
 		this.executorDelay = s.getParameterValueDuration("executorDelay", "10s");
-		this.daemonExecutorEnabled = Boolean.parseBoolean(s.getParameterValue("daemonExecutorEnabled", "true"));
 		this.daemonRestEnabled = Boolean.parseBoolean(s.getParameterValue("daemonRestEnabled", "true"));
-		this.daemonQueueMaintainerEnabled = Boolean.parseBoolean(s.getParameterValue("daemonQueueMaintainerEnabled", "true"));
 		this.restPort = s.getParameterValueInt("restPort", this.restPort);
 		this.passwordKeystore = s.getParameterValue("passwordKeystore", "");
 		this.passwordTrustStore = s.getParameterValue("passwordTruststore", "");
 		this.isCryptoEnabled = Boolean.parseBoolean(s.getParameterValue("crypto", "true"));
-	}
+	} 
 
 	private void parseStructureDatabase(Structure structure) {
 		if (Database.instance != null) {
@@ -193,7 +181,6 @@ public class Configuration {
 		HashMap<String, String> rs = Database.instance.getRow("services", "identifier", service.getIdentifier(), "id", "goodCount", "karma");
 
 		if (!rs.isEmpty()) {
-			service.setDatabaseId(Integer.parseInt(rs.get("id")));
 			int goodCount = Integer.parseInt(rs.get("goodCount"));
 
 			if (goodCount > 0) {
@@ -407,7 +394,7 @@ public class Configuration {
 			Arrays.sort(listFiles);
 
 			for (File f : listFiles) {
-				if (f.getName().endsWith(".cfg")) {
+				if (f.getName().endsWith(".cfg")) { 
 					this.parse(f);
 				}
 			}

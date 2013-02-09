@@ -71,11 +71,6 @@ public class StructureService extends ConfigStructure implements AbstractService
 		return this.command;
 	}
 
-	@Override
-	public int getDatabaseId() {
-		return this.databaseId;
-	}
-
 	public StructureService getDependancy() {
 		return this.dependsOn;
 	}
@@ -195,11 +190,6 @@ public class StructureService extends ConfigStructure implements AbstractService
 	public void setCommand(StructureCommand command, String cmdLine) {
 		this.command = command;
 		this.callCommand = cmdLine;
-	}
-
-	@Override
-	public void setDatabaseId(int id) {
-		this.databaseId = id;
 	}
 
 	public void setDependsOn(StructureService dependsOn) {

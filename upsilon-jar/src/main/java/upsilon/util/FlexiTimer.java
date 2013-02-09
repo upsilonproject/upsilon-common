@@ -111,10 +111,6 @@ public class FlexiTimer {
 		return this.getSecondsRemaining(from) <= 0;
 	}
 
-	public void sleep() {
-		Util.lazySleep(this.currentDelay);
-	}
-
 	@Override
 	public String toString() {
 		return this.getClass().getSimpleName() + " {currentDelay: " + this.getCurrentDelay() + ", min:" + this.getMinimumDelay() + ", max:" + this.getMaximumDelay() + "}";

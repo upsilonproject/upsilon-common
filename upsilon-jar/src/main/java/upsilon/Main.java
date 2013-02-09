@@ -45,7 +45,7 @@ public class Main {
 
 	private static transient final Logger LOG = LoggerFactory.getLogger(Main.class);
 	private final Vector<Daemon> daemons = new Vector<Daemon>();
-	public DaemonQueueMaintainer queueMaintainer;
+	public DaemonScheduler queueMaintainer;
 
 	public Vector<Daemon> getDaemons() {
 		return this.daemons;
@@ -127,10 +127,9 @@ public class Main {
 		Configuration.instance.reparse();
 
 		this.setupMbeans();
-
+ 
 		this.startDaemon(new DaemonRest());
-		this.startDaemon(new DaemonQueueMaintainer());
-		this.startDaemon(new DaemonExecuter());
+		this.startDaemon(new DaemonScheduler()); 
 
 		LOG.debug("Best guess at node type: " + this.guessNodeType());
 	}

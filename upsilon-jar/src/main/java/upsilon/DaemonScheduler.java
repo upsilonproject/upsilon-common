@@ -7,19 +7,30 @@ import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import upsilon.dataStructures.StructurePeer;
 import upsilon.dataStructures.StructureService;
 import upsilon.util.GlobalConstants;
 import upsilon.util.Util;
 
-public class DaemonQueueMaintainer extends Daemon {
+public class DaemonScheduler extends Daemon {
 	private final Vector<StructureService> queue = new Vector<StructureService>();
 
 	private boolean run = true;
 
-	private transient static final Logger LOG = LoggerFactory.getLogger(DaemonQueueMaintainer.class);
+	private transient static final Logger LOG = LoggerFactory.getLogger(DaemonScheduler.class);
 
-	public DaemonQueueMaintainer() {
+	public DaemonScheduler() {
 		Main.instance.queueMaintainer = this;
+	}
+	
+	private void executeQueuedServices() {
+		StructureService service;
+
+		while ((service = this.poll()) != null) {
+			this.setStatus("executing service check: " + service.getIdentifier());
+			RobustProcessExecutor rpe = new RobustProcessExecutor(service);
+			rpe.execAsync();
+		}
 	}
 
 	private void checkUpdateDelay() {
@@ -34,11 +45,7 @@ public class DaemonQueueMaintainer extends Daemon {
 		}
 	}
 
-	public boolean isEmpty() {
-		return this.size() == 0;
-	}
-
-	public StructureService poll() {
+	private StructureService poll() {
 		if (this.queue.isEmpty()) {
 			return null;
 		} else {
@@ -59,13 +66,13 @@ public class DaemonQueueMaintainer extends Daemon {
 
 			if (service.isReadyToBeChecked()) {
 				if (this.queue.contains(service)) {
-					DaemonQueueMaintainer.LOG.warn("service check required but it's already in the queue. Executor queue too long?: " + this.queue.size() + " items.");
+					DaemonScheduler.LOG.warn("service check required but it's already in the queue. Executor queue too long?: " + this.queue.size() + " items.");
 				} else {
 					this.queue.add(service);
 				}
 			}
 		}
-	}
+	} 
 
 	public void queueUrgent(StructureService ss) throws IllegalStateException {
 		if (!Configuration.instance.services.contains(ss)) {
@@ -86,13 +93,16 @@ public class DaemonQueueMaintainer extends Daemon {
 
 			this.setStatus("Queueing services");
 			this.queueServices();
+			  
+			this.setStatus("executing queued services");
+			this.executeQueuedServices(); 
+
+			this.setStatus("updating db and peers");
+			Database.updateAll();
+			StructurePeer.updateAll();
 		}
 
-		DaemonQueueMaintainer.LOG.warn("Queue maintenance thread shutdown.");
-	}
-
-	public int size() {
-		return this.queue.size();
+		DaemonScheduler.LOG.warn("Queue maintenance thread shutdown.");
 	}
 
 	@Override

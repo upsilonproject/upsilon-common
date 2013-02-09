@@ -33,11 +33,6 @@ public class StructureRemoteService implements AbstractService {
 	}
 
 	@Override
-	public int getDatabaseId() {
-		return 9;
-	}
-
-	@Override
 	public String getDescription() {
 		return this.description;
 	}
@@ -114,10 +109,6 @@ public class StructureRemoteService implements AbstractService {
 	@Override
 	public boolean isRegistered() {
 		return true;
-	}
-
-	@Override
-	public void setDatabaseId(int int1) {
 	}
 
 	@Override

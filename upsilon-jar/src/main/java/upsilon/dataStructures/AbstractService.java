@@ -7,10 +7,8 @@ import org.joda.time.Instant;
 public interface AbstractService {
 	public abstract String getCallCommand();
 
-	public int getDatabaseId();
-
-	public String getDescription();
-
+	public String getDescription(); 
+ 
 	public Instant getEstimatedNextCheck();
 
 	public abstract String getExecutable();
@@ -40,8 +38,6 @@ public interface AbstractService {
 	public boolean isLocal();
 
 	public abstract boolean isRegistered();
-
-	public void setDatabaseId(int int1);
 
 	public abstract void setDatabaseUpdateRequired(boolean b);
 }
