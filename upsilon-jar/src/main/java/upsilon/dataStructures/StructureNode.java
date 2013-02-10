@@ -7,8 +7,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.joda.time.Instant;
-
 import upsilon.Configuration;
 import upsilon.Main;
 
@@ -17,7 +15,6 @@ public class StructureNode extends ConfigStructure {
 	private String type = "???";
 	private int serviceCount;
 	private String identifier = "unidentifiedNode";
-	public Instant lastUpdated = Instant.now();
 	private String instanceApplicationVersion = "???";
 
 	@Override
