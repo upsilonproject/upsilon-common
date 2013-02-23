@@ -46,12 +46,6 @@ public class MainMBeanImpl extends StandardMBean implements MainMBean {
 	}
 
 	@Override
-	@DescriptorKey(value = "erm, hello?")
-	public int getGroupCount() {
-		return Configuration.instance.groups.size();
-	}
-
-	@Override
 	public int getMagicNumber() {
 		return 1337;
 	}

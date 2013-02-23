@@ -2,7 +2,6 @@ package upsilon.dataStructures;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Vector;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -12,7 +11,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 
-import upsilon.Configuration;
 import upsilon.Main;
 import upsilon.management.rest.server.util.DurationAdaptor;
 import upsilon.util.FlexiTimer;
@@ -124,19 +122,6 @@ public class StructureService extends ConfigStructure implements AbstractService
 	@Override
 	public Instant getLastUpdated() {
 		return this.ft.getLastTouched();
-	}
-
-	@Override
-	public Vector<String> getMemberships() {
-		Vector<String> ret = new Vector<String>();
-
-		for (StructureGroup g : Configuration.instance.groups) {
-			if (g.hasMember(this)) {
-				ret.add(g.getFullyQualifiedIdentifier());
-			}
-		}
-
-		return ret;
 	}
 
 	@Override

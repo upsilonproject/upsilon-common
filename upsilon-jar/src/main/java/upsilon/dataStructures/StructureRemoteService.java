@@ -1,14 +1,11 @@
 package upsilon.dataStructures;
 
-import java.util.Vector;
-
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.joda.time.Instant;
 
 @XmlRootElement
 public class StructureRemoteService implements AbstractService {
-	public Vector<String> groups = new Vector<String>();
 	private String karma = "karma";
 	private String description = "desc";
 	private String output = "output";
@@ -73,10 +70,6 @@ public class StructureRemoteService implements AbstractService {
 	}
 
 	@Override
-	public Vector<String> getMemberships() {
-		return this.groups;
-	}
-
 	public String getNodeIdentifier() {
 		return this.nodeIdentifier;
 	}

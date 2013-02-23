@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 import upsilon.dataStructures.CollectionOfStructures;
 import upsilon.dataStructures.ResultKarma;
 import upsilon.dataStructures.StructureCommand;
-import upsilon.dataStructures.StructureGroup;
 import upsilon.dataStructures.StructureNode;
 import upsilon.dataStructures.StructurePeer;
 import upsilon.dataStructures.StructureRemoteService;
@@ -36,7 +35,6 @@ import upsilon.util.ResourceResolver;
 public class Configuration {
 	public final CollectionOfStructures<StructureCommand> commands = new CollectionOfStructures<StructureCommand>();
 	public final CollectionOfStructures<StructureService> services = new CollectionOfStructures<StructureService>();
-	public final CollectionOfStructures<StructureGroup> groups = new CollectionOfStructures<StructureGroup>();
 	public final Vector<StructureRemoteService> remoteServices = new Vector<>();
 	public final CollectionOfStructures<StructurePeer> peers = new CollectionOfStructures<StructurePeer>();
 	public final CollectionOfStructures<StructureNode> remoteNodes = new CollectionOfStructures<StructureNode>();
@@ -150,7 +148,7 @@ public class Configuration {
 		this.passwordKeystore = s.getParameterValue("passwordKeystore", "");
 		this.passwordTrustStore = s.getParameterValue("passwordTruststore", "");
 		this.isCryptoEnabled = Boolean.parseBoolean(s.getParameterValue("crypto", "true"));
-	} 
+	}
 
 	private void parseStructureDatabase(Structure structure) {
 		if (Database.instance != null) {
@@ -189,22 +187,6 @@ public class Configuration {
 				service.addResult(ResultKarma.valueOfOrUnknown(rs.get("karma")), 0, message);
 			}
 		}
-	}
-
-	private void parseStructureGroup(Structure structure) {
-		String name = structure.getParameterValue("name");
-
-		if (name.isEmpty()) {
-			Configuration.LOG.warn("Found group without name, wont register.");
-			return;
-		}
-
-		StructureGroup g = new StructureGroup();
-		g.setName(name);
-		g.setDescription(structure.getParameterValue("description"));
-		g.setParent(structure.getParameterValue("parent"));
-
-		this.groups.register(g);
 	}
 
 	private void parseStructurePeer(Structure s) {
@@ -273,9 +255,6 @@ public class Configuration {
 			case "database":
 				this.parseStructureDatabase(s);
 				break;
-			case "group":
-				this.parseStructureGroup(s);
-				break;
 			default:
 				Configuration.LOG.warn("Unknown structure class: " + clazz);
 			}
@@ -308,20 +287,6 @@ public class Configuration {
 		service.setUpdateIncrement(structure.getParameterValueDuration("successfulUpdateIncrement", "1m"));
 		service.setRegistered(structure.getParameterValue("register"));
 		service.setTimeout(structure.getParameterValueDuration("timeout", "3s"));
-
-		if (structure.hasParameter("member_of")) {
-			for (String groupName : structure.getParameterValue("member_of").split("!")) {
-				groupName = groupName.trim();
-
-				StructureGroup g = this.groups.get(groupName);
-
-				if (g == null) {
-					Configuration.LOG.warn("Could not find group for service:" + groupName);
-				} else {
-					g.addMember(service);
-				}
-			}
-		}
 
 		if (structure.hasParameter("depends_on")) {
 			StructureService dependsOn = this.services.get(structure.getParameterValue("depends_on"));
@@ -394,7 +359,7 @@ public class Configuration {
 			Arrays.sort(listFiles);
 
 			for (File f : listFiles) {
-				if (f.getName().endsWith(".cfg")) { 
+				if (f.getName().endsWith(".cfg")) {
 					this.parse(f);
 				}
 			}

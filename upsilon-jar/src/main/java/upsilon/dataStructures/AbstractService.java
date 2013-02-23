@@ -1,14 +1,12 @@
 package upsilon.dataStructures;
 
-import java.util.Vector;
-
 import org.joda.time.Instant;
 
 public interface AbstractService {
 	public abstract String getCallCommand();
 
-	public String getDescription(); 
- 
+	public String getDescription();
+
 	public Instant getEstimatedNextCheck();
 
 	public abstract String getExecutable();
@@ -22,8 +20,6 @@ public interface AbstractService {
 	public abstract String getKarmaString();
 
 	public Instant getLastUpdated();
-
-	public abstract Vector<String> getMemberships();
 
 	public abstract String getNodeIdentifier();
 
