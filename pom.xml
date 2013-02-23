@@ -6,7 +6,7 @@
   <version>1.0.2</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <releaseVersion>0.0.80</releaseVersion>
+    <releaseVersion>0.0.82</releaseVersion>
     <deployUrl>scp://xconspirisist@portia.teratan.net/var/www/tydus.net/upsilonRepos/</deployUrl>
   </properties>
   <distributionManagement>

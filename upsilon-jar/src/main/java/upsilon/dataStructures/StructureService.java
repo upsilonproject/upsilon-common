@@ -6,6 +6,7 @@ import java.util.Vector;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.joda.time.Duration;
@@ -29,7 +30,7 @@ public class StructureService extends ConfigStructure implements AbstractService
 	private String hostname;
 	private boolean register = true;
 	private String output = "(not yet executed)";
-	private int databaseId = 0;
+	private final int databaseId = 0;
 	private String callCommand = "";
 	private transient Duration timeoutSeconds = GlobalConstants.DEF_TIMEOUT;
 	private StructureService dependsOn;
@@ -167,6 +168,16 @@ public class StructureService extends ConfigStructure implements AbstractService
 	@XmlJavaTypeAdapter(DurationAdaptor.class)
 	public Duration getTimeout() {
 		return this.timeoutSeconds;
+	}
+
+	@Override
+	@XmlTransient
+	public boolean isDatabaseUpdateRequired() {
+		if (this.karma == null) {
+			return false;
+		}
+
+		return super.isDatabaseUpdateRequired();
 	}
 
 	@Override

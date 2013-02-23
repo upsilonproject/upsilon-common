@@ -38,16 +38,13 @@ public class StructureNode extends ConfigStructure {
 		return this.type;
 	}
 
-	@Override
-	public boolean isPeerUpdateRequired() {
-		return super.isPeerUpdateRequired();
-	}
-
 	public void refresh() {
 		this.refreshType();
 		this.refreshIdentifier();
 		this.instanceApplicationVersion = Main.getVersion();
 		this.setServiceCount(Configuration.instance.services.size());
+		this.setDatabaseUpdateRequired(true);
+		this.setPeerUpdateRequired(true);
 	}
 
 	private void refreshIdentifier() {
@@ -81,11 +78,6 @@ public class StructureNode extends ConfigStructure {
 
 	public void setInstanceApplicationVersion(String versionString) {
 		this.instanceApplicationVersion = versionString;
-	}
-
-	@Override
-	public void setPeerUpdateRequired(boolean peerUpdateRequired) {
-		super.setPeerUpdateRequired(peerUpdateRequired);
 	}
 
 	public void setServiceCount(int serviceCount) {
