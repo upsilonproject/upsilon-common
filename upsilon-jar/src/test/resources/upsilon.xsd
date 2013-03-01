@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="config">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="system" type="system" />
+				<xs:choice maxOccurs="unbounded">
+					<xs:element name="command" type="command" minOccurs="0" />
+					<xs:element name="group" type="group" minOccurs="0" />
+					<xs:element name="peer" type="peer" minOccurs="0" />
+					<xs:element name="service" type="service" minOccurs="0" />
+				</xs:choice> 
+			</xs:sequence>   
+			<xs:attribute name="schemaVersion" type="xs:integer" />  
+			<xs:attribute name="crypto" type="xs:boolean" default="true" use="optional" />    
+			<xs:attribute name="schedulerDelay" type="intervalType" use="optional" default="15s" />
+		</xs:complexType>
+		     
+		<xs:key name="serviceId"> 
+			<xs:selector xpath="./service" />
+			<xs:field xpath="@id" />
+		</xs:key>
+		<xs:keyref name="keyrefGroupMemberService" refer="serviceId">
+			<xs:selector xpath="group/member" />
+			<xs:field xpath="@serviceRef" />
+		</xs:keyref>
+		
+		<xs:key name="commandId">
+			<xs:selector xpath="command" />
+			<xs:field xpath="@id" />	 
+		</xs:key> 
+		<xs:keyref name="keyrefServiceCommand" refer="commandId">
+			<xs:selector xpath="service"></xs:selector>
+			<xs:field xpath="@commandRef"></xs:field> 
+		</xs:keyref> 
+	</xs:element>
+
+	<xs:simpleType name="intervalType">  
+		<xs:list itemType="xs:string">
+		</xs:list>
+	</xs:simpleType>
+
+	<xs:simpleType name="identifier">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[A-Za-z0-9_:]+"></xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="command">
+		<xs:attribute name="id" type="identifier" use="required"></xs:attribute>
+		<xs:attribute name="exec" type="xs:string" use="required"></xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="service">
+		<xs:sequence>
+			<xs:element minOccurs="0" name="argument">
+				<xs:complexType>
+					<xs:attribute name="value"></xs:attribute>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="id" type="identifier"></xs:attribute>
+		<xs:attribute name="minDelay" type="intervalType" use="optional"></xs:attribute>
+		<xs:attribute name="maxDelay" type="intervalType" use="optional"></xs:attribute>        
+		<xs:attribute name="successfulUpdateIncrement" type="intervalType" use="optional" ></xs:attribute>
+		<xs:attribute name="parent"></xs:attribute>
+		<xs:attribute name="register" type="xs:boolean"></xs:attribute>
+		<xs:attribute name="commandRef" type="identifier" use="required"></xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="group">
+		<xs:sequence>
+			<xs:element name="member">
+				<xs:complexType>
+					<xs:attribute name="serviceRef" type="identifier"></xs:attribute>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="id" type="identifier"></xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="peer">
+		<xs:attribute name="certSha1Fingerprint" use="required"
+			type="sha1fingerprint"></xs:attribute>
+		<xs:attribute name="address" type="xs:string" use="required"></xs:attribute>
+		<xs:attribute name="port" type="portType" use="required"></xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="securityStore">
+		<xs:attribute name="password" type="xs:string" use="required"></xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="system">
+		<xs:sequence>
+			<xs:element name="keystore" type="securityStore" />
+			<xs:element name="truststore" type="securityStore" />
+		</xs:sequence>
+
+		<xs:attribute name="restPort" use="optional" type="portType" />
+	</xs:complexType>
+	<xs:simpleType name="portType">
+		<xs:restriction base="xs:int">
+			<xs:minExclusive value="1024"></xs:minExclusive>
+			<xs:maxExclusive value="65536"></xs:maxExclusive>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="sha1fingerprint">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[a-zA-Z0-9]{40}"></xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema> 
+ 
