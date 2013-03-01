@@ -2,47 +2,59 @@ package upsilon.dataStructures;
 
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.jdom2.Element;
+
 public abstract class ConfigStructure {
-	private boolean databaseUpdateRequired = true;
-	private boolean peerUpdateRequired = true;
+    private boolean databaseUpdateRequired = true;
 
-	@Override
-	public final boolean equals(Object obj) {
-		if (obj instanceof ConfigStructure) {
-			return (((ConfigStructure) obj).getIdentifier().equals(this.getIdentifier()));
-		} else {
-			return false;
-		}
-	}
+    private boolean peerUpdateRequired = true;
 
-	public String getClassAndIdentifier() {
-		return "[" + this.getClass().getSimpleName() + "]:" + this.getIdentifier();
-	}
+    public StructureService construct() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	public abstract String getIdentifier();
+    @Override
+    public final boolean equals(Object obj) {
+        if (obj instanceof ConfigStructure) {
+            return (((ConfigStructure) obj).getIdentifier().equals(this.getIdentifier()));
+        } else {
+            return false;
+        }
+    }
 
-	@Override
-	public int hashCode() {
-		return this.getClassAndIdentifier().hashCode();
-	}
+    public String getClassAndIdentifier() {
+        return "[" + this.getClass().getSimpleName() + "]:" + this.getIdentifier();
+    }
 
-	@XmlTransient
-	public boolean isDatabaseUpdateRequired() {
-		return this.databaseUpdateRequired;
-	}
+    public abstract String getIdentifier();
 
-	@XmlTransient
-	public boolean isPeerUpdateRequired() {
-		return this.peerUpdateRequired;
-	}
+    @Override
+    public int hashCode() {
+        return this.getClassAndIdentifier().hashCode();
+    }
 
-	public void setDatabaseUpdateRequired(boolean isChanged) {
-		this.databaseUpdateRequired = isChanged;
-		this.setPeerUpdateRequired(true);
-	}
+    @XmlTransient
+    public boolean isDatabaseUpdateRequired() {
+        return this.databaseUpdateRequired;
+    }
 
-	public void setPeerUpdateRequired(boolean peerUpdateRequired) {
-		this.peerUpdateRequired = peerUpdateRequired;
-	}
+    @XmlTransient
+    public boolean isPeerUpdateRequired() {
+        return this.peerUpdateRequired;
+    }
+
+    public void setDatabaseUpdateRequired(boolean isChanged) {
+        this.databaseUpdateRequired = isChanged;
+        this.setPeerUpdateRequired(true);
+    }
+
+    public void setPeerUpdateRequired(boolean peerUpdateRequired) {
+        this.peerUpdateRequired = peerUpdateRequired;
+    }
+
+    public void update(Element el) {
+
+    }
 
 }
