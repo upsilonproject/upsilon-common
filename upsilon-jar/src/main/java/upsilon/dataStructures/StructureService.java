@@ -9,9 +9,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.jdom2.Element;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
+import org.w3c.dom.Node;
 
 import upsilon.Configuration;
 import upsilon.Main;
@@ -238,7 +238,7 @@ public class StructureService extends ConfigStructure implements AbstractService
     }
 
     @Override
-    public void update(Element el) {
-        this.description = el.getAttributeValue("description");
+    public void update(Node el) {
+        this.description = el.getNodeValue();
     }
 }

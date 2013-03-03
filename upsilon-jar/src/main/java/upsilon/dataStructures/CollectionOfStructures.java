@@ -9,9 +9,9 @@ import java.util.Vector;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
-import org.jdom2.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Node;
 
 import upsilon.configuration.CollectionAlterationTransaction;
 
@@ -20,16 +20,16 @@ public class CollectionOfStructures<T extends ConfigStructure> implements Iterab
 
     private static transient final Logger LOG = LoggerFactory.getLogger(CollectionOfStructures.class);
 
-    private T constructElement(Element newElement) {
+    private T constructElement(Node newElement) {
         ConfigStructure s;
 
-        switch (newElement.getName()) {
+        switch (newElement.getNodeName()) {
         case "service":
             s = new StructureService();
             s.update(newElement);
             break;
         default:
-            throw new IllegalArgumentException("Cant construct structure with element name: " + newElement.getName());
+            throw new IllegalArgumentException("Cant construct structure with element name: " + newElement.getNodeName());
         }
 
         return (T) s;
@@ -114,13 +114,13 @@ public class CollectionOfStructures<T extends ConfigStructure> implements Iterab
                 this.collection.remove(this.getById(structureId));
             }
 
-            for (Entry<String, Element> newStructure : cat.getNew().entrySet()) {
+            for (Entry<String, Node> newStructure : cat.getNew().entrySet()) {
                 T s = this.constructElement(newStructure.getValue());
 
                 this.collection.add(s);
             }
 
-            for (Entry<String, Element> updStructure : cat.getUpdated().entrySet()) {
+            for (Entry<String, Node> updStructure : cat.getUpdated().entrySet()) {
                 T existingStructure = this.getById(updStructure.getKey());
                 existingStructure.update(updStructure.getValue());
             }

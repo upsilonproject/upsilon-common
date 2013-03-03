@@ -7,9 +7,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
-import org.jdom2.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Node;
 
 import upsilon.dataStructures.CollectionOfStructures;
 import upsilon.dataStructures.ConfigStructure;
@@ -17,17 +17,17 @@ import upsilon.dataStructures.ConfigStructure;
 public class CollectionAlterationTransaction<T extends ConfigStructure> {
     private final static transient Logger LOG = LoggerFactory.getLogger(CollectionAlterationTransaction.class);
     private final CollectionOfStructures<T> list;
-    private final HashMap<String, Element> newList = new HashMap<>();
+    private final HashMap<String, Node> newList = new HashMap<>();
     private Vector<String> oldList = new Vector<String>();
-    private final HashMap<String, Element> updList = new HashMap<>();
+    private final HashMap<String, Node> updList = new HashMap<>();
 
     public CollectionAlterationTransaction(CollectionOfStructures<T> list) {
         this.list = list;
         this.oldList = list.getIds();
     }
 
-    public void considerFromConfig(Element el) {
-        String idFromConfig = el.getAttribute("id").getValue();
+    public void considerFromConfig(Node el) {
+        String idFromConfig = el.getAttributes().getNamedItem("id").getNodeValue();
 
         if (this.list.containsId(idFromConfig)) {
             this.updList.put(idFromConfig, el);
@@ -37,7 +37,7 @@ public class CollectionAlterationTransaction<T extends ConfigStructure> {
         }
     }
 
-    public Map<String, Element> getNew() {
+    public Map<String, Node> getNew() {
         return this.newList;
     }
 
@@ -53,7 +53,7 @@ public class CollectionAlterationTransaction<T extends ConfigStructure> {
         return this.oldList;
     }
 
-    public Map<String, Element> getUpdated() {
+    public Map<String, Node> getUpdated() {
         return this.updList;
     }
 

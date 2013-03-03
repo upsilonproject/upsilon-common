@@ -2,7 +2,7 @@ package upsilon.dataStructures;
 
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.jdom2.Element;
+import org.w3c.dom.Node;
 
 public abstract class ConfigStructure {
     private boolean databaseUpdateRequired = true;
@@ -53,7 +53,7 @@ public abstract class ConfigStructure {
         this.peerUpdateRequired = peerUpdateRequired;
     }
 
-    public void update(Element el) {
+    public void update(Node el) {
 
     }
 

@@ -4,32 +4,37 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Vector;
 
-import org.jdom2.Document;
-import org.jdom2.JDOMException;
-import org.jdom2.input.SAXBuilder;
-import org.jdom2.input.sax.XMLReaderJDOMFactory;
-import org.jdom2.input.sax.XMLReaderXSDFactory;
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+
+import org.w3c.dom.Document;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 public class XmlConfigurationValidator implements ErrorHandler {
     private final Vector<SAXParseException> parseErrors = new Vector<SAXParseException>();
-    private final SAXBuilder builder;
+    private final DocumentBuilder builder;
     private final File f;
     private final Document d;
 
-    public XmlConfigurationValidator(File f) throws JDOMException, IOException {
+    public XmlConfigurationValidator(File f) throws IOException, SAXException, ParserConfigurationException {
         File xsdSchema = new File("src/test/resources/upsilon.xsd");
-        XMLReaderJDOMFactory schemaFactory = new XMLReaderXSDFactory(xsdSchema);
 
-        SAXBuilder builder = new SAXBuilder(schemaFactory);
-        builder.setErrorHandler(this);
+        Schema s = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(xsdSchema);
+
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setSchema(s);
 
         this.f = f;
-        this.builder = builder;
+        this.builder = dbf.newDocumentBuilder();
+        this.builder.setErrorHandler(this);
 
-        this.d = this.builder.build(this.f);
+        this.d = this.builder.parse(this.f);
     }
 
     @Override
