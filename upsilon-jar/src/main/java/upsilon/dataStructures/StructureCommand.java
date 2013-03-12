@@ -17,13 +17,18 @@ import org.slf4j.LoggerFactory;
 @XmlRootElement
 public class StructureCommand extends ConfigStructure {
     private static transient final Logger LOG = LoggerFactory.getLogger(StructureCommand.class);
- 
-    public static Vector<String> parseCallCommandArguments(String fullCommandLine) {
-        String components[] = fullCommandLine.split("!");
-        Vector<String> v = new Vector<String>(Arrays.asList(components));
 
-        Iterator<String> it = v.iterator();
- 
+    public static Vector<String> parseCallCommandArguments(final String fullCommandLine) {
+        final String components[] = fullCommandLine.split("(?<!\\\\)!");
+
+        for (int i = 0; i < components.length; i++) {
+            components[i] = components[i].replace("\\!", "!");
+        }
+
+        final Vector<String> v = new Vector<String>(Arrays.asList(components));
+
+        final Iterator<String> it = v.iterator();
+
         while (it.hasNext()) {
             if (it.next().isEmpty()) {
                 it.remove();
@@ -33,9 +38,9 @@ public class StructureCommand extends ConfigStructure {
         return v;
     }
 
-    public static String parseCallCommandExecutable(String parameterValue) {
+    public static String parseCallCommandExecutable(final String parameterValue) {
         if (parameterValue.contains("!")) {
-            String components[] = parameterValue.split("!");
+            final String components[] = parameterValue.split("!");
 
             return components[0];
         } else {
@@ -50,7 +55,7 @@ public class StructureCommand extends ConfigStructure {
             throw new IllegalArgumentException("Command definition for arguments cannot contain !, is this a service command line?");
         }
 
-        Vector<String> args = new Vector<String>();
+        final Vector<String> args = new Vector<String>();
 
         for (String arg : fullParsedCommandLine.split(" ")) {
             arg = arg.trim();
@@ -62,7 +67,7 @@ public class StructureCommand extends ConfigStructure {
 
         return args;
     }
-  
+
     private static String parseCommandArgumentVariable(final String originalVariable, final AbstractService service, final List<String> callingArguments) {
         String parsedVariable = originalVariable.replace("'$HOSTADDRESS$'", service.getHostname()).trim();
 
@@ -74,8 +79,8 @@ public class StructureCommand extends ConfigStructure {
     }
 
     public static String parseCommandExecutable(final String fullCommandLine) {
-        Pattern patCommandLineExecutable = Pattern.compile("([\\/\\w\\.\\_]+)");
-        Matcher matCommandLineExecutable = patCommandLineExecutable.matcher(fullCommandLine);
+        final Pattern patCommandLineExecutable = Pattern.compile("([\\/\\w\\.\\_]+)");
+        final Matcher matCommandLineExecutable = patCommandLineExecutable.matcher(fullCommandLine);
         matCommandLineExecutable.find();
 
         if (matCommandLineExecutable.groupCount() == 0) {
@@ -90,27 +95,27 @@ public class StructureCommand extends ConfigStructure {
 
     private String name;
     private List<String> definedArguments = new Vector<String>();
-  
+
+    @XmlElement(name = "argument")
+    @XmlElementWrapper(name = "arguments")
+    public List<String> getArguments() {
+        return this.definedArguments;
+    }
+
     @XmlElement
     public String getExecutable() {
         return this.executable;
     }
-    
-    @XmlElement(name="argument")
-    @XmlElementWrapper(name="arguments")
-    public List<String> getArguments() {
-    	return this.definedArguments;
-    }
 
-    public String getFinalCommandLine(AbstractService service) {
-        StringBuilder sb = new StringBuilder();
+    public String getFinalCommandLine(final AbstractService service) {
+        final StringBuilder sb = new StringBuilder();
 
         sb.append(this.getExecutable());
         sb.append(' ');
 
-        Vector<String> callingArguments = StructureCommand.parseCallCommandArguments(service.getCallCommand());
+        final Vector<String> callingArguments = StructureCommand.parseCallCommandArguments(service.getCallCommand());
 
-        for (String arg : this.definedArguments) {
+        for (final String arg : this.definedArguments) {
             sb.append(StructureCommand.parseCommandArgumentVariable(arg, service, callingArguments));
             sb.append(' ');
         }
@@ -118,13 +123,13 @@ public class StructureCommand extends ConfigStructure {
         return sb.toString().trim();
     }
 
-    public String[] getFinalCommandLinePieces(StructureService service) {
-        Vector<String> pieces = new Vector<String>();
+    public String[] getFinalCommandLinePieces(final StructureService service) {
+        final Vector<String> pieces = new Vector<String>();
         pieces.add(this.getExecutable());
 
-        Vector<String> callingArguments = StructureCommand.parseCallCommandArguments(service.getCallCommand());
+        final Vector<String> callingArguments = StructureCommand.parseCallCommandArguments(service.getCallCommand());
 
-        for (String arg : this.definedArguments) {
+        for (final String arg : this.definedArguments) {
             pieces.add(StructureCommand.parseCommandArgumentVariable(arg, service, callingArguments));
         }
 
@@ -142,12 +147,12 @@ public class StructureCommand extends ConfigStructure {
         return this.name;
     }
 
-    public void setCommandLine(String fullCommandLine) {
+    public void setCommandLine(final String fullCommandLine) {
         this.executable = StructureCommand.parseCommandExecutable(fullCommandLine);
         this.definedArguments = StructureCommand.parseCommandArguments(fullCommandLine);
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 

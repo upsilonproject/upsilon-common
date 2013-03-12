@@ -6,16 +6,16 @@ import org.junit.Test;
 
 import upsilon.dataStructures.StructureCommand;
 import upsilon.dataStructures.StructureService;
- 
+
 public class CommandBuilderTest {
     @Test
     public void testBuildCommand() {
-        StructureCommand checkFoo = new StructureCommand();
-        StructureService service = new StructureService();
+        final StructureCommand checkFoo = new StructureCommand();
+        final StructureService service = new StructureService();
         service.setCommand(checkFoo, "check_foo!one!two");
         service.setHostname("HOST1");
 
-        StructureCommand cmd = new StructureCommand();
+        final StructureCommand cmd = new StructureCommand();
         cmd.setName("check_foo");
         cmd.setCommandLine("/usr/bin/foo -H '$HOSTADDRESS$' -w foo");
 
@@ -27,8 +27,19 @@ public class CommandBuilderTest {
     }
 
     @Test
+    public void testEscapedArgumentSeparators() {
+        final StructureCommand checkCommand = new StructureCommand();
+        checkCommand.setCommandLine("/bin/true '$ARG0$' '$ARG1$'");
+
+        final StructureService service = new StructureService();
+        service.setCommand(checkCommand, "one!two\\!three");
+
+        Assert.assertEquals("/bin/true one two!three", checkCommand.getFinalCommandLine(service));
+    }
+
+    @Test
     public void testServiceRegistered() {
-        StructureService ss = new StructureService();
+        final StructureService ss = new StructureService();
 
         ss.setRegistered("true");
         Assert.assertTrue(ss.isRegistered());
