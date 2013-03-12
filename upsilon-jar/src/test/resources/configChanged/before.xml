@@ -14,9 +14,5 @@
 	<service id = "mindstormPing" commandRef = "check_ping" register = "true" parent = "baseService"> 
 		<argument value = "mindstorm5.teratan.lan" />
 	</service>   
-  
-	<group id = "Hosts">    
-		<member serviceRef = "mindstormPing" />
-	</group>  
-	 
+   
 </config>        

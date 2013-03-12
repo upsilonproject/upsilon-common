@@ -10,8 +10,4 @@
 	<command id = "check_ping" exec = "/usr/local/sbin/nix/check_ping" />
 	 
 	<service id = "baseService"  commandRef = "check_ping" register = "false" minDelay = "5s" maxDelay = "10s" />
-	  
-	<group id = "Hosts">    
-		<member serviceRef = "mindstormPing" />
-	</group>  
 </config>        

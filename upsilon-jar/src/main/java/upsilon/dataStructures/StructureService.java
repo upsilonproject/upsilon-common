@@ -22,7 +22,7 @@ import upsilon.util.MutableFlexiTimer;
 
 @XmlRootElement
 public class StructureService extends ConfigStructure implements AbstractService {
-    private String description;
+    private String identifier;
 
     private StructureCommand command;
     @XmlElement
@@ -36,7 +36,7 @@ public class StructureService extends ConfigStructure implements AbstractService
 
     private StructureService dependsOn;
 
-    public void addResult(ResultKarma karma, Date whenChecked) {
+    public void addResult(final ResultKarma karma, final Date whenChecked) {
         this.karma = karma;
         this.ft.touch(whenChecked);
 
@@ -47,12 +47,12 @@ public class StructureService extends ConfigStructure implements AbstractService
         }
     }
 
-    public void addResult(ResultKarma karma, int count, String message) {
+    public void addResult(final ResultKarma karma, final int count, final String message) {
         this.addResult(karma, message);
         this.ft.setGoodCount(count);
     }
 
-    public void addResult(ResultKarma karma, String output) {
+    public void addResult(final ResultKarma karma, final String output) {
         this.addResult(karma, Calendar.getInstance().getTime());
         this.output = output;
         this.setDatabaseUpdateRequired(true);
@@ -67,7 +67,7 @@ public class StructureService extends ConfigStructure implements AbstractService
     @XmlElement(required = true)
     public StructureCommand getCommand() throws IllegalArgumentException {
         if (this.command == null) {
-            throw new IllegalArgumentException("service does not have an associated command, for service: " + this.description);
+            throw new IllegalArgumentException("service does not have an associated command, for service: " + this.identifier);
         }
 
         return this.command;
@@ -79,7 +79,7 @@ public class StructureService extends ConfigStructure implements AbstractService
 
     @Override
     public String getDescription() {
-        return this.description;
+        return this.identifier;
     }
 
     @Override
@@ -93,7 +93,7 @@ public class StructureService extends ConfigStructure implements AbstractService
     }
 
     @Override
-    public String getFinalCommandLine(AbstractService s) {
+    public String getFinalCommandLine(final AbstractService s) {
         return this.getCommand().getFinalCommandLine(s);
     }
 
@@ -110,7 +110,7 @@ public class StructureService extends ConfigStructure implements AbstractService
     @Override
     @XmlElement
     public String getIdentifier() {
-        return this.getDescription() + ":" + StructureCommand.parseCallCommandExecutable(this.callCommand);
+        return this.identifier;
     }
 
     @Override
@@ -129,9 +129,9 @@ public class StructureService extends ConfigStructure implements AbstractService
 
     @Override
     public Vector<String> getMemberships() {
-        Vector<String> ret = new Vector<String>();
+        final Vector<String> ret = new Vector<String>();
 
-        for (StructureGroup g : Configuration.instance.groups) {
+        for (final StructureGroup g : Configuration.instance.groups) {
             if (g.hasMember(this)) {
                 ret.add(g.getFullyQualifiedIdentifier());
             }
@@ -199,46 +199,48 @@ public class StructureService extends ConfigStructure implements AbstractService
         return this.register;
     }
 
-    public void setCommand(StructureCommand command, String cmdLine) {
+    public void setCommand(final StructureCommand command, final String cmdLine) {
         this.command = command;
         this.callCommand = cmdLine;
     }
 
-    public void setDependsOn(StructureService dependsOn) {
+    public void setDependsOn(final StructureService dependsOn) {
         this.dependsOn = dependsOn;
     }
 
-    public void setDescription(String description) {
-        this.ft.setName("ft for " + description);
-        this.description = description.trim();
-    }
-
-    public void setHostname(String hostname) {
+    public void setHostname(final String hostname) {
         this.hostname = hostname.trim();
     }
 
-    public void setRegistered(String registerd) {
+    public void setIdentifier(final String description) {
+        this.ft.setName("ft for " + description);
+        this.identifier = description.trim();
+    }
+
+    public void setRegistered(final String registerd) {
         this.register = Boolean.parseBoolean(registerd);
     }
 
-    public void setTimeout(Duration timeout) {
+    public void setTimeout(final Duration timeout) {
         this.timeoutSeconds = timeout;
     }
 
-    public void setTimerMax(Duration parameterValueInt) {
+    public void setTimerMax(final Duration parameterValueInt) {
         this.ft.setMax(parameterValueInt);
     }
 
-    public void setTimerMin(Duration parameterValueInt) {
+    public void setTimerMin(final Duration parameterValueInt) {
         this.ft.setMin(parameterValueInt);
     }
 
-    public void setUpdateIncrement(Duration increment) {
+    public void setUpdateIncrement(final Duration increment) {
         this.ft.setInc(increment);
     }
 
     @Override
-    public void update(Node el) {
-        this.description = el.getNodeValue();
+    public void update(final Node el) {
+        this.identifier = el.getAttributes().getNamedItem("id").getNodeValue();
+
+        this.setCommand(Configuration.instance.commands.getById(el.getAttributes().getNamedItem("commandRef").getNodeValue()), null);
     }
 }

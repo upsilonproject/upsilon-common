@@ -1,4 +1,4 @@
-<configuration debug = "true">
+<configuration debug = "false">
     <logger name = "upsilon" level = "TRACE" />  
       
     <!-- 
@@ -14,4 +14,4 @@
         	</encoder>    
         </appender>    
     </root>   
-</configuration>
+</configuration> 

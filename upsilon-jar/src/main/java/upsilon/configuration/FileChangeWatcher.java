@@ -18,8 +18,9 @@ public class FileChangeWatcher {
     private final Thread t;
     private boolean continueMonitoring = true;
 
-    public FileChangeWatcher(File f, Listener l) {
+    public FileChangeWatcher(final File f, final Listener l) {
         this.fileBeingWatched = f;
+        this.mtime = this.fileBeingWatched.lastModified();
         this.l = l;
         this.t = new Thread("File watcher for: " + this.fileBeingWatched.getName()) {
             @Override
@@ -30,17 +31,19 @@ public class FileChangeWatcher {
     }
 
     public void checkForModification() {
-        LOG.trace("Checking file for modification: " + this.mtime + " vs " + this.fileBeingWatched.getAbsolutePath() + " " + this.fileBeingWatched.lastModified());
+        FileChangeWatcher.LOG.trace("Checking file for modification: " + this.mtime + " vs " + this.fileBeingWatched.getAbsolutePath() + " " + this.fileBeingWatched.lastModified());
 
         if (this.mtime < this.fileBeingWatched.lastModified()) {
             this.mtime = this.fileBeingWatched.lastModified();
 
-            LOG.debug("Configuration file has changed, notifying listeners.");
+            FileChangeWatcher.LOG.debug("Configuration file has changed, notifying listeners.");
             this.l.fileChanged(this.fileBeingWatched);
         }
     }
 
-    public void setWatchedFile(File f) {
+    public void setWatchedFile(final File f) {
+        FileChangeWatcher.LOG.debug("Watched file changed from " + this.fileBeingWatched.getName() + " to " + f.getName());
+
         this.fileBeingWatched = f;
     }
 
@@ -58,7 +61,7 @@ public class FileChangeWatcher {
 
             try {
                 Thread.sleep(2000);
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
                 e.printStackTrace();
                 break;
             }

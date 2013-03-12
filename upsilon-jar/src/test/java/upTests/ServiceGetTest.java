@@ -16,7 +16,7 @@ public class ServiceGetTest {
 	@Ignore
 	public void testGetService() throws Exception {
 		StructureService s = new StructureService();
-		s.setDescription("foo");
+		s.setIdentifier("foo");
 		s.setCommand(new StructureCommand(), "");
 
 		Assert.assertEquals("foo:", s.getIdentifier());

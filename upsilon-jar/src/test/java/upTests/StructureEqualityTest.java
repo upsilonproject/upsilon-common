@@ -11,10 +11,10 @@ import upsilon.dataStructures.StructureService;
 public class StructureEqualityTest {
     @Test
     public void testEqualCommands() {
-        CollectionOfStructures<StructureCommand> col = new CollectionOfStructures<>();
+        final CollectionOfStructures<StructureCommand> col = new CollectionOfStructures<>();
 
-        StructureCommand c1 = new StructureCommand();
-        StructureCommand c2 = new StructureCommand();
+        final StructureCommand c1 = new StructureCommand();
+        final StructureCommand c2 = new StructureCommand();
 
         c1.setName("one");
         c2.setName("two");
@@ -36,23 +36,23 @@ public class StructureEqualityTest {
 
     @Test
     public void testEqualServices() {
-        StructureCommand check_pie = new StructureCommand();
+        final StructureCommand check_command = new StructureCommand();
 
-        StructureService s1 = new StructureService();
-        StructureService s2 = new StructureService();
+        final StructureService s1 = new StructureService();
+        final StructureService s2 = new StructureService();
 
-        s1.setDescription("one");
-        s1.setCommand(check_pie, "check_pie!foo");
-        s2.setDescription("two");
-        s1.setCommand(check_pie, "check_pie!bar");
+        s1.setIdentifier("one");
+        s1.setCommand(check_command, "check_pie!foo");
+        s2.setIdentifier("two");
+        s1.setCommand(check_command, "check_pie!bar");
         Assert.assertThat(s1, CoreMatchers.not(s2));
 
-        s1.setDescription("pie");
-        s2.setDescription("pie");
-        Assert.assertThat(s1, CoreMatchers.not(s2));
+        s1.setIdentifier("pie");
+        s2.setIdentifier("pie");
+        Assert.assertThat(s1, CoreMatchers.equalTo(s2));
 
-        s1.setCommand(check_pie, "check_pie!foo");
-        s2.setCommand(check_pie, "check_pie!bar");
+        s1.setCommand(check_command, "check_pie!foo");
+        s2.setCommand(check_command, "check_pie!bar");
         Assert.assertThat(s1, CoreMatchers.equalTo(s2));
 
         Assert.assertThat(s1, CoreMatchers.not(new Object()));

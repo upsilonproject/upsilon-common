@@ -2,9 +2,7 @@ package upsilon.configuration;
 
 import java.io.File;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
@@ -17,64 +15,43 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXParseException;
 
+import upsilon.Configuration;
 import upsilon.dataStructures.CollectionOfStructures;
-import upsilon.dataStructures.StructureService;
 
 public class XmlConfigurationLoader implements FileChangeWatcher.Listener {
     private static final transient Logger LOG = LoggerFactory.getLogger(XmlConfigurationLoader.class);
     private File f;
 
-    private void buildAndRunConfigurationTransaction(String xpath, CollectionOfStructures<?> col, Document d) throws XPathExpressionException, JAXBException {
-        CollectionAlterationTransaction<?> cat = col.newTransaction();
+    private void buildAndRunConfigurationTransaction(final String xpath, final CollectionOfStructures<?> col, final Document d) throws XPathExpressionException, JAXBException {
+        final CollectionAlterationTransaction<?> cat = col.newTransaction();
 
-        XPathExpression xpe = XPathFactory.newInstance().newXPath().compile(xpath);
-        NodeList els = (NodeList) xpe.evaluate(d, XPathConstants.NODESET);
+        final XPathExpression xpe = XPathFactory.newInstance().newXPath().compile(xpath);
+        final NodeList els = (NodeList) xpe.evaluate(d, XPathConstants.NODESET);
 
         for (int i = 0; i < els.getLength(); i++) {
-            Node el = els.item(i);
-            LOG.debug("xpath result: " + xpath + " = " + el);
+            final Node el = els.item(i);
+            XmlConfigurationLoader.LOG.trace("xpath result: " + xpath + " = " + el);
             cat.considerFromConfig(el);
         }
 
-        cat.print();
         col.processTransaction(cat);
     }
 
-    private void buildElements(String xpath, Document d) throws XPathExpressionException, JAXBException {
-        XPathExpression xpe = XPathFactory.newInstance().newXPath().compile(xpath);
-        NodeList els = (NodeList) xpe.evaluate(d, XPathConstants.NODESET);
-
-        // JAXBContext jaxbContext =
-        // JAXBContext.newInstance(ConfigStructure.class.getPackage().toString());
-        JAXBContext jaxbContext = JAXBContext.newInstance(StructureService.class);
-        Unmarshaller um = jaxbContext.createUnmarshaller();
-
-        LOG.warn("Elements: " + els.getLength());
-
-        for (int i = 0; i < els.getLength(); i++) {
-            Node el = els.item(i);
-            LOG.debug("xpath result: " + xpath + " = " + el);
-
-            StructureService ss = (StructureService) um.unmarshal(el);
-
-            LOG.warn(ss.getIdentifier());
-        }
-    }
-
     @Override
-    public void fileChanged(File f) {
+    public void fileChanged(final File newFile) {
+        this.f = newFile;
         this.reparse();
     }
 
-    public FileChangeWatcher load(File f) {
+    public FileChangeWatcher load(final File f) {
         return this.load(f, true);
     }
 
-    public FileChangeWatcher load(File f, boolean watch) {
+    public FileChangeWatcher load(final File f, final boolean watch) {
         this.f = f;
-        LOG.info("XMLConfigurationLoader is loading file: " + f);
+        XmlConfigurationLoader.LOG.info("XMLConfigurationLoader is loading file: " + f);
 
-        FileChangeWatcher fcw = new FileChangeWatcher(f, this);
+        final FileChangeWatcher fcw = new FileChangeWatcher(f, this);
 
         if (watch) {
             fcw.start();
@@ -87,22 +64,21 @@ public class XmlConfigurationLoader implements FileChangeWatcher.Listener {
 
     public void reparse() {
         try {
-            XmlConfigurationValidator val = new XmlConfigurationValidator(this.f);
-            Document d = val.getDocument();
+            final XmlConfigurationValidator val = new XmlConfigurationValidator(this.f);
+            final Document d = val.getDocument();
 
-            LOG.debug("Configuration reparsed. Validation status: " + val.isValid());
+            XmlConfigurationLoader.LOG.debug("Configuration of file {} Validation status: {}", new Object[] { this.f.getAbsolutePath(), val.isValid() });
 
             if (val.isValid()) {
-                // this.buildAndRunConfigurationTransaction("config/service",
-                // Configuration.instance.services, d);
-                this.buildElements("config/service", d);
+                this.buildAndRunConfigurationTransaction("config/command", Configuration.instance.commands, d);
+                this.buildAndRunConfigurationTransaction("config/service", Configuration.instance.services, d);
             } else {
-                for (SAXParseException e : val.getParseErrors()) {
-                    LOG.warn("Parse error: " + e);
+                for (final SAXParseException e : val.getParseErrors()) {
+                    XmlConfigurationLoader.LOG.warn("Parse error: " + e);
                 }
             }
-        } catch (Exception e) {
-            LOG.error("Could not reparse configuration.", e);
+        } catch (final Exception e) {
+            XmlConfigurationLoader.LOG.error("Could not reparse configuration: " + e.getMessage(), e);
         }
     }
 }

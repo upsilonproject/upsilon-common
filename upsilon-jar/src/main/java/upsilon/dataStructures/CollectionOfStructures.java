@@ -1,5 +1,7 @@
 package upsilon.dataStructures;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -20,12 +22,16 @@ public class CollectionOfStructures<T extends ConfigStructure> implements Iterab
 
     private static transient final Logger LOG = LoggerFactory.getLogger(CollectionOfStructures.class);
 
-    private T constructElement(Node newElement) {
+    private T constructElement(final Node newElement) {
         ConfigStructure s;
 
         switch (newElement.getNodeName()) {
         case "service":
             s = new StructureService();
+            s.update(newElement);
+            break;
+        case "command":
+            s = new StructureCommand();
             s.update(newElement);
             break;
         default:
@@ -35,12 +41,12 @@ public class CollectionOfStructures<T extends ConfigStructure> implements Iterab
         return (T) s;
     }
 
-    public synchronized boolean contains(T search) {
+    public synchronized boolean contains(final T search) {
         return this.collection.contains(search);
     }
 
-    public boolean containsId(String id) {
-        Iterator<T> it = this.iterator();
+    public boolean containsId(final String id) {
+        final Iterator<T> it = this.iterator();
 
         while (it.hasNext()) {
             if (it.next().getIdentifier().equals(id)) {
@@ -52,13 +58,15 @@ public class CollectionOfStructures<T extends ConfigStructure> implements Iterab
     }
 
     private void debugPrint() {
-        for (T t : this) {
-            LOG.debug("ID: " + t.getIdentifier());
+        CollectionOfStructures.LOG.debug("Collection (of type " + this.getType() + "): ");
+
+        for (final T t : this) {
+            CollectionOfStructures.LOG.debug("* ID: " + t.getIdentifier());
         }
     }
 
-    public synchronized T get(String identifier) {
-        for (T cs : this.collection) {
+    public synchronized T get(final String identifier) {
+        for (final T cs : this.collection) {
             if (cs.getIdentifier().equals(identifier)) {
                 return cs;
             }
@@ -67,8 +75,8 @@ public class CollectionOfStructures<T extends ConfigStructure> implements Iterab
         return null;
     }
 
-    public T getById(String id) {
-        for (T struct : this) {
+    public T getById(final String id) {
+        for (final T struct : this) {
             if (struct.getIdentifier().equals(id)) {
                 return struct;
             }
@@ -78,9 +86,9 @@ public class CollectionOfStructures<T extends ConfigStructure> implements Iterab
     }
 
     public Vector<String> getIds() {
-        Vector<String> ids = new Vector<String>();
+        final Vector<String> ids = new Vector<String>();
 
-        Iterator<T> it = this.iterator();
+        final Iterator<T> it = this.iterator();
 
         while (it.hasNext()) {
             ids.add(it.next().getIdentifier());
@@ -93,6 +101,20 @@ public class CollectionOfStructures<T extends ConfigStructure> implements Iterab
     @XmlElementWrapper
     public List<T> getImmutable() {
         return Collections.unmodifiableList(this.collection);
+    }
+
+    public Class<T> getType() {
+        final Type superClass;
+        try {
+            CollectionOfStructures.LOG.debug("len " + ((Class<?>) ((ParameterizedType) this.getClass().getMethod("getImmutable").getGenericReturnType()).getActualTypeArguments()[0]).getSimpleName());
+        } catch (final SecurityException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (final NoSuchMethodException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public synchronized boolean isEmpty() {
@@ -108,28 +130,37 @@ public class CollectionOfStructures<T extends ConfigStructure> implements Iterab
         return new CollectionAlterationTransaction<T>(this);
     }
 
-    public void processTransaction(CollectionAlterationTransaction<?> cat) {
+    public void processTransaction(final CollectionAlterationTransaction<?> cat) {
         synchronized (this) {
-            for (String structureId : cat.getOldIds()) {
+            CollectionOfStructures.LOG.warn(cat + " Started");
+
+            for (final String structureId : cat.getOldIds()) {
+                CollectionOfStructures.LOG.warn(cat + " Removing: " + structureId);
                 this.collection.remove(this.getById(structureId));
             }
 
-            for (Entry<String, Node> newStructure : cat.getNew().entrySet()) {
-                T s = this.constructElement(newStructure.getValue());
+            for (final Entry<String, Node> newStructure : cat.getNew().entrySet()) {
+                CollectionOfStructures.LOG.warn(cat + " Adding: " + newStructure.getKey());
+
+                final T s = this.constructElement(newStructure.getValue());
 
                 this.collection.add(s);
             }
 
-            for (Entry<String, Node> updStructure : cat.getUpdated().entrySet()) {
-                T existingStructure = this.getById(updStructure.getKey());
+            for (final Entry<String, Node> updStructure : cat.getUpdated().entrySet()) {
+                CollectionOfStructures.LOG.warn(cat + " Updating:" + updStructure.getKey());
+
+                final T existingStructure = this.getById(updStructure.getKey());
                 existingStructure.update(updStructure.getValue());
             }
+
+            CollectionOfStructures.LOG.warn(cat + " Finished");
 
             this.debugPrint();
         }
     }
 
-    public synchronized void register(T item) {
+    public synchronized void register(final T item) {
         boolean added;
 
         if (this.collection.contains(item)) {

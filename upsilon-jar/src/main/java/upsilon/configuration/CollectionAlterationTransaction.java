@@ -15,19 +15,23 @@ import upsilon.dataStructures.CollectionOfStructures;
 import upsilon.dataStructures.ConfigStructure;
 
 public class CollectionAlterationTransaction<T extends ConfigStructure> {
+    private static int catIndex = 0;
+
+    private final int id;
     private final static transient Logger LOG = LoggerFactory.getLogger(CollectionAlterationTransaction.class);
     private final CollectionOfStructures<T> list;
     private final HashMap<String, Node> newList = new HashMap<>();
     private Vector<String> oldList = new Vector<String>();
     private final HashMap<String, Node> updList = new HashMap<>();
 
-    public CollectionAlterationTransaction(CollectionOfStructures<T> list) {
+    public CollectionAlterationTransaction(final CollectionOfStructures<T> list) {
         this.list = list;
         this.oldList = list.getIds();
+        this.id = ++CollectionAlterationTransaction.catIndex;
     }
 
-    public void considerFromConfig(Node el) {
-        String idFromConfig = el.getAttributes().getNamedItem("id").getNodeValue();
+    public void considerFromConfig(final Node el) {
+        final String idFromConfig = el.getAttributes().getNamedItem("id").getNodeValue();
 
         if (this.list.containsId(idFromConfig)) {
             this.updList.put(idFromConfig, el);
@@ -66,21 +70,26 @@ public class CollectionAlterationTransaction<T extends ConfigStructure> {
         this.printList("old", this.getOldIds());
         this.printList("upd", this.getUpdatedIds());
 
-        LOG.info("End of transactions");
+        CollectionAlterationTransaction.LOG.info("End of transactions");
     }
 
-    public void printList(String name, Collection<String> col) {
+    public void printList(final String name, final Collection<String> col) {
         if (col.isEmpty()) {
             return;
         }
 
-        LOG.info(name);
-        LOG.info("---------");
+        CollectionAlterationTransaction.LOG.info(name);
+        CollectionAlterationTransaction.LOG.info("---------");
 
-        for (String s : col) {
-            LOG.info("* " + s);
+        for (final String s : col) {
+            CollectionAlterationTransaction.LOG.info("* " + s);
         }
 
-        LOG.info("");
+        CollectionAlterationTransaction.LOG.info("");
+    }
+
+    @Override
+    public String toString() {
+        return "CAT<?> #" + this.id;
     }
 }

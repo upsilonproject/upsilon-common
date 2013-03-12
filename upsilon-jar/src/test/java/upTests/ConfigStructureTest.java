@@ -11,7 +11,7 @@ public class ConfigStructureTest {
         CollectionOfStructures<StructureService> ss = new CollectionOfStructures<>();
 
         StructureService structureOne = new StructureService();
-        structureOne.setDescription("foo");
+        structureOne.setIdentifier("foo");
 
         ss.register(structureOne);
 

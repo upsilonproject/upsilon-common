@@ -17,21 +17,23 @@ public class ConfigurationReloadTest {
 
     @Test
     public void testConfig() {
-        LOG.debug("Reloading config");
+        ConfigurationReloadTest.LOG.debug("Reloading config");
 
-        File one = new File("src/test/resources/configChanged/before.xml");
-        File two = new File("src/test/resources/configChanged/after.xml");
+        final File one = new File("src/test/resources/configChanged/before.xml");
+        final File two = new File("src/test/resources/configChanged/after.xml");
+
         two.setLastModified(two.lastModified() + 1);
 
-        XmlConfigurationLoader loader = new XmlConfigurationLoader();
-        FileChangeWatcher fcw = loader.load(one, false);
-        fcw.checkForModification();
+        final XmlConfigurationLoader loader = new XmlConfigurationLoader();
+        final FileChangeWatcher fcw = loader.load(one, false);
 
+        Assert.assertTrue(Configuration.instance.services.containsId("baseService"));
         Assert.assertTrue(Configuration.instance.services.containsId("mindstormPing"));
 
         fcw.setWatchedFile(two);
         fcw.checkForModification();
 
+        Assert.assertTrue(Configuration.instance.services.containsId("baseService"));
         Assert.assertFalse(Configuration.instance.services.containsId("mindstormPing"));
     }
 }
