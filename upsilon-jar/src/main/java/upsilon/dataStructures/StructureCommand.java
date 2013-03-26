@@ -1,7 +1,5 @@
 package upsilon.dataStructures;
 
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import java.util.regex.Matcher;
@@ -18,21 +16,6 @@ import org.w3c.dom.Node;
 @XmlRootElement
 public class StructureCommand extends ConfigStructure {
     private static transient final Logger LOG = LoggerFactory.getLogger(StructureCommand.class);
-
-    public static Vector<String> parseCallCommandArguments(final String fullCommandLine) {
-        final String components[] = fullCommandLine.split("!");
-        final Vector<String> v = new Vector<String>(Arrays.asList(components));
-
-        final Iterator<String> it = v.iterator();
-
-        while (it.hasNext()) {
-            if (it.next().isEmpty()) {
-                it.remove();
-            }
-        }
-
-        return v;
-    }
 
     public static String parseCallCommandExecutable(final String parameterValue) {
         if (parameterValue.contains("!")) {
@@ -68,7 +51,7 @@ public class StructureCommand extends ConfigStructure {
         String parsedVariable = originalVariable.replace("'$HOSTADDRESS$'", service.getHostname()).trim();
 
         for (int i = 0; i < callingArguments.size(); i++) {
-            parsedVariable = parsedVariable.replace("'$ARG" + i + "$'", callingArguments.get(i));
+            parsedVariable = parsedVariable.replace("'$ARG" + (i + 1) + "$'", callingArguments.get(i));
         }
 
         return parsedVariable;
@@ -89,7 +72,6 @@ public class StructureCommand extends ConfigStructure {
 
     private String executable = "???";
 
-    private String name;
     private List<String> definedArguments = new Vector<String>();
 
     private String identifier;
@@ -111,7 +93,7 @@ public class StructureCommand extends ConfigStructure {
         sb.append(this.getExecutable());
         sb.append(' ');
 
-        final Vector<String> callingArguments = StructureCommand.parseCallCommandArguments(service.getCallCommand());
+        final Vector<String> callingArguments = service.getArguments();
 
         for (final String arg : this.definedArguments) {
             sb.append(StructureCommand.parseCommandArgumentVariable(arg, service, callingArguments));
@@ -125,7 +107,7 @@ public class StructureCommand extends ConfigStructure {
         final Vector<String> pieces = new Vector<String>();
         pieces.add(this.getExecutable());
 
-        final Vector<String> callingArguments = StructureCommand.parseCallCommandArguments(service.getCallCommand());
+        final Vector<String> callingArguments = service.getArguments();
 
         for (final String arg : this.definedArguments) {
             pieces.add(StructureCommand.parseCommandArgumentVariable(arg, service, callingArguments));
@@ -140,11 +122,6 @@ public class StructureCommand extends ConfigStructure {
         return this.identifier;
     }
 
-    @XmlElement
-    public String getName() {
-        return this.name;
-    }
-
     public void setCommandLine(final String fullCommandLine) {
         this.executable = StructureCommand.parseCommandExecutable(fullCommandLine);
         this.definedArguments = StructureCommand.parseCommandArguments(fullCommandLine);
@@ -152,10 +129,6 @@ public class StructureCommand extends ConfigStructure {
 
     public void setIdentifier(final String identifier) {
         this.identifier = identifier;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
     }
 
     @Override

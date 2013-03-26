@@ -18,27 +18,30 @@ public class StructurePeer extends ConfigStructure {
     public final static void updateAll() {
         Main.instance.node.refresh();
 
-        for (StructurePeer p : Configuration.instance.peers) {
+        for (final StructurePeer p : Configuration.instance.peers) {
             p.getClientService().postNode(Main.instance.node);
 
-            for (StructureService s : upsilon.Configuration.instance.services) {
+            for (final StructureService s : upsilon.Configuration.instance.services) {
                 p.getClientService().postService(s);
             }
         }
-           
+
         Main.instance.node.setPeerUpdateRequired(false);
     }
 
-    private String hostname;
+    private String hostname = "";
 
-    private int port;
+    private int port = 4000;
     private URL remoteConfig;
 
     private static final transient Logger LOG = LoggerFactory.getLogger(StructurePeer.class);
 
     private RestClient restClient;
 
-    public StructurePeer(String hostname, int port) throws MalformedURLException, IllegalArgumentException, GeneralSecurityException {
+    public StructurePeer() {
+    }
+
+    public StructurePeer(final String hostname, final int port) throws MalformedURLException, IllegalArgumentException, GeneralSecurityException {
         this.hostname = hostname;
         this.port = port;
 
@@ -66,39 +69,39 @@ public class StructurePeer extends ConfigStructure {
         return this.remoteConfig;
     }
 
+    public boolean isRemoteConfigProvider() {
+        return this.remoteConfig != null;
+    }
+
     private void newClient() throws MalformedURLException, IllegalArgumentException, GeneralSecurityException {
         final String proto;
-        
+
         if (Configuration.instance.isCryptoEnabled()) {
             proto = "https";
-        } else { 
+        } else {
             proto = "http";
         }
-           
-        URL serverUrl = new URL(proto + "://" + this.hostname + ":" + this.port);
-        this.restClient = new RestClient(serverUrl); 
-    }  
 
-    public void setHostname(String hostname) {
+        final URL serverUrl = new URL(proto + "://" + this.hostname + ":" + this.port);
+        this.restClient = new RestClient(serverUrl);
+    }
+
+    public void setHostname(final String hostname) {
         this.hostname = hostname.trim();
     }
 
-    public void setPort(int port) { 
+    public void setPort(final int port) {
         this.port = port;
     }
-    
-    public boolean isRemoteConfigProvider() {
-        return this.remoteConfig != null; 
-    }  
 
-    public void setRemoteConfig(String path) {
-        if (path == null || path.isEmpty()) {
-            return; 
+    public void setRemoteConfig(final String path) {
+        if ((path == null) || path.isEmpty()) {
+            return;
         }
-  
+
         try {
             this.remoteConfig = new URL("https://" + this.hostname + ":" + this.port + "/remoteConfig/" + path);
-        } catch (MalformedURLException e) {
+        } catch (final MalformedURLException e) {
             StructurePeer.LOG.warn("Could not register remote config, malformed url.");
         }
     }

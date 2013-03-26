@@ -1,7 +1,5 @@
 package upsilon.dataStructures;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -21,6 +19,11 @@ public class CollectionOfStructures<T extends ConfigStructure> implements Iterab
     private final Vector<T> collection = new Vector<T>();
 
     private static transient final Logger LOG = LoggerFactory.getLogger(CollectionOfStructures.class);
+    private final String title;
+
+    public CollectionOfStructures(final String title) {
+        this.title = title;
+    }
 
     private T constructElement(final Node newElement) {
         ConfigStructure s;
@@ -32,6 +35,10 @@ public class CollectionOfStructures<T extends ConfigStructure> implements Iterab
             break;
         case "command":
             s = new StructureCommand();
+            s.update(newElement);
+            break;
+        case "peer":
+            s = new StructurePeer();
             s.update(newElement);
             break;
         default:
@@ -58,10 +65,10 @@ public class CollectionOfStructures<T extends ConfigStructure> implements Iterab
     }
 
     private void debugPrint() {
-        CollectionOfStructures.LOG.debug("Collection (of type " + this.getType() + "): ");
+        CollectionOfStructures.LOG.debug("Collection (of type " + this.getTitle() + "): ");
 
-        for (final T t : this) {
-            CollectionOfStructures.LOG.debug("* ID: " + t.getIdentifier());
+        for (int i = 0; i < this.collection.size(); i++) {
+            CollectionOfStructures.LOG.debug("Item {}: {}", new Object[] { i, this.collection.get(i).getIdentifier() });
         }
     }
 
@@ -103,18 +110,8 @@ public class CollectionOfStructures<T extends ConfigStructure> implements Iterab
         return Collections.unmodifiableList(this.collection);
     }
 
-    public Class<T> getType() {
-        final Type superClass;
-        try {
-            CollectionOfStructures.LOG.debug("len " + ((Class<?>) ((ParameterizedType) this.getClass().getMethod("getImmutable").getGenericReturnType()).getActualTypeArguments()[0]).getSimpleName());
-        } catch (final SecurityException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (final NoSuchMethodException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return null;
+    public String getTitle() {
+        return this.title;
     }
 
     public synchronized boolean isEmpty() {

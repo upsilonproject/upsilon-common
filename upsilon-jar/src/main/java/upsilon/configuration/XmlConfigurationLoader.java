@@ -22,6 +22,8 @@ public class XmlConfigurationLoader implements FileChangeWatcher.Listener {
     private static final transient Logger LOG = LoggerFactory.getLogger(XmlConfigurationLoader.class);
     private File f;
 
+    protected XmlConfigurationValidator val;
+
     private void buildAndRunConfigurationTransaction(final String xpath, final CollectionOfStructures<?> col, final Document d) throws XPathExpressionException, JAXBException {
         final CollectionAlterationTransaction<?> cat = col.newTransaction();
 
@@ -43,6 +45,18 @@ public class XmlConfigurationLoader implements FileChangeWatcher.Listener {
         this.reparse();
     }
 
+    public File getFile() {
+        return this.f;
+    }
+
+    public XmlConfigurationValidator getValidator() {
+        if (this.val.getFile() != this.f) {
+            throw new IllegalArgumentException("Validator has expired. It refers to a file that is not current with the loader.");
+        }
+
+        return this.val;
+    }
+
     public FileChangeWatcher load(final File f) {
         return this.load(f, true);
     }
@@ -62,20 +76,36 @@ public class XmlConfigurationLoader implements FileChangeWatcher.Listener {
         return fcw;
     }
 
+    private void parseConfiguration(final Document d) throws XPathExpressionException {
+        final XPathExpression xpe = XPathFactory.newInstance().newXPath().compile("config/system");
+        final NodeList nl = (NodeList) xpe.evaluate(d, XPathConstants.NODESET);
+
+        if (nl.getLength() == 1) {
+            Configuration.instance.update(nl.item(0));
+        }
+    }
+
     public void reparse() {
         try {
-            final XmlConfigurationValidator val = new XmlConfigurationValidator(this.f);
-            final Document d = val.getDocument();
+            this.val = new XmlConfigurationValidator(this.f);
+            this.val.validate();
+            final Document d = this.val.getDocument();
 
-            XmlConfigurationLoader.LOG.debug("Configuration of file {} Validation status: {}", new Object[] { this.f.getAbsolutePath(), val.isValid() });
+            XmlConfigurationLoader.LOG.info("Reparse of onfiguration of file {} Validation status: {}", new Object[] { this.f.getAbsolutePath(), this.val.isParseClean() });
 
-            if (val.isValid()) {
+            if (!this.val.isParsed()) {
+                XmlConfigurationLoader.LOG.warn("Configuration file could not be loaded for parser: " + this.val.getFile().getAbsolutePath());
+
+            } else if (!this.val.isParseClean()) {
+                XmlConfigurationLoader.LOG.warn("Configuration file has parse {} errors. It will NOT be reloaded: {}", new Object[] { this.val.getParseErrors().size(), this.val.getFile().getAbsolutePath() });
+
+                for (final SAXParseException e : this.val.getParseErrors()) {
+                    XmlConfigurationLoader.LOG.warn("Configuration file parse error: {}:{} - {}", new Object[] { this.val.getFile().getName(), e.getLineNumber(), e.getMessage() });
+                }
+            } else {
                 this.buildAndRunConfigurationTransaction("config/command", Configuration.instance.commands, d);
                 this.buildAndRunConfigurationTransaction("config/service", Configuration.instance.services, d);
-            } else {
-                for (final SAXParseException e : val.getParseErrors()) {
-                    XmlConfigurationLoader.LOG.warn("Parse error: " + e);
-                }
+                this.buildAndRunConfigurationTransaction("config/peer", Configuration.instance.peers, d);
             }
         } catch (final Exception e) {
             XmlConfigurationLoader.LOG.error("Could not reparse configuration: " + e.getMessage(), e);

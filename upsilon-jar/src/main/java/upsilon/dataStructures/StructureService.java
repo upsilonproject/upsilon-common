@@ -12,6 +12,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import upsilon.Configuration;
 import upsilon.Main;
@@ -31,7 +32,7 @@ public class StructureService extends ConfigStructure implements AbstractService
     private String hostname;
     private boolean register = true;
     private String output = "(not yet executed)";
-    private String callCommand = "";
+    private Vector<String> arguments = new Vector<String>();
     private transient Duration timeoutSeconds = GlobalConstants.DEF_TIMEOUT;
 
     private StructureService dependsOn;
@@ -60,8 +61,8 @@ public class StructureService extends ConfigStructure implements AbstractService
 
     @Override
     @XmlElement
-    public String getCallCommand() {
-        return this.callCommand;
+    public Vector<String> getArguments() {
+        return this.arguments;
     }
 
     @XmlElement(required = true)
@@ -199,9 +200,20 @@ public class StructureService extends ConfigStructure implements AbstractService
         return this.register;
     }
 
-    public void setCommand(final StructureCommand command, final String cmdLine) {
+    public void setCommand(final StructureCommand command, final String... arguments) {
+        final Vector<String> vectorArgs = new Vector<String>();
+
+        for (final String a : arguments) {
+            vectorArgs.add(a);
+        }
+
+        this.setCommand(command, vectorArgs);
+    }
+
+    public void setCommand(final StructureCommand command, final Vector<String> arguments) {
         this.command = command;
-        this.callCommand = cmdLine;
+        this.arguments = new Vector<String>();
+        this.arguments.addAll(arguments);
     }
 
     public void setDependsOn(final StructureService dependsOn) {
@@ -241,6 +253,20 @@ public class StructureService extends ConfigStructure implements AbstractService
     public void update(final Node el) {
         this.identifier = el.getAttributes().getNamedItem("id").getNodeValue();
 
-        this.setCommand(Configuration.instance.commands.getById(el.getAttributes().getNamedItem("commandRef").getNodeValue()), null);
+        final String commandIdentifier = el.getAttributes().getNamedItem("commandRef").getNodeValue();
+        final StructureCommand cmd = Configuration.instance.commands.getById(commandIdentifier);
+
+        final Vector<String> arguments = new Vector<>();
+
+        final NodeList nl = el.getChildNodes();
+        for (int i = 0; i < nl.getLength(); i++) {
+            final Node child = nl.item(i);
+
+            if (child.getNodeName().equals("attribute")) {
+                arguments.add(child.getNodeValue());
+            }
+        }
+
+        this.setCommand(cmd, arguments);
     }
 }

@@ -12,29 +12,29 @@ import upsilon.dataStructures.StructureService;
 import upsilon.management.rest.client.RestClient;
 
 public class ServiceGetTest {
-	@Test
-	@Ignore
-	public void testGetService() throws Exception {
-		StructureService s = new StructureService();
-		s.setIdentifier("foo");
-		s.setCommand(new StructureCommand(), "");
+    @Test
+    @Ignore
+    public void testGetService() throws Exception {
+        final StructureService s = new StructureService();
+        s.setIdentifier("foo");
+        s.setCommand(new StructureCommand());
 
-		Assert.assertEquals("foo:", s.getIdentifier());
+        Assert.assertEquals("foo:", s.getIdentifier());
 
-		Configuration.instance.services.register(s);
+        Configuration.instance.services.register(s);
 
-		DaemonRest srv = new DaemonRest();
-		new Thread(srv).start();
+        final DaemonRest srv = new DaemonRest();
+        new Thread(srv).start();
 
-		Thread.sleep(3000);
+        Thread.sleep(3000);
 
-		RestClient rc = new RestClient(DaemonRest.getBaseUri().toURL());
+        final RestClient rc = new RestClient(DaemonRest.getBaseUri().toURL());
 
-		StructureService snew = rc.getService("foo:");
+        final StructureService snew = rc.getService("foo:");
 
-		Assert.assertNotNull(snew);
-		Assert.assertEquals("foo:", snew.getIdentifier());
+        Assert.assertNotNull(snew);
+        Assert.assertEquals("foo:", snew.getIdentifier());
 
-		srv.stop();
-	}
+        srv.stop();
+    }
 }

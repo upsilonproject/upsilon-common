@@ -5,15 +5,15 @@
 		<truststore password = "" />
 	</system>  
 	
-	<peer address = "127.0.0.1" port = "1337" certSha1Fingerprint = "77ff0663ea49d2a0b132f99c94e052315a3099f6" />
+	<peer id = "peer1" address = "127.0.0.1" port = "1337" certSha1Fingerprint = "77ff0663ea49d2a0b132f99c94e052315a3099f6" />
 	
 	<command id = "check_ping" exec = "/usr/local/sbin/nix/check_ping" />
 	 
 	<service id = "baseService"  commandRef = "check_ping" register = "false" minDelay = "5s" maxDelay = "10s" />
 	  
 	<service id = "mindstormPing" commandRef = "check_ping" register = "true" parent = "baseService"> 
-		<argument value = "mindstorm5.teratan.lan" />
-	</service>   
+		<argument>mindstorm5.teratan.lan</argument> 
+	</service>    
   
 	<group id = "Hosts">    
 		<member serviceRef = "mindstormPing" />

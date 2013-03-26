@@ -5,39 +5,39 @@ import java.util.Vector;
 import org.joda.time.Instant;
 
 public interface AbstractService {
-	public abstract String getCallCommand();
+    public Vector<String> getArguments();
 
-	public String getDescription(); 
- 
-	public Instant getEstimatedNextCheck();
+    public String getDescription();
 
-	public abstract String getExecutable();
+    public Instant getEstimatedNextCheck();
 
-	public abstract String getFinalCommandLine(AbstractService s);
+    public abstract String getExecutable();
 
-	public abstract String getHostname();
+    public abstract String getFinalCommandLine(AbstractService s);
 
-	public String getIdentifier();
+    public abstract String getHostname();
 
-	public abstract String getKarmaString();
+    public String getIdentifier();
 
-	public Instant getLastUpdated();
+    public abstract String getKarmaString();
 
-	public abstract Vector<String> getMemberships();
+    public Instant getLastUpdated();
 
-	public abstract String getNodeIdentifier();
+    public abstract Vector<String> getMemberships();
 
-	public abstract String getOutput();
+    public abstract String getNodeIdentifier();
 
-	public abstract int getResultConsequtiveCount();
+    public abstract String getOutput();
 
-	public abstract long getSecondsRemaining();
+    public abstract int getResultConsequtiveCount();
 
-	public abstract boolean isDatabaseUpdateRequired();
+    public abstract long getSecondsRemaining();
 
-	public boolean isLocal();
+    public abstract boolean isDatabaseUpdateRequired();
 
-	public abstract boolean isRegistered();
+    public boolean isLocal();
 
-	public abstract void setDatabaseUpdateRequired(boolean b);
+    public abstract boolean isRegistered();
+
+    public abstract void setDatabaseUpdateRequired(boolean b);
 }

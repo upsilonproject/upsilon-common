@@ -15,9 +15,17 @@ public abstract class ConfigStructure {
     }
 
     @Override
-    public final boolean equals(Object obj) {
+    public final boolean equals(final Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
         if (obj instanceof ConfigStructure) {
-            return (((ConfigStructure) obj).getIdentifier().equals(this.getIdentifier()));
+            if ((this.getIdentifier() == null) || (((ConfigStructure) obj).getIdentifier() == null)) {
+                return false;
+            } else {
+                return (((ConfigStructure) obj).getIdentifier().equals(this.getIdentifier()));
+            }
         } else {
             return false;
         }
@@ -44,16 +52,16 @@ public abstract class ConfigStructure {
         return this.peerUpdateRequired;
     }
 
-    public void setDatabaseUpdateRequired(boolean isChanged) {
+    public void setDatabaseUpdateRequired(final boolean isChanged) {
         this.databaseUpdateRequired = isChanged;
         this.setPeerUpdateRequired(true);
     }
 
-    public void setPeerUpdateRequired(boolean peerUpdateRequired) {
+    public void setPeerUpdateRequired(final boolean peerUpdateRequired) {
         this.peerUpdateRequired = peerUpdateRequired;
     }
 
-    public void update(Node el) {
+    public void update(final Node el) {
 
     }
 

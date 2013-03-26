@@ -8,13 +8,13 @@ import upsilon.dataStructures.StructureService;
 public class ConfigStructureTest {
     @Test
     public void testPutGet() {
-        CollectionOfStructures<StructureService> ss = new CollectionOfStructures<>();
+        final CollectionOfStructures<StructureService> ss = new CollectionOfStructures<>("testingStructure");
 
-        StructureService structureOne = new StructureService();
+        final StructureService structureOne = new StructureService();
         structureOne.setIdentifier("foo");
 
         ss.register(structureOne);
 
         // Assert.assertEquals(structureOne, ss.get("foo"));
     }
-} 
+}

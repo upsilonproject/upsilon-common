@@ -11,17 +11,17 @@ import upsilon.dataStructures.StructureService;
 public class StructureEqualityTest {
     @Test
     public void testEqualCommands() {
-        final CollectionOfStructures<StructureCommand> col = new CollectionOfStructures<>();
+        final CollectionOfStructures<StructureCommand> col = new CollectionOfStructures<>("testingStructure");
 
         final StructureCommand c1 = new StructureCommand();
         final StructureCommand c2 = new StructureCommand();
 
-        c1.setName("one");
-        c2.setName("two");
+        c1.setIdentifier("one");
+        c2.setIdentifier("two");
         Assert.assertThat(c1, CoreMatchers.not(c2));
 
-        c1.setName("pie");
-        c2.setName("pie");
+        c1.setIdentifier("pie");
+        c2.setIdentifier("pie");
         Assert.assertThat(c1, CoreMatchers.equalTo(c2));
 
         col.register(c1);

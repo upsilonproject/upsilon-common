@@ -90,6 +90,6 @@ public class CollectionAlterationTransaction<T extends ConfigStructure> {
 
     @Override
     public String toString() {
-        return "CAT<?> #" + this.id;
+        return "CAT<" + this.list.getTitle() + "> #" + this.id;
     }
 }

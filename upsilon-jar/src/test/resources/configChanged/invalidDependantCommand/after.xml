@@ -1,0 +1,4 @@
+<config>
+	  
+	<service id = "helloWorld" commandRef = "echoCmd" />
+</config> 

@@ -31,7 +31,7 @@ public class FileChangeWatcher {
     }
 
     public void checkForModification() {
-        FileChangeWatcher.LOG.trace("Checking file for modification: " + this.mtime + " vs " + this.fileBeingWatched.getAbsolutePath() + " " + this.fileBeingWatched.lastModified());
+        FileChangeWatcher.LOG.trace("Checking file for modification: " + this.mtime + " vs " + this.fileBeingWatched.lastModified() + " watching:" + this.fileBeingWatched.getAbsolutePath() + " ");
 
         if (this.mtime < this.fileBeingWatched.lastModified()) {
             this.mtime = this.fileBeingWatched.lastModified();

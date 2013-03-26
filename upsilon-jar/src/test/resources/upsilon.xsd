@@ -3,8 +3,8 @@
 	<xs:element name="config">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="system" type="system" />
-				<xs:choice maxOccurs="unbounded">
+				<xs:choice maxOccurs="unbounded"> 
+					<xs:element name="system" type="system" minOccurs="0" maxOccurs="1" /> 
 					<xs:element name="command" type="command" minOccurs="0" />
 					<xs:element name="group" type="group" minOccurs="0" />
 					<xs:element name="peer" type="peer" minOccurs="0" />
@@ -76,7 +76,8 @@
 		</xs:sequence>
 		<xs:attribute name="id" type="identifier"></xs:attribute>
 	</xs:complexType>
-	<xs:complexType name="peer">
+	<xs:complexType name="peer">  
+		<xs:attribute name="id" type="identifier" use = "required"></xs:attribute> 
 		<xs:attribute name="certSha1Fingerprint" use="required"
 			type="sha1fingerprint"></xs:attribute>
 		<xs:attribute name="address" type="xs:string" use="required"></xs:attribute>
