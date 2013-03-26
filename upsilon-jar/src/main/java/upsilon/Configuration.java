@@ -71,6 +71,6 @@ public class Configuration {
     }
 
     public void update(final Node node) {
-        this.restPort = Integer.parseInt(node.getAttributes().getNamedItem("port").getNodeValue());
+        this.restPort = Integer.parseInt(node.getAttributes().getNamedItem("restPort").getNodeValue());
     }
 }

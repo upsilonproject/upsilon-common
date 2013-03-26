@@ -129,7 +129,7 @@ public class CollectionOfStructures<T extends ConfigStructure> implements Iterab
 
     public void processTransaction(final CollectionAlterationTransaction<?> cat) {
         synchronized (this) {
-            CollectionOfStructures.LOG.warn(cat + " Started");
+            CollectionOfStructures.LOG.warn(cat + " Started (new: {}, old: {}, upd: {})", new Object[] { cat.getNew().size(), cat.getOld().size(), cat.getUpdated().size() });
 
             for (final String structureId : cat.getOldIds()) {
                 CollectionOfStructures.LOG.warn(cat + " Removing: " + structureId);

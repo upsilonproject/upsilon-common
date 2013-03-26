@@ -106,6 +106,7 @@ public class XmlConfigurationLoader implements FileChangeWatcher.Listener {
                 this.buildAndRunConfigurationTransaction("config/command", Configuration.instance.commands, d);
                 this.buildAndRunConfigurationTransaction("config/service", Configuration.instance.services, d);
                 this.buildAndRunConfigurationTransaction("config/peer", Configuration.instance.peers, d);
+                this.parseConfiguration(d);
             }
         } catch (final Exception e) {
             XmlConfigurationLoader.LOG.error("Could not reparse configuration: " + e.getMessage(), e);
