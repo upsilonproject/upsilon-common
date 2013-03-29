@@ -14,25 +14,26 @@ import org.joda.time.Instant;
 
 import upsilon.Configuration;
 import upsilon.Main;
+import upsilon.configuration.XmlNodeHelper;
 import upsilon.management.rest.server.util.DurationAdaptor;
 import upsilon.util.FlexiTimer;
 import upsilon.util.GlobalConstants;
 import upsilon.util.MutableFlexiTimer;
+import upsilon.util.Util;
 
 @XmlRootElement
 public class StructureService extends ConfigStructure implements AbstractService {
-    private String description;
-    private StructureCommand command;
+    private String identifier;
 
+    private StructureCommand command;
     @XmlElement
     private ResultKarma karma;
     private final MutableFlexiTimer ft = new MutableFlexiTimer(Duration.standardSeconds(10), Duration.standardSeconds(60), Duration.standardSeconds(5), "service timer");
-    private String hostname = "localhost";
     private boolean register = true;
     private String output = "(not yet executed)";
-    private final int databaseId = 0;
-    private String callCommand = "";
+    private Vector<String> arguments = new Vector<String>();
     private transient Duration timeoutSeconds = GlobalConstants.DEF_TIMEOUT;
+
     private StructureService dependsOn;
 
     public void addResult(final ResultKarma karma, final Date whenChecked) {
@@ -59,16 +60,12 @@ public class StructureService extends ConfigStructure implements AbstractService
 
     @Override
     @XmlElement
-    public String getCallCommand() {
-        return this.callCommand;
+    public Vector<String> getArguments() {
+        return this.arguments;
     }
 
-    @XmlElement(required = true)
+    @XmlElement(required = false)
     public StructureCommand getCommand() throws IllegalArgumentException {
-        if (this.command == null) {
-            throw new IllegalArgumentException("service does not have an associated command, for service: " + this.description);
-        }
-
         return this.command;
     }
 
@@ -78,7 +75,7 @@ public class StructureService extends ConfigStructure implements AbstractService
 
     @Override
     public String getDescription() {
-        return this.description;
+        return this.identifier;
     }
 
     @Override
@@ -93,7 +90,7 @@ public class StructureService extends ConfigStructure implements AbstractService
 
     @Override
     public String getFinalCommandLine(final AbstractService s) {
-        return this.getCommand().getFinalCommandLine(s);
+        return Util.implode(this.getCommand().getFinalCommandLinePieces(this));
     }
 
     @XmlElement
@@ -102,14 +99,9 @@ public class StructureService extends ConfigStructure implements AbstractService
     }
 
     @Override
-    public String getHostname() {
-        return this.hostname;
-    }
-
-    @Override
     @XmlElement
     public String getIdentifier() {
-        return this.getDescription() + ":" + StructureCommand.parseCallCommandExecutable(this.callCommand);
+        return this.identifier;
     }
 
     @Override
@@ -127,20 +119,7 @@ public class StructureService extends ConfigStructure implements AbstractService
     }
 
     @Override
-    public Vector<String> getMemberships() {
-        final Vector<String> ret = new Vector<String>();
-
-        for (final StructureGroup g : Configuration.instance.groups) {
-            if (g.hasMember(this)) {
-                ret.add(g.getFullyQualifiedIdentifier());
-            }
-        }
-
-        return ret;
-    }
-
-    @Override
-    public String getNodeIdentifier() {
+	public String getNodeIdentifier() {
         return Main.instance.node.getIdentifier();
     }
 
@@ -198,26 +177,33 @@ public class StructureService extends ConfigStructure implements AbstractService
         return this.register;
     }
 
-    public void setCommand(final StructureCommand command, final String cmdLine) {
+    public void setCommand(final StructureCommand command, final String... arguments) {
+        final Vector<String> vectorArgs = new Vector<String>();
+
+        for (final String a : arguments) {
+            vectorArgs.add(a);
+        }
+
+        this.setCommand(command, vectorArgs);
+    }
+
+    public void setCommand(final StructureCommand command, final Vector<String> arguments) {
         this.command = command;
-        this.callCommand = cmdLine;
+        this.arguments = new Vector<String>();
+        this.arguments.addAll(arguments);
     }
 
     public void setDependsOn(final StructureService dependsOn) {
         this.dependsOn = dependsOn;
     }
 
-    public void setDescription(final String description) {
+    public void setIdentifier(final String description) {
         this.ft.setName("ft for " + description);
-        this.description = description.trim();
+        this.identifier = description.trim();
     }
 
-    public void setHostname(final String hostname) {
-        this.hostname = hostname.trim();
-    }
-
-    public void setRegistered(final String registerd) {
-        this.register = Boolean.parseBoolean(registerd);
+    public void setRegistered(final boolean registered) {
+        this.register = registered;
     }
 
     public void setTimeout(final Duration timeout) {
@@ -234,5 +220,29 @@ public class StructureService extends ConfigStructure implements AbstractService
 
     public void setUpdateIncrement(final Duration increment) {
         this.ft.setInc(increment);
+    }
+
+    @Override
+    public void update(final XmlNodeHelper el) {
+        this.identifier = el.getAttributeValueUnchecked("id");
+        this.setTimeout(el.getAttributeValue("timeout", GlobalConstants.DEF_TIMEOUT));
+        this.ft.setMin(el.getAttributeValue("minDelay", GlobalConstants.MIN_SERVICE_SLEEP));
+        this.ft.setMax(el.getAttributeValue("maxDelay", GlobalConstants.MAX_SERVICE_SLEEP));
+
+        if (el.hasAttribute("commandRef")) {
+            final String commandIdentifier = el.getAttributeValueUnchecked("commandRef");
+
+            final StructureCommand cmd = Configuration.instance.commands.getById(commandIdentifier);
+
+            final Vector<String> arguments = new Vector<>();
+
+            for (final XmlNodeHelper child : el.getChildElements("argument")) {
+                arguments.add(child.getNodeValue());
+            }
+
+            this.setCommand(cmd, arguments);
+        } else {
+            this.setRegistered(false);
+        }
     }
 }

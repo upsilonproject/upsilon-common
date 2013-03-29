@@ -1,162 +1,144 @@
 package upsilon.dataStructures;
 
-import java.util.Vector;
-
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.joda.time.Instant;
 
 @XmlRootElement
 public class StructureRemoteService implements AbstractService {
-	public Vector<String> groups = new Vector<String>();
-	private String karma = "karma";
-	private String description = "desc";
-	private String output = "output";
+    private String karma = "karma";
+    private String description = "desc";
+    private String output = "output";
 
-	private String id;
+    private String id;
 
-	private Instant lastUpdated;
+    private Instant lastUpdated;
 
-	private String executable;
+    private String executable;
 
-	private String hostname;
+    private String cmdline;
+    private Instant estimatedNextCheck;
+    private int goodCount;
 
-	private String cmdline;
-	private Instant estimatedNextCheck;
-	private int goodCount;
+    private String nodeIdentifier = "???";
 
-	private String nodeIdentifier = "???";
+    @Override
+    public Vector<String> getArguments() {
+        return new Vector<String>();
+    }
 
-	@Override
-	public String getCallCommand() {
-		return "calling command";
-	}
+    @Override
+    public String getDescription() {
+        return this.description;
+    }
 
-	@Override
-	public String getDescription() {
-		return this.description;
-	}
+    @Override
+    public Instant getEstimatedNextCheck() {
+        return this.estimatedNextCheck;
+    }
 
-	@Override
-	public Instant getEstimatedNextCheck() {
-		return this.estimatedNextCheck;
-	}
+    @Override
+    public String getExecutable() {
+        return this.executable;
+    }
 
-	@Override
-	public String getExecutable() {
-		return this.executable;
-	}
+    @Override
+    public String getFinalCommandLine(final AbstractService s) {
+        return this.cmdline;
+    }
 
-	@Override
-	public String getFinalCommandLine(AbstractService s) {
-		return this.cmdline;
-	}
+    @Override
+    public String getIdentifier() {
+        return this.id;
+    }
 
-	@Override
-	public String getHostname() {
-		return this.hostname;
-	}
+    @Override
+    public String getKarmaString() {
+        return this.karma;
+    }
 
-	@Override
-	public String getIdentifier() {
-		return this.id;
-	}
+    @Override
+    public Instant getLastUpdated() {
+        return this.lastUpdated;
+    }
 
-	@Override
-	public String getKarmaString() {
-		return this.karma;
-	}
+    @Override
+    public String getNodeIdentifier() {
+        return this.nodeIdentifier;
+    }
 
-	@Override
-	public Instant getLastUpdated() {
-		return this.lastUpdated;
-	}
+    @Override
+    public String getOutput() {
+        return this.output;
+    }
 
-	@Override
-	public Vector<String> getMemberships() {
-		return this.groups;
-	}
+    @Override
+    public int getResultConsequtiveCount() {
+        return this.goodCount;
+    }
 
-	public String getNodeIdentifier() {
-		return this.nodeIdentifier;
-	}
+    @Override
+    public long getSecondsRemaining() {
+        return 0;
+    }
 
-	@Override
-	public String getOutput() {
-		return this.output;
-	}
+    @Override
+    public boolean isDatabaseUpdateRequired() {
+        return true;
+    }
 
-	@Override
-	public int getResultConsequtiveCount() {
-		return this.goodCount;
-	}
+    @Override
+    public boolean isLocal() {
+        return false;
+    }
 
-	@Override
-	public long getSecondsRemaining() {
-		return 0;
-	}
+    @Override
+    public boolean isRegistered() {
+        return true;
+    }
 
-	@Override
-	public boolean isDatabaseUpdateRequired() {
-		return true;
-	}
+    @Override
+    public void setDatabaseUpdateRequired(final boolean b) {
+        // always required
+    }
 
-	@Override
-	public boolean isLocal() {
-		return false;
-	}
+    public void setDescription(final String description2) {
+        this.description = description2;
+    }
 
-	@Override
-	public boolean isRegistered() {
-		return true;
-	}
+    public void setEstimatedNextCheck(final Instant estimatedNextCheck) {
+        this.estimatedNextCheck = estimatedNextCheck;
+    }
 
-	@Override
-	public void setDatabaseUpdateRequired(boolean b) {
-		// always required
-	}
+    public void setExecutable(final String executable) {
+        this.executable = executable;
+    }
 
-	public void setDescription(String description2) {
-		this.description = description2;
-	}
+    public void setFinalCommandLine(final String finalCommandLine) {
+        this.cmdline = finalCommandLine;
+    }
 
-	public void setEstimatedNextCheck(Instant estimatedNextCheck) {
-		this.estimatedNextCheck = estimatedNextCheck;
-	}
+    public void setIdentifier(final String id) {
+        this.id = id;
+    }
 
-	public void setExecutable(String executable) {
-		this.executable = executable;
-	}
+    public void setKarmaString(final String karma) {
+        this.karma = karma;
+    }
 
-	public void setFinalCommandLine(String finalCommandLine) {
-		this.cmdline = finalCommandLine;
-	}
+    public void setLastUpdated(final Instant lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
 
-	public void setHostname(String hostname) {
-		this.hostname = hostname;
-	}
+    public void setNodeIdentifier(final String nodeIdentifier) {
+        this.nodeIdentifier = nodeIdentifier;
+    }
 
-	public void setIdentifier(String id) {
-		this.id = id;
-	}
+    public void setOutput(final String output2) {
+        this.output = output2;
+    }
 
-	public void setKarmaString(String karma) {
-		this.karma = karma;
-	}
-
-	public void setLastUpdated(Instant lastUpdated) {
-		this.lastUpdated = lastUpdated;
-	}
-
-	public void setNodeIdentifier(String nodeIdentifier) {
-		this.nodeIdentifier = nodeIdentifier;
-	}
-
-	public void setOutput(String output2) {
-		this.output = output2;
-	}
-
-	public void setResultConsequtiveCount(int goodCount2) {
-		this.goodCount = goodCount2;
-	}
+    public void setResultConsequtiveCount(final int goodCount2) {
+        this.goodCount = goodCount2;
+    }
 }

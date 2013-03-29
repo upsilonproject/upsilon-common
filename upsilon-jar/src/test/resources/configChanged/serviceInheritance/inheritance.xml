@@ -1,0 +1,7 @@
+<config>  
+	<service id = "baseService" timeout = "PT5S" /> 
+		    
+	<service id = "childService" parent = "baseService" /> 
+	
+	<command id = "cmd" exec = "ls"></command>  
+</config>     

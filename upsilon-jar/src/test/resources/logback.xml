@@ -1,0 +1,17 @@
+<configuration debug = "false">
+    <logger name = "upsilon" level = "TRACE" />  
+      
+    <!-- 
+	<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+		<level>${logLevel}</level>
+	</filter>
+	 -->   
+	  
+     <root>
+        <appender class="ch.qos.logback.core.ConsoleAppender">   
+        	<encoder>     
+        		<pattern>%d{HH:mm:ss.SSS} %-5level [%thread] %msg%n</pattern>
+        	</encoder>    
+        </appender>    
+    </root>   
+</configuration> 

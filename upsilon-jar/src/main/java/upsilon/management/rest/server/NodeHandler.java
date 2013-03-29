@@ -17,33 +17,40 @@ import org.slf4j.LoggerFactory;
 
 import upsilon.Configuration;
 import upsilon.dataStructures.StructureNode;
+import upsilon.dataStructures.StructurePeer;
 
 @Path("nodes")
 public class NodeHandler {
-	private final static transient Logger LOG = LoggerFactory.getLogger(NodeHandler.class);
+    private final static transient Logger LOG = LoggerFactory.getLogger(NodeHandler.class);
 
-	@GET
-	public Response def() {
-		return Response.status(Status.OK).type(MediaType.TEXT_PLAIN).entity("NodeHandler").build();
-	}
+    @GET
+    public Response def() {
+        return Response.status(Status.OK).type(MediaType.TEXT_PLAIN).entity("NodeHandler").build();
+    }
 
-	@GET
-	@Path("/list")
-	@XmlElementWrapper
-	@XmlElement
-	public List<StructureNode> list() {
-		return Configuration.instance.remoteNodes.getImmutable();
-	}
+    @GET
+    @Path("/list")
+    public List<StructurePeer> list() {
+        return Configuration.instance.peers.getImmutable();
+    }
 
-	@POST
-	@Consumes(MediaType.APPLICATION_XML)
-	@Path("/update")
-	public Response update(StructureNode node) {
-		LOG.debug("Got node: " + node.getType() + " id: " + node.getIdentifier());
-		node.setDatabaseUpdateRequired(true);
+    @GET
+    @Path("/listRemote")
+    @XmlElementWrapper
+    @XmlElement
+    public List<StructureNode> listRemote() {
+        return Configuration.instance.remoteNodes.getImmutable();
+    }
 
-		Configuration.instance.remoteNodes.register(node);
+    @POST
+    @Consumes(MediaType.APPLICATION_XML)
+    @Path("/update")
+    public Response update(final StructureNode node) {
+        NodeHandler.LOG.debug("Got node: " + node.getType() + " id: " + node.getIdentifier());
+        node.setDatabaseUpdateRequired(true);
 
-		return Response.status(Status.OK).build();
-	}
+        Configuration.instance.remoteNodes.register(node);
+
+        return Response.status(Status.OK).build();
+    }
 }

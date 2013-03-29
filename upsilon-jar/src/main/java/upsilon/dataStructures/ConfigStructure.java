@@ -2,47 +2,67 @@ package upsilon.dataStructures;
 
 import javax.xml.bind.annotation.XmlTransient;
 
+import upsilon.configuration.XmlNodeHelper;
+
 public abstract class ConfigStructure {
-	private boolean databaseUpdateRequired = true;
-	private boolean peerUpdateRequired = true;
+    private boolean databaseUpdateRequired = true;
 
-	@Override
-	public final boolean equals(Object obj) {
-		if (obj instanceof ConfigStructure) {
-			return (((ConfigStructure) obj).getIdentifier().equals(this.getIdentifier()));
-		} else {
-			return false;
-		}
-	}
+    private boolean peerUpdateRequired = true;
 
-	public String getClassAndIdentifier() {
-		return "[" + this.getClass().getSimpleName() + "]:" + this.getIdentifier();
-	}
+    public StructureService construct() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	public abstract String getIdentifier();
+    @Override
+    public final boolean equals(final Object obj) {
+        if (obj == null) {
+            return false;
+        }
 
-	@Override
-	public int hashCode() {
-		return this.getClassAndIdentifier().hashCode();
-	}
+        if (obj instanceof ConfigStructure) {
+            if ((this.getIdentifier() == null) || (((ConfigStructure) obj).getIdentifier() == null)) {
+                return false;
+            } else {
+                return (((ConfigStructure) obj).getIdentifier().equals(this.getIdentifier()));
+            }
+        } else {
+            return false;
+        }
+    }
 
-	@XmlTransient
-	public boolean isDatabaseUpdateRequired() {
-		return this.databaseUpdateRequired;
-	}
+    public String getClassAndIdentifier() {
+        return "[" + this.getClass().getSimpleName() + "]:" + this.getIdentifier();
+    }
 
-	@XmlTransient
-	public boolean isPeerUpdateRequired() {
-		return this.peerUpdateRequired;
-	}
+    public abstract String getIdentifier();
 
-	public void setDatabaseUpdateRequired(boolean isChanged) {
-		this.databaseUpdateRequired = isChanged;
-		this.setPeerUpdateRequired(true);
-	}
+    @Override
+    public int hashCode() {
+        return this.getClassAndIdentifier().hashCode();
+    }
 
-	public void setPeerUpdateRequired(boolean peerUpdateRequired) {
-		this.peerUpdateRequired = peerUpdateRequired;
-	}
+    @XmlTransient
+    public boolean isDatabaseUpdateRequired() {
+        return this.databaseUpdateRequired;
+    }
+
+    @XmlTransient
+    public boolean isPeerUpdateRequired() {
+        return this.peerUpdateRequired;
+    }
+
+    public void setDatabaseUpdateRequired(final boolean isChanged) {
+        this.databaseUpdateRequired = isChanged;
+        this.setPeerUpdateRequired(true);
+    }
+
+    public void setPeerUpdateRequired(final boolean peerUpdateRequired) {
+        this.peerUpdateRequired = peerUpdateRequired;
+    }
+
+    public void update(final XmlNodeHelper xmlNodeHelper) {
+
+    }
 
 }

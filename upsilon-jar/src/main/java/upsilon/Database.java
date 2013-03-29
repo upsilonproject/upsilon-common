@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import upsilon.dataStructures.AbstractService;
-import upsilon.dataStructures.StructureGroup;
 import upsilon.dataStructures.StructureNode;
 import upsilon.dataStructures.StructureRemoteService;
 import upsilon.dataStructures.StructureService;
@@ -49,8 +48,6 @@ public class Database {
 		this.conn = DriverManager.getConnection("jdbc:mysql://" + this.hostname + ":" + this.port + "/" + this.dbname, this.username, this.password);
 
 		this.log.debug("Connected to DB server: " + this.conn.getMetaData().getURL());
-
-		this.init();
 	}
 
 	@Override
@@ -146,10 +143,6 @@ public class Database {
 		return true;
 	}
 
-	private void init() {
-		this.updateGroupsDeleteRedundant();
-	}
-
 	public void update() {
 		if (this.getValidConnection()) {
 			Main.instance.node.refresh();
@@ -182,78 +175,8 @@ public class Database {
 					it.remove();
 				}
 			}
-
-			// update groups
-			this.updateGroups();
 		} else {
 			this.log.error("Connection to DB is invalid, cannot update.");
-		}
-	}
-
-	private void updateGroups() {
-		String sql;
-
-		try {
-			this.conn.setAutoCommit(false);
-
-			for (StructureGroup g : upsilon.Configuration.instance.groups) {
-				sql = "INSERT INTO groups (name, description, parent) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE description = ?, parent = ?";
-
-				this.log.trace("Updating group: " + g.getIdentifier());
-
-				try {
-					PreparedStatement pstmt = this.conn.prepareStatement(sql);
-					pstmt.setString(1, g.getName());
-					pstmt.setString(2, g.getDescription());
-					pstmt.setString(3, g.getParent());
-					pstmt.setString(4, g.getDescription());
-					pstmt.setString(5, g.getParent());
-					pstmt.execute();
-					pstmt.close();
-				} catch (Exception e) {
-					this.log.error("Could not insert a new group", e);
-				}
-
-				for (AbstractService s : g.getServices()) {
-					if (!s.isRegistered()) {
-						continue;
-					}
-
-					this.log.trace("Updating group membership for " + s.getIdentifier() + " in group " + g.getIdentifier());
-
-					try {
-						sql = "INSERT INTO group_memberships (`group`, service) VALUES (?, ?) ON DUPLICATE KEY UPDATE service = service";
-
-						PreparedStatement pstmt = this.conn.prepareStatement(sql);
-						pstmt.setString(1, g.getName());
-						pstmt.setString(2, s.getIdentifier());
-						pstmt.execute();
-						pstmt.close();
-					} catch (Exception e) {
-						this.log.error("Could not insert a new group mebership", e);
-					}
-				}
-			}
-
-			this.conn.commit();
-			this.conn.setAutoCommit(true);
-		} catch (SQLException e) {
-			this.log.error("SQL exception", e);
-		}
-	}
-
-	private void updateGroupsDeleteRedundant() {
-		try {
-			String sql = "DELETE FROM group_memberships WHERE service NOT IN (SELECT identifier FROM services)";
-			PreparedStatement stmt = this.conn.prepareStatement(sql);
-			int rows = stmt.executeUpdate();
-			stmt.close();
-
-			if (rows > 0) {
-				this.log.warn("Deleted " + rows + " redundant group memberships");
-			}
-		} catch (SQLException e) {
-			this.log.warn("Could not delete redundant groups: " + e.getMessage());
 		}
 	}
 

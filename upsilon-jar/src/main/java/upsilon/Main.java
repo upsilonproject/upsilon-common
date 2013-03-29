@@ -2,6 +2,7 @@ package upsilon;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.management.ManagementFactory;
 import java.util.Properties;
 import java.util.Vector;
@@ -19,142 +20,167 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.joran.JoranConfigurator;
-
+import upsilon.configuration.XmlConfigurationLoader;
 import upsilon.dataStructures.CollectionOfStructures;
 import upsilon.dataStructures.StructureNode;
 import upsilon.dataStructures.StructurePeer;
 import upsilon.management.jmx.MainMBeanImpl;
 import upsilon.util.ResourceResolver;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
 
-public class Main {
-	public static final Main instance = new Main();
-	private static File configurationOverridePath;
-	private static String releaseVersion;
+public class Main implements UncaughtExceptionHandler {
+    public static final Main instance = new Main();
+    private static File configurationOverridePath;
+    private static String releaseVersion;
 
-	public static void main(String[] args) {
-		if (args.length > 0) {
-			Main.configurationOverridePath = new File(args[0]);
-		}
+    private static final XmlConfigurationLoader xmlLoader = new XmlConfigurationLoader();
 
-		Main.instance.startup();
-	}
+    private static transient final Logger LOG = LoggerFactory.getLogger(Main.class);
 
-	public final StructureNode node = new StructureNode();
+    public static File getConfigurationOverridePath() {
+        return Main.configurationOverridePath;
+    }
 
-	private static transient final Logger LOG = LoggerFactory.getLogger(Main.class);
-	private final Vector<Daemon> daemons = new Vector<Daemon>();
-	public DaemonScheduler queueMaintainer;
+    public static String getVersion() {
+        if (Main.releaseVersion == null) {
+            Main.releaseVersion = Main.class.getPackage().getImplementationVersion();
 
-	public Vector<Daemon> getDaemons() {
-		return this.daemons;
-	}
+            try {
+                final Properties props = new Properties();
+                props.load(Main.class.getResourceAsStream("/releaseVersion.properties"));
+                Main.releaseVersion = props.getProperty("releaseVersion");
+            } catch (IOException | NullPointerException e) {
+                Main.LOG.warn("Could not get release version from jar.", e);
+            }
 
-	public String guessNodeType() {
-		return guessNodeType(Database.instance, Configuration.instance.peers);
-	}
+            if ((Main.releaseVersion == null) || Main.releaseVersion.isEmpty()) {
+                Main.releaseVersion = "?";
+            }
+        }
 
-	public String guessNodeType(Database db, CollectionOfStructures<StructurePeer> peers) {
-		if ((db == null) && !peers.isEmpty()) {
-			return "service-node";
-		}
+        return Main.releaseVersion;
+    }
 
-		if ((db != null) && peers.isEmpty()) {
-			return "super-node";
-		}
+    public static void main(final String[] args) {
+        if (args.length > 0) {
+            Main.configurationOverridePath = new File(args[0]);
+            Main.xmlLoader.setFile(new File(Main.configurationOverridePath, "config.xml"));
+        } else {
+            Main.xmlLoader.setFile(new File("/etc/upsilon/config.xml"));
+        }
 
-		if ((db == null) && peers.isEmpty()) {
-			return "useless-testing-node";
-		}
+        Main.instance.startup();
+    }
 
-		return "non-standard-node";
-	}
+    private static void setupLogging() {
+        LogManager.getLogManager().getLogger("").setLevel(Level.FINEST);
+        SLF4JBridgeHandler.removeHandlersForRootLogger();
+        SLF4JBridgeHandler.install();
 
-	private void setupMbeans() {
-		MBeanServer srv = ManagementFactory.getPlatformMBeanServer();
+        final File loggingConfiguration = new File(ResourceResolver.getInstance().getConfigDir(), "logging.xml");
 
-		try {
-			srv.registerMBean(new MainMBeanImpl(), new ObjectName("upsilon.mbeansImpl:type=MainMBeanImpl"));
-		} catch (InstanceAlreadyExistsException | MBeanRegistrationException | NotCompliantMBeanException | MalformedObjectNameException e) {
-			LOG.error("Could not register MBean", e);
-		}
-	}
+        try {
+            if (loggingConfiguration.exists()) {
+                Main.LOG.info("Logging override configuration exists, parsing: " + loggingConfiguration.getAbsolutePath());
 
-	public void shutdown() {
-		for (Daemon t : this.daemons) {
-			t.stop();
-		}
+                final JoranConfigurator loggerConfigurator = new JoranConfigurator();
+                loggerConfigurator.setContext((LoggerContext) LoggerFactory.getILoggerFactory());
+                loggerConfigurator.doConfigure(loggingConfiguration);
+            }
+        } catch (final Exception e) {
+            Main.LOG.warn("Could not set up logging config.", e);
+        }
+    }
 
-		LOG.warn("All daemons have been requested to stop. Main application should now shutdown.");
-	}
+    public final StructureNode node = new StructureNode();
 
-	private void startDaemon(Daemon r) {
-		Thread t = new Thread(r, r.getClass().getSimpleName());
-		this.daemons.add(r);
+    private final Vector<Daemon> daemons = new Vector<Daemon>();
 
-		t.start();
-	}
+    public DaemonScheduler queueMaintainer;
 
-	public static String getVersion() {
-		if (releaseVersion == null) {
-			releaseVersion = Main.class.getPackage().getImplementationVersion();
+    public Vector<Daemon> getDaemons() {
+        return this.daemons;
+    }
 
-			try {
-				Properties props = new Properties();
-				props.load(Main.class.getResourceAsStream("/releaseVersion.properties"));
-				releaseVersion = props.getProperty("releaseVersion");
-			} catch (IOException | NullPointerException e) {
-				LOG.warn("Could not get release version from jar.", e);
-			}
+    public XmlConfigurationLoader getXmlConfigurationLoader() {
+        return Main.xmlLoader;
+    }
 
-			if (releaseVersion == null || releaseVersion.isEmpty()) {
-				releaseVersion = "?";
-			}
-		}
+    public String guessNodeType() {
+        return this.guessNodeType(Database.instance, Configuration.instance.peers);
+    }
 
-		return releaseVersion;
-	}
+    public String guessNodeType(final Database db, final CollectionOfStructures<StructurePeer> peers) {
+        if ((db == null) && !peers.isEmpty()) {
+            return "service-node";
+        }
 
-	private void startup() {
-		setupLogging();
+        if ((db != null) && peers.isEmpty()) {
+            return "super-node";
+        }
 
-		LOG.info("Upsilon " + getVersion());
-		LOG.info("----------");
-		LOG.debug("CP: " + System.getProperty("java.class.path"));
-		LOG.trace("OS: " + System.getProperty("os.name"));
+        if ((db == null) && peers.isEmpty()) {
+            return "useless-testing-node";
+        }
 
-		Configuration.instance.reparse();
+        return "non-standard-node";
+    }
 
-		this.setupMbeans();
- 
-		this.startDaemon(new DaemonRest());
-		this.startDaemon(new DaemonScheduler()); 
+    private void setupMbeans() {
+        final MBeanServer srv = ManagementFactory.getPlatformMBeanServer();
 
-		LOG.debug("Best guess at node type: " + this.guessNodeType());
-	}
+        try {
+            srv.registerMBean(new MainMBeanImpl(), new ObjectName("upsilon.mbeansImpl:type=MainMBeanImpl"));
+        } catch (InstanceAlreadyExistsException | MBeanRegistrationException | NotCompliantMBeanException | MalformedObjectNameException e) {
+            Main.LOG.error("Could not register MBean", e);
+        }
+    }
 
-	private static void setupLogging() {
-		LogManager.getLogManager().getLogger("").setLevel(Level.FINEST);
-		SLF4JBridgeHandler.removeHandlersForRootLogger();
-		SLF4JBridgeHandler.install();
+    public void shutdown() {
+        for (final Daemon t : this.daemons) {
+            t.stop();
+        }
 
-		File loggingConfiguration = new File(ResourceResolver.getInstance().getConfigDir(), "logging.xml");
+        Main.LOG.warn("All daemons have been requested to stop. Main application should now shutdown.");
+    }
 
-		try {
-			if (loggingConfiguration.exists()) {
-				LOG.info("Logging override configuration exists, parsing: " + loggingConfiguration.getAbsolutePath());
+    private void startDaemon(final Daemon r) {
+        final Thread t = new Thread(r, r.getClass().getSimpleName());
+        this.daemons.add(r);
 
-				JoranConfigurator loggerConfigurator = new JoranConfigurator();
-				loggerConfigurator.setContext((LoggerContext) LoggerFactory.getILoggerFactory());
-				loggerConfigurator.doConfigure(loggingConfiguration);
-			}
-		} catch (Exception e) {
-			LOG.warn("Could not set up logging config.", e);
-		}
-	}
+        t.start();
+        t.setUncaughtExceptionHandler(this);
+        Thread.setDefaultUncaughtExceptionHandler(this);
+    }
 
-	public static File getConfigurationOverridePath() {
-		return configurationOverridePath;
-	}
+    private void startup() {
+        Main.setupLogging();
+
+        Main.LOG.info("Upsilon " + Main.getVersion());
+        Main.LOG.info("----------");
+        Main.LOG.debug("CP: " + System.getProperty("java.class.path"));
+        Main.LOG.trace("OS: " + System.getProperty("os.name"));
+
+        Main.xmlLoader.load();
+
+        if (Main.xmlLoader.getValidator().isParseClean()) {
+            this.setupMbeans();
+
+            this.startDaemon(new DaemonRest());
+            this.startDaemon(new DaemonScheduler());
+
+            Main.LOG.debug("Best guess at node type: " + this.guessNodeType());
+        } else {
+            Main.xmlLoader.stopFileWatchers();
+
+            Main.LOG.error("Could not parse the initial configuration file. Upsilon cannot ever have a good configuration if it does not start off with a good configuration. Exiting.");
+        }
+    }
+
+    @Override
+    public void uncaughtException(final Thread t, final Throwable e) {
+        Main.LOG.error("Exception on a critical thread [" + t.getName() + "], will now shutdown.");
+        this.shutdown();
+    }
 }
