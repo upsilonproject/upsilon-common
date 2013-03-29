@@ -2,6 +2,7 @@ package upsilon;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.management.ManagementFactory;
 import java.util.Properties;
 import java.util.Vector;
@@ -28,7 +29,7 @@ import upsilon.util.ResourceResolver;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 
-public class Main {
+public class Main implements UncaughtExceptionHandler {
     public static final Main instance = new Main();
     private static File configurationOverridePath;
     private static String releaseVersion;
@@ -149,6 +150,8 @@ public class Main {
         this.daemons.add(r);
 
         t.start();
+        t.setUncaughtExceptionHandler(this);
+        Thread.setDefaultUncaughtExceptionHandler(this);
     }
 
     private void startup() {
@@ -173,5 +176,11 @@ public class Main {
 
             Main.LOG.error("Could not parse the initial configuration file. Upsilon cannot ever have a good configuration if it does not start off with a good configuration. Exiting.");
         }
+    }
+
+    @Override
+    public void uncaughtException(final Thread t, final Throwable e) {
+        Main.LOG.error("Exception on a critical thread [" + t.getName() + "], will now shutdown.");
+        this.shutdown();
     }
 }
