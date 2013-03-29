@@ -37,149 +37,152 @@ import com.sun.jersey.api.client.filter.ClientFilter;
 import com.sun.jersey.client.urlconnection.HTTPSProperties;
 
 public class RestClient {
-	private final URL url;
-	private final Client client;
+    private final URL url;
+    private final Client client;
 
-	private static final Logger LOG = LoggerFactory.getLogger(RestClient.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RestClient.class);
 
-	public RestClient(URL uri) throws IllegalArgumentException, GeneralSecurityException {
-		this.url = uri;
+    public RestClient(final URL uri) throws IllegalArgumentException, GeneralSecurityException {
+        this.url = uri;
 
-		LOG.info("Creating new REST client: " + uri);
+        RestClient.LOG.info("Creating new REST client: " + uri);
 
-		if (uri.getPort() == 0) {
-			throw new IllegalArgumentException("The port for the remote host URL in a rest client is not valid: " + uri.getPort());
-		}
+        if (uri.getPort() == 0) {
+            throw new IllegalArgumentException("The port for the remote host URL in a rest client is not valid: " + uri.getPort());
+        }
 
-		if ((uri.getHost() == null) || uri.getHost().isEmpty()) {
-			throw new IllegalArgumentException("The host part for the remote host URL in a rest client is not valid: " + uri.getHost());
-		}
+        if ((uri.getHost() == null) || uri.getHost().isEmpty()) {
+            throw new IllegalArgumentException("The host part for the remote host URL in a rest client is not valid: " + uri.getHost());
+        }
 
-		ClientConfig config = new DefaultClientConfig();
+        final ClientConfig config = new DefaultClientConfig();
 
-		if (Configuration.instance.isCryptoEnabled()) {
-			SSLContext ctx = SSLContext.getInstance("SSL");
-			ctx.init(null, this.getInsecureTrustManager(), null);
-			config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, new HTTPSProperties(this.getInsecureHostnameVerifier(), ctx));
-		}
+        if (Configuration.instance.isCryptoEnabled) {
+            final SSLContext ctx = SSLContext.getInstance("SSL");
+            ctx.init(null, this.getInsecureTrustManager(), null);
+            config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, new HTTPSProperties(this.getInsecureHostnameVerifier(), ctx));
+        }
 
-		this.client = Client.create(config);
-		this.client.addFilter(new ClientFilter() {
-			@Override
-			public ClientResponse handle(ClientRequest cr) throws ClientHandlerException {
-				cr.getHeaders().add(HttpHeaders.USER_AGENT, "Upsilon " + Main.getVersion());
+        this.client = Client.create(config);
+        this.client.addFilter(new ClientFilter() {
+            @Override
+            public ClientResponse handle(final ClientRequest cr) throws ClientHandlerException {
+                cr.getHeaders().add(HttpHeaders.USER_AGENT, "Upsilon " + Main.getVersion());
 
-				return this.getNext().handle(cr);
-			}
-		});
-	}
+                return this.getNext().handle(cr);
+            }
+        });
+    }
 
-	private HostnameVerifier getInsecureHostnameVerifier() {
-		return new HostnameVerifier() {
-			@Override
-			public boolean verify(String arg0, SSLSession arg1) {
-				return true;
-			}
-		};
-	}
+    private HostnameVerifier getInsecureHostnameVerifier() {
+        return new HostnameVerifier() {
+            @Override
+            public boolean verify(final String arg0, final SSLSession arg1) {
+                return true;
+            }
+        };
+    }
 
-	private TrustManager[] getInsecureTrustManager() {
-		return new TrustManager[] { new X509TrustManager() {
+    private TrustManager[] getInsecureTrustManager() {
+        return new TrustManager[] { new X509TrustManager() {
 
-			@Override
-			public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+            @Override
+            public void checkClientTrusted(final X509Certificate[] arg0, final String arg1) throws CertificateException {
 
-				LOG.warn("check client trusted");
-			}
+                RestClient.LOG.warn("check client trusted");
+            }
 
-			@Override
-			public void checkServerTrusted(X509Certificate[] certs, String arg1) throws CertificateException {
-				MessageDigest md;
+            @Override
+            public void checkServerTrusted(final X509Certificate[] certs, final String arg1) throws CertificateException {
+                MessageDigest md;
 
-				try {
-					md = MessageDigest.getInstance("SHA1");
-				} catch (NoSuchAlgorithmException e) {
-					throw new CertificateException("No such alg: SHA1");
-				}
+                try {
+                    md = MessageDigest.getInstance("SHA1");
+                } catch (final NoSuchAlgorithmException e) {
+                    throw new CertificateException("No such alg: SHA1");
+                }
 
-				for (X509Certificate crt : certs) {
-					byte[] digest = md.digest(crt.getEncoded());
-					String fingerprint = new BigInteger(digest).toString(16);
+                for (final X509Certificate crt : certs) {
+                    final byte[] digest = md.digest(crt.getEncoded());
+                    final String fingerprint = new BigInteger(digest).toString(16);
 
-					if (!Configuration.instance.trustedCertificates.contains(fingerprint)) {
-						LOG.warn("Server certificate fingerprint is not trusted: " + fingerprint);
-						throw new CertificateException("Server certificiate fingerprint is not trusted: " + fingerprint);
-					}
-				}
-			}
+                    if (!Configuration.instance.trustedCertificates.contains(fingerprint)) {
+                        RestClient.LOG.warn("Server certificate fingerprint is not trusted: " + fingerprint);
+                        throw new CertificateException("Server certificiate fingerprint is not trusted: " + fingerprint);
+                    }
+                }
+            }
 
-			@Override
-			public X509Certificate[] getAcceptedIssuers() {
-				return new X509Certificate[] {};
-			}
-		} };
-	}
+            @Override
+            public X509Certificate[] getAcceptedIssuers() {
+                return new X509Certificate[] {};
+            }
+        } };
+    }
 
-	protected WebResource getNewResouce() {
-		return this.client.resource(this.url.toString());
-	}
+    protected WebResource getNewResouce() {
+        return this.client.resource(this.url.toString());
+    }
 
-	public StructureService getService(String identifier) {
-		return this.getNewResouce().path("/services/id/" + identifier).get(StructureService.class);
-	}
+    public StructureService getService(final String identifier) {
+        return this.getNewResouce().path("/services/id/" + identifier).get(StructureService.class);
+    }
 
-	public void postNode(StructureNode node) {
-		if (!node.isPeerUpdateRequired()) {
-			return;
-		}
+    public URL getUrl() {
+        return this.url;
+    }
 
-		LOG.debug("Peer update required, posting node: " + node);
+    public void postNode(final StructureNode node) {
+        if (!node.isPeerUpdateRequired()) {
+            return;
+        }
 
-		try {
-			this.getNewResouce().path("/nodes/update/").entity(node, MediaType.APPLICATION_XML).post();
-		} catch (UniformInterfaceException e) {
-			RestClient.LOG.warn("Failed to push node to path: " + e.getResponse() + ", client response: " + e.getResponse().getEntity(String.class) + ", exception: " + e, e);
-		} catch (Exception e) {
-			RestClient.LOG.warn("Failed to push node to path: " + e.getClass().getSimpleName(), e);
-		}
-	}
+        RestClient.LOG.debug("Peer update required, posting node: " + node);
 
-	public void postService(StructureService s) {
-		if (!s.isRegistered()) {
-			return;
-		}
+        try {
+            this.getNewResouce().path("/nodes/update/").entity(node, MediaType.APPLICATION_XML).post();
+        } catch (final UniformInterfaceException e) {
+            RestClient.LOG.warn("Failed to push node to path: " + e.getResponse() + ", client response: " + e.getResponse().getEntity(String.class) + ", exception: " + e, e);
+        } catch (final Exception e) {
+            RestClient.LOG.warn("Failed to push node to path: " + e.getClass().getSimpleName(), e);
+        }
+    }
 
-		if (!s.isPeerUpdateRequired()) {
-			return;
-		}
+    public void postService(final StructureService s) {
+        if (!s.isRegistered()) {
+            return;
+        }
 
-		StructureRemoteService srs = new StructureRemoteService();
-		srs.setNodeIdentifier(Main.instance.node.getIdentifier());
-		srs.setKarmaString(s.getKarmaString());
-		srs.setOutput(s.getOutput());
-		srs.setIdentifier(s.getIdentifier());
-		srs.setDescription(s.getDescription());
-		srs.setLastUpdated(s.getLastUpdated());
-		srs.setEstimatedNextCheck(s.getEstimatedNextCheck());
-		srs.setExecutable(s.getExecutable());
-		srs.setHostname(s.getHostname());
-		srs.setFinalCommandLine(s.getFinalCommandLine(s));
-		srs.setResultConsequtiveCount(s.getFlexiTimer().getGoodCount());
+        if (!s.isPeerUpdateRequired()) {
+            return;
+        }
 
-		for (String g : s.getMemberships()) {
-			srs.groups.add(g);
-		}
+        final StructureRemoteService srs = new StructureRemoteService();
+        srs.setNodeIdentifier(Main.instance.node.getIdentifier());
+        srs.setKarmaString(s.getKarmaString());
+        srs.setOutput(s.getOutput());
+        srs.setIdentifier(s.getIdentifier());
+        srs.setDescription(s.getDescription());
+        srs.setLastUpdated(s.getLastUpdated());
+        srs.setEstimatedNextCheck(s.getEstimatedNextCheck());
+        srs.setExecutable(s.getExecutable());
+        srs.setFinalCommandLine(s.getFinalCommandLine(s));
+        srs.setResultConsequtiveCount(s.getFlexiTimer().getGoodCount());
 
-		RestClient.LOG.debug("Pushing service: " + s.getIdentifier() + " to: " + this.url);
+        for (final String g : s.getMemberships()) {
+            srs.groups.add(g);
+        }
 
-		try {
-			this.getNewResouce().path("/services/updateRemoteService/").entity(srs, MediaType.APPLICATION_XML).post();
-		} catch (Exception e) {
-			// don't include the exception in this log message, it is very long.
-			RestClient.LOG.warn("Failed to post service: " + e.getMessage() + ". Exception available in TRACE.");
-			RestClient.LOG.trace("Failed to post service (cont): ", e);
-		}
+        RestClient.LOG.debug("Pushing service: " + s.getIdentifier() + " to: " + this.url);
 
-		s.setPeerUpdateRequired(false);
-	}
+        try {
+            this.getNewResouce().path("/services/updateRemoteService/").entity(srs, MediaType.APPLICATION_XML).post();
+        } catch (final Exception e) {
+            // don't include the exception in this log message, it is very long.
+            RestClient.LOG.warn("Failed to post service: " + e.getMessage() + ". Exception available in TRACE.");
+            RestClient.LOG.trace("Failed to post service (cont): ", e);
+        }
+
+        s.setPeerUpdateRequired(false);
+    }
 }

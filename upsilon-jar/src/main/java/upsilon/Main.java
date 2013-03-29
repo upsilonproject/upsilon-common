@@ -33,6 +33,10 @@ public class Main {
     private static File configurationOverridePath;
     private static String releaseVersion;
 
+    private static final XmlConfigurationLoader xmlLoader = new XmlConfigurationLoader();
+
+    private static transient final Logger LOG = LoggerFactory.getLogger(Main.class);
+
     public static File getConfigurationOverridePath() {
         return Main.configurationOverridePath;
     }
@@ -58,20 +62,15 @@ public class Main {
     }
 
     public static void main(final String[] args) {
-        final XmlConfigurationLoader xmlLoader = new XmlConfigurationLoader();
-
         if (args.length > 0) {
             Main.configurationOverridePath = new File(args[0]);
-            xmlLoader.load(Main.configurationOverridePath);
+            Main.xmlLoader.setFile(new File(Main.configurationOverridePath, "config.xml"));
         } else {
-            xmlLoader.load(new File("/etc/upsilon/config.xml"));
+            Main.xmlLoader.setFile(new File("/etc/upsilon/config.xml"));
         }
 
         Main.instance.startup();
     }
-
-    public final StructureNode node = new StructureNode();
-    private static transient final Logger LOG = LoggerFactory.getLogger(Main.class);
 
     private static void setupLogging() {
         LogManager.getLogManager().getLogger("").setLevel(Level.FINEST);
@@ -93,12 +92,18 @@ public class Main {
         }
     }
 
+    public final StructureNode node = new StructureNode();
+
     private final Vector<Daemon> daemons = new Vector<Daemon>();
 
     public DaemonScheduler queueMaintainer;
 
     public Vector<Daemon> getDaemons() {
         return this.daemons;
+    }
+
+    public XmlConfigurationLoader getXmlConfigurationLoader() {
+        return Main.xmlLoader;
     }
 
     public String guessNodeType() {
@@ -154,13 +159,19 @@ public class Main {
         Main.LOG.debug("CP: " + System.getProperty("java.class.path"));
         Main.LOG.trace("OS: " + System.getProperty("os.name"));
 
-        Configuration.instance.reparse();
+        Main.xmlLoader.load();
 
-        this.setupMbeans();
+        if (Main.xmlLoader.getValidator().isParseClean()) {
+            this.setupMbeans();
 
-        this.startDaemon(new DaemonRest());
-        this.startDaemon(new DaemonScheduler());
+            this.startDaemon(new DaemonRest());
+            this.startDaemon(new DaemonScheduler());
 
-        Main.LOG.debug("Best guess at node type: " + this.guessNodeType());
+            Main.LOG.debug("Best guess at node type: " + this.guessNodeType());
+        } else {
+            Main.xmlLoader.stopFileWatchers();
+
+            Main.LOG.error("Could not parse the initial configuration file. Upsilon cannot ever have a good configuration if it does not start off with a good configuration. Exiting.");
+        }
     }
 }

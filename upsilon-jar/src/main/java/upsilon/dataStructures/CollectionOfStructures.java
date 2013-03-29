@@ -11,9 +11,9 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Node;
 
 import upsilon.configuration.CollectionAlterationTransaction;
+import upsilon.configuration.XmlNodeHelper;
 
 public class CollectionOfStructures<T extends ConfigStructure> implements Iterable<T> {
     private final Vector<T> collection = new Vector<T>();
@@ -25,7 +25,7 @@ public class CollectionOfStructures<T extends ConfigStructure> implements Iterab
         this.title = title;
     }
 
-    private T constructElement(final Node newElement) {
+    private T constructElement(final XmlNodeHelper newElement) throws Exception {
         ConfigStructure s;
 
         switch (newElement.getNodeName()) {
@@ -136,15 +136,20 @@ public class CollectionOfStructures<T extends ConfigStructure> implements Iterab
                 this.collection.remove(this.getById(structureId));
             }
 
-            for (final Entry<String, Node> newStructure : cat.getNew().entrySet()) {
+            for (final Entry<String, XmlNodeHelper> newStructure : cat.getNew().entrySet()) {
                 CollectionOfStructures.LOG.warn(cat + " Adding: " + newStructure.getKey());
 
-                final T s = this.constructElement(newStructure.getValue());
+                try {
+                    final T s = this.constructElement(newStructure.getValue());
 
-                this.collection.add(s);
+                    this.collection.add(s);
+                } catch (final Exception e) {
+                    CollectionOfStructures.LOG.error("Could not construct element" + e.getMessage(), e);
+                    continue;
+                }
             }
 
-            for (final Entry<String, Node> updStructure : cat.getUpdated().entrySet()) {
+            for (final Entry<String, XmlNodeHelper> updStructure : cat.getUpdated().entrySet()) {
                 CollectionOfStructures.LOG.warn(cat + " Updating:" + updStructure.getKey());
 
                 final T existingStructure = this.getById(updStructure.getKey());

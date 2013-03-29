@@ -11,15 +11,15 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.joda.time.Duration;
 import org.joda.time.Instant;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import upsilon.Configuration;
 import upsilon.Main;
+import upsilon.configuration.XmlNodeHelper;
 import upsilon.management.rest.server.util.DurationAdaptor;
 import upsilon.util.FlexiTimer;
 import upsilon.util.GlobalConstants;
 import upsilon.util.MutableFlexiTimer;
+import upsilon.util.Util;
 
 @XmlRootElement
 public class StructureService extends ConfigStructure implements AbstractService {
@@ -29,7 +29,6 @@ public class StructureService extends ConfigStructure implements AbstractService
     @XmlElement
     private ResultKarma karma;
     private final MutableFlexiTimer ft = new MutableFlexiTimer(Duration.standardSeconds(10), Duration.standardSeconds(60), Duration.standardSeconds(5), "service timer");
-    private String hostname;
     private boolean register = true;
     private String output = "(not yet executed)";
     private Vector<String> arguments = new Vector<String>();
@@ -65,12 +64,8 @@ public class StructureService extends ConfigStructure implements AbstractService
         return this.arguments;
     }
 
-    @XmlElement(required = true)
+    @XmlElement(required = false)
     public StructureCommand getCommand() throws IllegalArgumentException {
-        if (this.command == null) {
-            throw new IllegalArgumentException("service does not have an associated command, for service: " + this.identifier);
-        }
-
         return this.command;
     }
 
@@ -95,17 +90,12 @@ public class StructureService extends ConfigStructure implements AbstractService
 
     @Override
     public String getFinalCommandLine(final AbstractService s) {
-        return this.getCommand().getFinalCommandLine(s);
+        return Util.implode(this.getCommand().getFinalCommandLinePieces(this));
     }
 
     @XmlElement
     public FlexiTimer getFlexiTimer() {
         return this.ft;
-    }
-
-    @Override
-    public String getHostname() {
-        return this.hostname;
     }
 
     @Override
@@ -220,17 +210,13 @@ public class StructureService extends ConfigStructure implements AbstractService
         this.dependsOn = dependsOn;
     }
 
-    public void setHostname(final String hostname) {
-        this.hostname = hostname.trim();
-    }
-
     public void setIdentifier(final String description) {
         this.ft.setName("ft for " + description);
         this.identifier = description.trim();
     }
 
-    public void setRegistered(final String registerd) {
-        this.register = Boolean.parseBoolean(registerd);
+    public void setRegistered(final boolean registered) {
+        this.register = registered;
     }
 
     public void setTimeout(final Duration timeout) {
@@ -250,23 +236,26 @@ public class StructureService extends ConfigStructure implements AbstractService
     }
 
     @Override
-    public void update(final Node el) {
-        this.identifier = el.getAttributes().getNamedItem("id").getNodeValue();
+    public void update(final XmlNodeHelper el) {
+        this.identifier = el.getAttributeValueUnchecked("id");
+        this.setTimeout(el.getAttributeValue("timeout", GlobalConstants.DEF_TIMEOUT));
+        this.ft.setMin(el.getAttributeValue("minDelay", GlobalConstants.MIN_SERVICE_SLEEP));
+        this.ft.setMax(el.getAttributeValue("maxDelay", GlobalConstants.MAX_SERVICE_SLEEP));
 
-        final String commandIdentifier = el.getAttributes().getNamedItem("commandRef").getNodeValue();
-        final StructureCommand cmd = Configuration.instance.commands.getById(commandIdentifier);
+        if (el.hasAttribute("commandRef")) {
+            final String commandIdentifier = el.getAttributeValueUnchecked("commandRef");
 
-        final Vector<String> arguments = new Vector<>();
+            final StructureCommand cmd = Configuration.instance.commands.getById(commandIdentifier);
 
-        final NodeList nl = el.getChildNodes();
-        for (int i = 0; i < nl.getLength(); i++) {
-            final Node child = nl.item(i);
+            final Vector<String> arguments = new Vector<>();
 
-            if (child.getNodeName().equals("attribute")) {
+            for (final XmlNodeHelper child : el.getChildElements("argument")) {
                 arguments.add(child.getNodeValue());
             }
-        }
 
-        this.setCommand(cmd, arguments);
+            this.setCommand(cmd, arguments);
+        } else {
+            this.setRegistered(false);
+        }
     }
 }

@@ -63,7 +63,7 @@ public class XmlConfigurationValidator implements ErrorHandler {
     }
 
     public boolean isParseClean() {
-        return this.parseErrors.isEmpty();
+        return this.isParsed && this.parseErrors.isEmpty();
     }
 
     public boolean isParsed() {

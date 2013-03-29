@@ -13,105 +13,107 @@ import upsilon.util.GlobalConstants;
 import upsilon.util.Util;
 
 public class DaemonScheduler extends Daemon {
-	private final Vector<StructureService> queue = new Vector<StructureService>();
+    private final Vector<StructureService> queue = new Vector<StructureService>();
 
-	private boolean run = true;
+    private boolean run = true;
 
-	private transient static final Logger LOG = LoggerFactory.getLogger(DaemonScheduler.class);
+    private transient static final Logger LOG = LoggerFactory.getLogger(DaemonScheduler.class);
 
-	public DaemonScheduler() {
-		Main.instance.queueMaintainer = this;
-	}
-	
-	private void executeQueuedServices() {
-		StructureService service;
+    public DaemonScheduler() {
+        Main.instance.queueMaintainer = this;
+    }
 
-		while ((service = this.poll()) != null) {
-			this.setStatus("executing service check: " + service.getIdentifier());
-			RobustProcessExecutor rpe = new RobustProcessExecutor(service);
-			rpe.execAsync();
-		}
-	}
+    private void checkUpdateDelay() {
+        if (Configuration.instance.services.isEmpty()) {
+            return;
+        }
 
-	private void checkUpdateDelay() {
-		if (Configuration.instance.services.isEmpty()) {
-			return;
-		}
+        final Duration suggestedQueueMaintainerDelay = Duration.standardSeconds(Configuration.instance.services.size() / 10);
 
-		final Duration suggestedQueueMaintainerDelay = Duration.standardSeconds(Configuration.instance.services.size() / 10);
+        if (!suggestedQueueMaintainerDelay.isShorterThan(GlobalConstants.DEF_TIMER_QUEUE_MAINTAINER_DELAY) && Configuration.instance.queueMaintainerDelay.isLongerThan(suggestedQueueMaintainerDelay)) {
+            DaemonScheduler.LOG.warn("The queue maintainer delay is quite long for the amount of services that are configured. Suggested value is:" + suggestedQueueMaintainerDelay + ", the actual value is: " + Configuration.instance.queueMaintainerDelay);
+        }
+    }
 
-		if (!suggestedQueueMaintainerDelay.isShorterThan(GlobalConstants.DEF_TIMER_QUEUE_MAINTAINER_DELAY) && Configuration.instance.queueMaintainerDelay.isLongerThan(suggestedQueueMaintainerDelay)) {
-			LOG.warn("The queue maintainer delay is quite long for the amount of services that are configured. Suggested value is:" + suggestedQueueMaintainerDelay + ", the actual value is: " + Configuration.instance.queueMaintainerDelay);
-		}
-	}
+    private void executeQueuedServices() {
+        StructureService service;
 
-	private StructureService poll() {
-		if (this.queue.isEmpty()) {
-			return null;
-		} else {
-			StructureService s = this.queue.get(this.queue.size() - 1);
-			this.queue.remove(this.queue.size() - 1);
+        while ((service = this.poll()) != null) {
+            this.setStatus("executing service check: " + service.getIdentifier());
+            final RobustProcessExecutor rpe = new RobustProcessExecutor(service);
+            rpe.execAsync();
+        }
+    }
 
-			Collections.shuffle(this.queue); // Stops bad services holding up
-												// other services.
+    private StructureService poll() {
+        if (this.queue.isEmpty()) {
+            return null;
+        } else {
+            final StructureService s = this.queue.get(this.queue.size() - 1);
+            this.queue.remove(this.queue.size() - 1);
 
-			return s;
-		}
-	}
+            Collections.shuffle(this.queue); // Stops bad services holding up
+                                             // other services.
 
-	private void queueServices() {
-		for (StructureService service : Configuration.instance.services) {
-			this.setStatus("Service being checked for queue: " + service.getIdentifier());
-			Util.lazySleep(Configuration.instance.queueMaintainerDelay);
+            return s;
+        }
+    }
 
-			if (service.isReadyToBeChecked()) {
-				if (this.queue.contains(service)) {
-					DaemonScheduler.LOG.warn("service check required but it's already in the queue. Executor queue too long?: " + this.queue.size() + " items.");
-				} else {
-					this.queue.add(service);
-				}
-			}
-		}
-	} 
+    private void queueServices() {
+        synchronized (Configuration.instance.services) {
+            for (final StructureService service : Configuration.instance.services) {
+                this.setStatus("Service being checked for queue: " + service.getIdentifier());
+                Util.lazySleep(Configuration.instance.queueMaintainerDelay);
 
-	public void queueUrgent(StructureService ss) throws IllegalStateException {
-		if (!Configuration.instance.services.contains(ss)) {
-			throw new IllegalStateException("Tried to urgently queue a service that is not registered globally. Ignoring.");
-		}
+                if (service.isReadyToBeChecked()) {
+                    if (this.queue.contains(service)) {
+                        DaemonScheduler.LOG.warn("service check required but it's already in the queue. Executor queue too long?: " + this.queue.size() + " items.");
+                    } else {
+                        this.queue.add(service);
+                    }
+                }
+            }
+        }
+    }
 
-		this.queue.add(0, ss);
-	}
+    public void queueUrgent(final StructureService ss) throws IllegalStateException {
+        if (!Configuration.instance.services.contains(ss)) {
+            throw new IllegalStateException("Tried to urgently queue a service that is not registered globally. Ignoring.");
+        }
 
-	@Override
-	public void run() {
-		this.checkUpdateDelay();
+        this.queue.add(0, ss);
+    }
 
-		// Now go to normal queueing
-		while (this.run) {
-			this.setStatus("Sleeping before next execution: " + Configuration.instance.queueMaintainerDelay);
-			Util.lazySleep(Configuration.instance.queueMaintainerDelay);
+    @Override
+    public void run() {
+        this.checkUpdateDelay();
 
-			this.setStatus("Queueing services");
-			this.queueServices();
-			  
-			this.setStatus("executing queued services");
-			this.executeQueuedServices(); 
+        // Now go to normal queueing
+        while (this.run) {
+            this.setStatus("Sleeping before next execution: " + Configuration.instance.queueMaintainerDelay);
+            Util.lazySleep(Configuration.instance.queueMaintainerDelay);
 
-			this.setStatus("updating db and peers");
-			Database.updateAll();
-			StructurePeer.updateAll();
-		}
+            this.setStatus("Queueing services");
+            this.queueServices();
 
-		DaemonScheduler.LOG.warn("Queue maintenance thread shutdown.");
-	}
+            this.setStatus("executing queued services");
+            this.executeQueuedServices();
 
-	@Override
-	public void stop() {
-		this.run = false;
-	}
+            this.setStatus("updating db and peers");
+            Database.updateAll();
+            StructurePeer.updateAll();
+        }
 
-	@Override
-	public String toString() {
-		return "ServiceCheckQueue: " + this.queue.size() + " services";
-	}
+        DaemonScheduler.LOG.warn("Queue maintenance thread shutdown.");
+    }
+
+    @Override
+    public void stop() {
+        this.run = false;
+    }
+
+    @Override
+    public String toString() {
+        return "ServiceCheckQueue: " + this.queue.size() + " services";
+    }
 }

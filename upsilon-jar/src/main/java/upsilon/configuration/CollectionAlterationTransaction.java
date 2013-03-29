@@ -9,7 +9,6 @@ import java.util.Vector;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Node;
 
 import upsilon.dataStructures.CollectionOfStructures;
 import upsilon.dataStructures.ConfigStructure;
@@ -20,9 +19,9 @@ public class CollectionAlterationTransaction<T extends ConfigStructure> {
     private final int id;
     private final static transient Logger LOG = LoggerFactory.getLogger(CollectionAlterationTransaction.class);
     private final CollectionOfStructures<T> list;
-    private final HashMap<String, Node> newList = new HashMap<>();
+    private final HashMap<String, XmlNodeHelper> newList = new HashMap<>();
     private Vector<String> oldList = new Vector<String>();
-    private final HashMap<String, Node> updList = new HashMap<>();
+    private final HashMap<String, XmlNodeHelper> updList = new HashMap<>();
 
     public CollectionAlterationTransaction(final CollectionOfStructures<T> list) {
         this.list = list;
@@ -30,8 +29,8 @@ public class CollectionAlterationTransaction<T extends ConfigStructure> {
         this.id = ++CollectionAlterationTransaction.catIndex;
     }
 
-    public void considerFromConfig(final Node el) {
-        final String idFromConfig = el.getAttributes().getNamedItem("id").getNodeValue();
+    public void considerFromConfig(final XmlNodeHelper el) {
+        final String idFromConfig = el.getAttributeValueUnchecked("id");
 
         if (this.list.containsId(idFromConfig)) {
             this.updList.put(idFromConfig, el);
@@ -41,7 +40,7 @@ public class CollectionAlterationTransaction<T extends ConfigStructure> {
         }
     }
 
-    public Map<String, Node> getNew() {
+    public Map<String, XmlNodeHelper> getNew() {
         return this.newList;
     }
 
@@ -57,7 +56,7 @@ public class CollectionAlterationTransaction<T extends ConfigStructure> {
         return this.oldList;
     }
 
-    public Map<String, Node> getUpdated() {
+    public Map<String, XmlNodeHelper> getUpdated() {
         return this.updList;
     }
 

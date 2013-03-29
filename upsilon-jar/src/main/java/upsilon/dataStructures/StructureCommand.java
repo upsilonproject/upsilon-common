@@ -11,7 +11,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Node;
+
+import upsilon.configuration.XmlNodeHelper;
 
 @XmlRootElement
 public class StructureCommand extends ConfigStructure {
@@ -47,14 +48,12 @@ public class StructureCommand extends ConfigStructure {
         return args;
     }
 
-    private static String parseCommandArgumentVariable(final String originalVariable, final AbstractService service, final List<String> callingArguments) {
-        String parsedVariable = originalVariable.replace("'$HOSTADDRESS$'", service.getHostname()).trim();
-
+    private static String parseCommandArgumentVariable(String originalVariable, final List<String> callingArguments) {
         for (int i = 0; i < callingArguments.size(); i++) {
-            parsedVariable = parsedVariable.replace("'$ARG" + (i + 1) + "$'", callingArguments.get(i));
+            originalVariable = originalVariable.replace("$ARG" + (i + 1), callingArguments.get(i));
         }
 
-        return parsedVariable;
+        return originalVariable.trim();
     }
 
     public static String parseCommandExecutable(final String fullCommandLine) {
@@ -70,7 +69,7 @@ public class StructureCommand extends ConfigStructure {
         }
     }
 
-    private String executable = "???";
+    private String executable = "";
 
     private List<String> definedArguments = new Vector<String>();
 
@@ -87,22 +86,6 @@ public class StructureCommand extends ConfigStructure {
         return this.executable;
     }
 
-    public String getFinalCommandLine(final AbstractService service) {
-        final StringBuilder sb = new StringBuilder();
-
-        sb.append(this.getExecutable());
-        sb.append(' ');
-
-        final Vector<String> callingArguments = service.getArguments();
-
-        for (final String arg : this.definedArguments) {
-            sb.append(StructureCommand.parseCommandArgumentVariable(arg, service, callingArguments));
-            sb.append(' ');
-        }
-
-        return sb.toString().trim();
-    }
-
     public String[] getFinalCommandLinePieces(final StructureService service) {
         final Vector<String> pieces = new Vector<String>();
         pieces.add(this.getExecutable());
@@ -110,7 +93,7 @@ public class StructureCommand extends ConfigStructure {
         final Vector<String> callingArguments = service.getArguments();
 
         for (final String arg : this.definedArguments) {
-            pieces.add(StructureCommand.parseCommandArgumentVariable(arg, service, callingArguments));
+            pieces.add(StructureCommand.parseCommandArgumentVariable(arg, callingArguments));
         }
 
         return pieces.toArray(new String[] {});
@@ -137,7 +120,8 @@ public class StructureCommand extends ConfigStructure {
     }
 
     @Override
-    public void update(final Node el) {
-        this.setIdentifier(el.getAttributes().getNamedItem("id").getNodeValue());
+    public void update(final XmlNodeHelper el) {
+        this.setIdentifier(el.getAttributeValueUnchecked("id"));
+        this.setCommandLine(el.getAttributeValueUnchecked("exec"));
     }
 }

@@ -19,8 +19,6 @@ public class StructureRemoteService implements AbstractService {
 
     private String executable;
 
-    private String hostname;
-
     private String cmdline;
     private Instant estimatedNextCheck;
     private int goodCount;
@@ -50,11 +48,6 @@ public class StructureRemoteService implements AbstractService {
     @Override
     public String getFinalCommandLine(final AbstractService s) {
         return this.cmdline;
-    }
-
-    @Override
-    public String getHostname() {
-        return this.hostname;
     }
 
     @Override
@@ -131,10 +124,6 @@ public class StructureRemoteService implements AbstractService {
 
     public void setFinalCommandLine(final String finalCommandLine) {
         this.cmdline = finalCommandLine;
-    }
-
-    public void setHostname(final String hostname) {
-        this.hostname = hostname;
     }
 
     public void setIdentifier(final String id) {

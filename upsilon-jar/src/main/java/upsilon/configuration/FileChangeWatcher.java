@@ -5,6 +5,8 @@ import java.io.File;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import upsilon.util.GlobalConstants;
+
 public class FileChangeWatcher {
     interface Listener {
         public void fileChanged(File f);
@@ -51,20 +53,23 @@ public class FileChangeWatcher {
         this.t.start();
     }
 
-    public void stop() {
+    public synchronized void stop() {
         this.continueMonitoring = false;
+        this.notify();
     }
 
-    private void watchForChanges() {
+    private synchronized void watchForChanges() {
         while (FileChangeWatcher.this.continueMonitoring) {
             this.checkForModification();
 
             try {
-                Thread.sleep(2000);
+                this.wait(GlobalConstants.CONFIG_WATCHER_DELAY.getMillis());
             } catch (final InterruptedException e) {
                 e.printStackTrace();
                 break;
             }
         }
+
+        FileChangeWatcher.LOG.info("No longer watching file for changes: " + this.fileBeingWatched.getAbsolutePath());
     }
 }

@@ -29,6 +29,8 @@ public class ConfigurationReloadTest {
         final XmlConfigurationLoader loader = new XmlConfigurationLoader();
         final FileChangeWatcher fcw = loader.load(one, false);
 
+        Assert.assertTrue(loader.getValidator().isParseClean());
+
         Assert.assertTrue(Configuration.instance.services.containsId("baseService"));
         Assert.assertTrue(Configuration.instance.services.containsId("mindstormPing"));
         Assert.assertEquals(Configuration.instance.services.size(), 2);

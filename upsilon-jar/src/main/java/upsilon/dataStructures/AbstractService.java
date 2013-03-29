@@ -15,8 +15,6 @@ public interface AbstractService {
 
     public abstract String getFinalCommandLine(AbstractService s);
 
-    public abstract String getHostname();
-
     public String getIdentifier();
 
     public abstract String getKarmaString();

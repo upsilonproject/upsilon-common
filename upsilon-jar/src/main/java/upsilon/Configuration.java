@@ -7,8 +7,8 @@ import java.util.regex.Pattern;
 import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Node;
 
+import upsilon.configuration.XmlNodeHelper;
 import upsilon.dataStructures.CollectionOfStructures;
 import upsilon.dataStructures.StructureCommand;
 import upsilon.dataStructures.StructureGroup;
@@ -31,25 +31,18 @@ public class Configuration {
     private static transient final Logger LOG = LoggerFactory.getLogger(Configuration.class);
 
     public Duration executorDelay = GlobalConstants.DEF_TIMER_EXECUTOR_DELAY;
-    private final boolean daemonRestEnabled = true;
-    private final boolean isCryptoEnabled = false;
-
-    public int restPort = 4000;
+    public boolean daemonRestEnabled = GlobalConstants.DEF_DAEMON_REST_ENABLED;
+    public boolean isCryptoEnabled = GlobalConstants.DEF_CRYPTO_ENABLED;
+    public int restPort = GlobalConstants.DEF_REST_PORT;
     public Duration queueMaintainerDelay = GlobalConstants.DEF_TIMER_QUEUE_MAINTAINER_DELAY;
     public String passwordKeystore = "";
     public String passwordTrustStore = "";
 
     public Vector<String> trustedCertificates = new Vector<String>();
 
-    public boolean isCryptoEnabled() {
-        return this.isCryptoEnabled;
-    }
+    private boolean initialFileParsed = false;
 
-    public boolean isDaemonRestEnabled() {
-        return this.daemonRestEnabled;
-    }
-
-    private void parseTrustFingerprint(String fingerprint) {
+    public void parseTrustFingerprint(String fingerprint) {
         fingerprint = fingerprint.trim();
         fingerprint = fingerprint.replace(" ", "");
         fingerprint = fingerprint.replace(":", "");
@@ -67,10 +60,21 @@ public class Configuration {
         }
     }
 
-    public void reparse() {
-    }
+    public void update(final XmlNodeHelper node) {
+        if (this.initialFileParsed == false) {
+            this.restPort = node.getAttributeValueOrDefault("restPort", GlobalConstants.DEF_REST_PORT);
+            this.daemonRestEnabled = node.getAttributeValueOrDefault("daemonRestEnabled", GlobalConstants.DEF_DAEMON_REST_ENABLED);
+            this.isCryptoEnabled = node.getAttributeValueOrDefault("crypto", GlobalConstants.DEF_CRYPTO_ENABLED);
 
-    public void update(final Node node) {
-        this.restPort = Integer.parseInt(node.getAttributes().getNamedItem("restPort").getNodeValue());
+            if (node.hasChildElement("keystore")) {
+                this.passwordKeystore = node.getFirstChildElement("keystore").getAttributeValueOrDefault("password", "");
+            }
+
+            if (node.hasChildElement("truststore")) {
+                this.passwordTrustStore = node.getFirstChildElement("truststore").getAttributeValueOrDefault("password", "");
+            }
+
+            this.initialFileParsed = true;
+        }
     }
 }
