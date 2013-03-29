@@ -169,9 +169,6 @@ public class RestClient {
         srs.setFinalCommandLine(s.getFinalCommandLine(s));
         srs.setResultConsequtiveCount(s.getFlexiTimer().getGoodCount());
 
-        for (final String g : s.getMemberships()) {
-            srs.groups.add(g);
-        }
 
         RestClient.LOG.debug("Pushing service: " + s.getIdentifier() + " to: " + this.url);
 

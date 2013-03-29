@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 
 import upsilon.Configuration;
 import upsilon.Main;
-import upsilon.dataStructures.StructureGroup;
 import upsilon.dataStructures.StructureRemoteService;
 import upsilon.dataStructures.StructureService;
 
@@ -60,46 +59,11 @@ public class ServiceHandler {
 	@POST
 	@Path("/updateRemoteService")
 	public Response updateRemoteService(StructureRemoteService rss) {
-		ServiceHandler.LOG.debug("Got SRS, identifier:" + rss.getIdentifier() + " karma:" + rss.getKarmaString() + " groups: " + rss.groups.size() + " node: " + rss.getNodeIdentifier());
+		ServiceHandler.LOG.debug("Got SRS, identifier:" + rss.getIdentifier() + " karma:" + rss.getKarmaString() + " node: " + rss.getNodeIdentifier());
 
 		Configuration.instance.remoteServices.add(rss);
-
-		this.updateRemoteServiceGroups(rss);
 
 		return Response.status(Status.OK).entity("Service updated").build();
 	}
 
-	private void updateRemoteServiceGroups(StructureRemoteService rss) {
-		String parent = null;
-
-		for (String group : rss.groups) {
-			String[] groupParts = group.split("/");
-			parent = null;
-
-			LOG.trace("Split groups for: " + group + " is : " + groupParts.length);
-
-			for (String part : groupParts) {
-				LOG.trace("Sub group: " + part + " parent: " + parent);
-
-				StructureGroup g = Configuration.instance.groups.get(part);
-
-				if (g == null) {
-					g = new StructureGroup();
-					g.setName(part);
-
-					if ((parent != null) && !parent.equals("[root]")) {
-						g.setParent(parent);
-					}
-
-					Configuration.instance.groups.register(g);
-				}
-
-				if (!g.hasMember(rss) && part.equals(groupParts[groupParts.length - 1])) {
-					g.addMember(rss);
-				}
-
-				parent = part;
-			}
-		}
-	}
 }

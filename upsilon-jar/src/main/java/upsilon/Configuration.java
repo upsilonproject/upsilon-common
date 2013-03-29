@@ -21,7 +21,6 @@ import upsilon.util.GlobalConstants;
 public class Configuration {
     public final CollectionOfStructures<StructureCommand> commands = new CollectionOfStructures<StructureCommand>("StructureCommand");
     public final CollectionOfStructures<StructureService> services = new CollectionOfStructures<StructureService>("StructureService");
-    public final CollectionOfStructures<StructureGroup> groups = new CollectionOfStructures<StructureGroup>("StructureGroup");
     public final Vector<StructureRemoteService> remoteServices = new Vector<>();
     public final CollectionOfStructures<StructurePeer> peers = new CollectionOfStructures<StructurePeer>("StructurePeer");
     public final CollectionOfStructures<StructureNode> remoteNodes = new CollectionOfStructures<StructureNode>("StructureNode");

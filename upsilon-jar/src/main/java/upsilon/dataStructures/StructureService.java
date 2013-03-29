@@ -119,19 +119,6 @@ public class StructureService extends ConfigStructure implements AbstractService
     }
 
     @Override
-    public Vector<String> getMemberships() {
-        final Vector<String> ret = new Vector<String>();
-
-        for (final StructureGroup g : Configuration.instance.groups) {
-            if (g.hasMember(this)) {
-                ret.add(g.getFullyQualifiedIdentifier());
-            }
-        }
-
-        return ret;
-    }
-
-    @Override
     public String getNodeIdentifier() {
         return Main.instance.node.getIdentifier();
     }
