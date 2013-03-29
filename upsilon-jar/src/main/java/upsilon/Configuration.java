@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import upsilon.configuration.XmlNodeHelper;
 import upsilon.dataStructures.CollectionOfStructures;
 import upsilon.dataStructures.StructureCommand;
-import upsilon.dataStructures.StructureGroup;
 import upsilon.dataStructures.StructureNode;
 import upsilon.dataStructures.StructurePeer;
 import upsilon.dataStructures.StructureRemoteService;

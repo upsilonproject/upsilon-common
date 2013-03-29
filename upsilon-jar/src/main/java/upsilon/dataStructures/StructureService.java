@@ -119,7 +119,7 @@ public class StructureService extends ConfigStructure implements AbstractService
     }
 
     @Override
-	public String getNodeIdentifier() {
+    public String getNodeIdentifier() {
         return Main.instance.node.getIdentifier();
     }
 
@@ -224,7 +224,7 @@ public class StructureService extends ConfigStructure implements AbstractService
 
     @Override
     public void update(final XmlNodeHelper el) {
-        this.identifier = el.getAttributeValueUnchecked("id");
+        this.setIdentifier(el.getAttributeValueUnchecked("id"));
         this.setTimeout(el.getAttributeValue("timeout", GlobalConstants.DEF_TIMEOUT));
         this.ft.setMin(el.getAttributeValue("minDelay", GlobalConstants.MIN_SERVICE_SLEEP));
         this.ft.setMax(el.getAttributeValue("maxDelay", GlobalConstants.MAX_SERVICE_SLEEP));

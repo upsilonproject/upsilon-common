@@ -34,7 +34,7 @@
 			<xs:field xpath="@commandRef"></xs:field>
 		</xs:keyref>
 		  
-		<xs:keyref name="keyrefServiceParenter" refer="serviceId">
+		<xs:keyref name="keyrefServiceParent" refer="serviceId">
 			<xs:selector xpath="service"></xs:selector>  
 			<xs:field xpath="@parent"></xs:field>
 		</xs:keyref>  

@@ -8,24 +8,24 @@ import org.slf4j.LoggerFactory;
 
 @XmlRootElement
 public abstract class Daemon implements Runnable {
-	private static final Logger LOG = LoggerFactory.getLogger(Daemon.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Daemon.class);
 
-	private String status = "unknown";
+    private String status = "unknown";
 
-	@XmlAttribute
-	public String getIdentifier() {
-		return this.getClass().getSimpleName();
-	}
+    @XmlAttribute
+    public String getIdentifier() {
+        return this.getClass().getSimpleName();
+    }
 
-	@XmlAttribute
-	public final String getStatus() {
-		return this.status;
-	}
+    @XmlAttribute
+    public final String getStatus() {
+        return this.status;
+    }
 
-	protected final void setStatus(String status) {
-		LOG.trace("Daemon status for " + this.getIdentifier() + "changed to: " + status);
-		this.status = status;
-	}
+    protected final void setStatus(final String status) {
+        Daemon.LOG.trace("Daemon status for " + this.getIdentifier() + "changed to: " + status);
+        this.status = status;
+    }
 
-	public abstract void stop();
+    public abstract void stop();
 }
