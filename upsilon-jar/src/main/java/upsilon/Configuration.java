@@ -72,6 +72,19 @@ public class Configuration {
                 this.passwordTrustStore = node.getFirstChildElement("truststore").getAttributeValueOrDefault("password", "");
             }
 
+            if (node.hasChildElement("database")) {
+                final XmlNodeHelper dbElement = node.getFirstChildElement("database");
+                final String hostname = dbElement.getAttributeValueUnchecked("hostname");
+                final String username = dbElement.getAttributeValueUnchecked("username");
+                final String password = dbElement.getAttributeValueUnchecked("password");
+                final String dbname = dbElement.getAttributeValueUnchecked("dbname");
+                final int port = dbElement.getAttributeValueOrDefault("port", 3306);
+
+                Database.instance = new Database(hostname, username, password, port, dbname);
+
+                Configuration.LOG.info("Registered DB instance: hostname: {} user: {} port: {} dbname: {}", new Object[] { hostname, username, port, dbname });
+            }
+
             this.initialFileParsed = true;
         }
     }

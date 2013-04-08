@@ -96,16 +96,22 @@
 	</xs:complexType>
 	<xs:complexType name="system"> 
 		<xs:sequence>
-			<xs:element name="keystore" type="securityStore"
-				minOccurs="0" maxOccurs="1" />
-			<xs:element name="truststore" type="securityStore"
-				minOccurs="0" maxOccurs="1" />
+			<xs:element name="keystore" type="securityStore" minOccurs="0" maxOccurs="1" />
+			<xs:element name="truststore" type="securityStore" minOccurs="0" maxOccurs="1" />
+			<xs:element name="database" type = "database" minOccurs="0" maxOccurs="1" />
 		</xs:sequence>
 		<xs:attribute name="crypto" type="xs:boolean" default="true"
 			use="optional" />
 		<xs:attribute name="schedulerDelay" type="intervalType"
 			use="optional" default="PT15S" /> 
 		<xs:attribute name="restPort" use="optional" type="portType" />
+	</xs:complexType>
+	<xs:complexType name="database">  
+		<xs:attribute name = "hostname" type = "xs:string" use = "required" />
+		<xs:attribute name = "username" type = "identifier" use = "required" />
+		<xs:attribute name = "password" type = "xs:string" use = "required" />
+		<xs:attribute name = "dbname" type = "identifier" use = "required" />
+		<xs:attribute name = "port" type = "portType" use = "required" />
 	</xs:complexType>
 	<xs:simpleType name="portType">
 		<xs:restriction base="xs:int">

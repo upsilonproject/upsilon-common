@@ -59,7 +59,11 @@ public class Index {
 
         @XmlElement(name = "database", nillable = true, required = false)
         public String getDb() {
-            return Database.instance.toString();
+            if (Database.instance != null) {
+                return Database.instance.toString();
+            } else {
+                return null;
+            }
         }
 
         @XmlElement
