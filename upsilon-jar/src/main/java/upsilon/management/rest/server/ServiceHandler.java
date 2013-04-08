@@ -1,6 +1,7 @@
 package upsilon.management.rest.server;
 
 import java.util.List;
+import java.util.Vector;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -25,45 +26,53 @@ import upsilon.dataStructures.StructureService;
 @Path("services/")
 @Consumes(MediaType.APPLICATION_XML)
 public class ServiceHandler {
-	private static transient final Logger LOG = LoggerFactory.getLogger(ServiceHandler.class);
+    private static transient final Logger LOG = LoggerFactory.getLogger(ServiceHandler.class);
 
-	@GET
-	@Path("/id/{id}")
-	@Produces(MediaType.APPLICATION_XML)
-	public StructureService get(@PathParam("id") String id) {
-		return Configuration.instance.services.get(id);
-	}
+    @GET
+    @Path("/id/{id}")
+    @Produces(MediaType.APPLICATION_XML)
+    public StructureService get(@PathParam("id") final String id) {
+        return Configuration.instance.services.get(id);
+    }
 
-	@GET
-	@Path("/list")
-	@XmlElementWrapper
-	@XmlElement
-	public List<StructureService> list() {
-		return Configuration.instance.services.getImmutable();
-	}
+    @GET
+    @Path("/list")
+    @XmlElementWrapper
+    @XmlElement
+    public List<StructureService> list() {
+        return Configuration.instance.services.getImmutable();
+    }
 
-	@GET
-	@Path("/id/{id}/queue")
-	public Response queueServiceCheck(@PathParam("id") String id) {
-		StructureService ss = Configuration.instance.services.get(id);
+    @GET
+    @Path("/listRemote")
+    @XmlElementWrapper
+    @XmlElement
+    public Vector<StructureRemoteService> listRemote() {
+        return Configuration.instance.remoteServices;
+    }
 
-		if (ss == null) {
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not find service.").build();
-		} else {
-			Main.instance.queueMaintainer.queueUrgent(ss);
+    @GET
+    @Path("/id/{id}/queue")
+    public Response queueServiceCheck(@PathParam("id") final String id) {
+        final StructureService ss = Configuration.instance.services.get(id);
 
-			return Response.status(Status.OK).entity("Service queued.").build();
-		}
-	}
+        if (ss == null) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not find service.").build();
+        } else {
+            Main.instance.queueMaintainer.queueUrgent(ss);
 
-	@POST
-	@Path("/updateRemoteService")
-	public Response updateRemoteService(StructureRemoteService rss) {
-		ServiceHandler.LOG.debug("Got SRS, identifier:" + rss.getIdentifier() + " karma:" + rss.getKarmaString() + " node: " + rss.getNodeIdentifier());
+            return Response.status(Status.OK).entity("Service queued.").build();
+        }
+    }
 
-		Configuration.instance.remoteServices.add(rss);
+    @POST
+    @Path("/updateRemoteService")
+    public Response updateRemoteService(final StructureRemoteService rss) {
+        ServiceHandler.LOG.debug("Got SRS, identifier:" + rss.getIdentifier() + " karma:" + rss.getKarmaString() + " node: " + rss.getNodeIdentifier());
 
-		return Response.status(Status.OK).entity("Service updated").build();
-	}
+        Configuration.instance.remoteServices.add(rss);
+
+        return Response.status(Status.OK).entity("Service updated").build();
+    }
 
 }

@@ -19,245 +19,250 @@ import upsilon.dataStructures.StructureRemoteService;
 import upsilon.dataStructures.StructureService;
 
 public class Database {
-	public static void updateAll() {
-		if (Database.instance != null) {
-			Database.instance.update();
-		}
-	}
+    public static void updateAll() {
+        if (Database.instance != null) {
+            Database.instance.update();
+        }
+    }
 
-	private Connection conn;
-	private final Logger log = LoggerFactory.getLogger(Database.class);
-	private final String hostname;
-	private final String username, password;
-	private final int port;
+    private Connection conn;
+    private final Logger log = LoggerFactory.getLogger(Database.class);
+    private final String hostname;
+    private final String username, password;
+    private final int port;
 
-	private final String dbname;
+    private final String dbname;
 
-	public static Database instance;
+    public static Database instance;
 
-	public Database(String hostname, String username, String password, int port, String dbname) {
-		this.hostname = hostname;
-		this.username = username;
-		this.password = password;
-		this.port = port;
-		this.dbname = dbname;
-	}
+    public Database(final String hostname, final String username, final String password, final int port, final String dbname) {
+        this.hostname = hostname;
+        this.username = username;
+        this.password = password;
+        this.port = port;
+        this.dbname = dbname;
+    }
 
-	public void connect() throws Exception {
-		Class.forName("com.mysql.jdbc.Driver");
-		this.conn = DriverManager.getConnection("jdbc:mysql://" + this.hostname + ":" + this.port + "/" + this.dbname, this.username, this.password);
+    public void connect() throws Exception {
+        Class.forName("com.mysql.jdbc.Driver");
+        this.conn = DriverManager.getConnection("jdbc:mysql://" + this.hostname + ":" + this.port + "/" + this.dbname, this.username, this.password);
 
-		this.log.debug("Connected to DB server: " + this.conn.getMetaData().getURL());
-	}
+        this.log.debug("Connected to DB server: " + this.conn.getMetaData().getURL());
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof Database) {
-			Database comp = (Database) obj;
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj instanceof Database) {
+            final Database comp = (Database) obj;
 
-			if (comp.hostname.equals(this.hostname) && (comp.port == this.port)) {
-				return true;
-			}
-		}
+            if (comp.hostname.equals(this.hostname) && (comp.port == this.port)) {
+                return true;
+            }
+        }
 
-		return super.equals(obj);
-	}
+        return super.equals(obj);
+    }
 
-	public int getInt(String field, String table, String fieldEq, String equals) {
-		int ret = 0;
-		String sql = "SELECT " + field + " FROM " + table + " WHERE " + fieldEq + " = ?";
-		ResultSet rs;
+    public int getInt(final String field, final String table, final String fieldEq, final String equals) {
+        int ret = 0;
+        final String sql = "SELECT " + field + " FROM " + table + " WHERE " + fieldEq + " = ?";
+        ResultSet rs;
 
-		try {
-			PreparedStatement stmt = this.conn.prepareStatement(sql);
-			stmt.setString(1, equals);
-			rs = stmt.executeQuery();
-			rs.beforeFirst();
+        try {
+            final PreparedStatement stmt = this.conn.prepareStatement(sql);
+            stmt.setString(1, equals);
+            rs = stmt.executeQuery();
+            rs.beforeFirst();
 
-			if (!rs.first()) {
-				throw new RuntimeException("Cannot get int, there where 0 rows");
-			}
+            if (!rs.first()) {
+                throw new RuntimeException("Cannot get int, there where 0 rows");
+            }
 
-			ret = rs.getInt(1);
-			stmt.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+            ret = rs.getInt(1);
+            stmt.close();
+        } catch (final SQLException e) {
+            e.printStackTrace();
+        }
 
-		return ret;
-	}
+        return ret;
+    }
 
-	public HashMap<String, String> getRow(String table, String fieldEq, String equals, String... fields) {
-		StringBuilder fieldList = new StringBuilder();
+    public HashMap<String, String> getRow(final String table, final String fieldEq, final String equals, final String... fields) {
+        final StringBuilder fieldList = new StringBuilder();
 
-		for (String s : fields) {
-			fieldList.append(s);
-			fieldList.append(',');
-		}
+        for (final String s : fields) {
+            fieldList.append(s);
+            fieldList.append(',');
+        }
 
-		String sql = "SELECT " + fieldList.toString() + " id FROM " + table + " WHERE " + fieldEq + " = ?";
+        final String sql = "SELECT " + fieldList.toString() + " id FROM " + table + " WHERE " + fieldEq + " = ?";
 
-		try {
-			PreparedStatement stmt = this.conn.prepareStatement(sql);
-			stmt.setString(1, equals);
-			ResultSet rs = stmt.executeQuery();
-			rs.beforeFirst();
+        try {
+            final PreparedStatement stmt = this.conn.prepareStatement(sql);
+            stmt.setString(1, equals);
+            final ResultSet rs = stmt.executeQuery();
+            rs.beforeFirst();
 
-			HashMap<String, String> row = new HashMap<>();
+            final HashMap<String, String> row = new HashMap<>();
 
-			if (rs.next()) {
-				for (int i = 0; i < fields.length; i++) {
-					row.put(fields[i], rs.getString(i + 1));
-				}
-			}
+            if (rs.next()) {
+                for (int i = 0; i < fields.length; i++) {
+                    row.put(fields[i], rs.getString(i + 1));
+                }
+            }
 
-			stmt.close();
-			rs.close();
+            stmt.close();
+            rs.close();
 
-			return row;
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+            return row;
+        } catch (final SQLException e) {
+            e.printStackTrace();
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	private boolean getValidConnection() {
-		if (this.conn == null) {
-			return false;
-		}
+    private boolean getValidConnection() {
+        if (this.conn == null) {
+            return false;
+        }
 
-		try {
-			if (this.conn.isClosed()) {
-				this.connect();
+        try {
+            if (this.conn.isClosed()) {
+                this.connect();
 
-				if (this.conn.isClosed()) {
-					return false;
-				}
-			}
-		} catch (Exception e) {
-			this.log.error("SQL Exception while checking connection validity", e);
-			return false;
-		}
+                if (this.conn.isClosed()) {
+                    return false;
+                }
+            }
+        } catch (final Exception e) {
+            this.log.error("SQL Exception while checking connection validity", e);
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	public void update() {
-		if (this.getValidConnection()) {
-			Main.instance.node.refresh();
-			this.updateNode(Main.instance.node);
+    @Override
+    public String toString() {
+        return String.format("host: %s, user: %s, port: %d, dbname: %s", this.hostname, this.username, this.port, this.dbname);
+    }
 
-			synchronized (Configuration.instance.remoteNodes) {
-				Iterator<StructureNode> itNodes = Configuration.instance.remoteNodes.iterator();
+    public void update() {
+        if (this.getValidConnection()) {
+            Main.instance.node.refresh();
+            this.updateNode(Main.instance.node);
 
-				this.log.trace("Items in remote node list: " + Configuration.instance.remoteNodes.size());
+            synchronized (Configuration.instance.remoteNodes) {
+                final Iterator<StructureNode> itNodes = Configuration.instance.remoteNodes.iterator();
 
-				while (itNodes.hasNext()) {
-					this.updateNode(itNodes.next());
-					itNodes.remove();
-				}
-			}
+                this.log.trace("Items in remote node list: " + Configuration.instance.remoteNodes.size());
 
-			// insert services from our local executer
-			synchronized (Configuration.instance.services) {
-				for (StructureService s : upsilon.Configuration.instance.services) {
-					this.updateService(s);
-				}
-			}
+                while (itNodes.hasNext()) {
+                    this.updateNode(itNodes.next());
+                    itNodes.remove();
+                }
+            }
 
-			// insert services sent remotely
-			synchronized (Configuration.instance.remoteServices) {
-				Iterator<StructureRemoteService> it = upsilon.Configuration.instance.remoteServices.iterator();
+            // insert services from our local executer
+            synchronized (Configuration.instance.services) {
+                for (final StructureService s : upsilon.Configuration.instance.services) {
+                    this.updateService(s);
+                }
+            }
 
-				while (it.hasNext()) {
-					this.updateService(it.next());
-					it.remove();
-				}
-			}
-		} else {
-			this.log.error("Connection to DB is invalid, cannot update.");
-		}
-	}
+            // insert services sent remotely
+            synchronized (Configuration.instance.remoteServices) {
+                final Iterator<StructureRemoteService> it = upsilon.Configuration.instance.remoteServices.iterator();
 
-	private void updateNode(StructureNode n) {
-		if (!n.isDatabaseUpdateRequired()) {
-			this.log.trace("Remote node update not required for: " + n.toString());
-			return;
-		}
+                while (it.hasNext()) {
+                    this.updateService(it.next());
+                    it.remove();
+                }
+            }
+        } else {
+            this.log.error("Connection to DB is invalid, cannot update.");
+        }
+    }
 
-		this.log.debug("Updating node: " + n.getIdentifier() + "(type: " + n.getType() + ")");
+    private void updateNode(final StructureNode n) {
+        if (!n.isDatabaseUpdateRequired()) {
+            this.log.trace("Remote node update not required for: " + n.toString());
+            return;
+        }
 
-		int pindex = 0;
-		String sql = "INSERT INTO nodes (identifier, serviceType, lastUpdated) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE lastUpdated = ?, serviceCount = ?, instanceApplicationVersion = ? ";
+        this.log.debug("Updating node: " + n.getIdentifier() + "(type: " + n.getType() + ")");
 
-		try {
-			PreparedStatement pstmt = this.conn.prepareStatement(sql);
-			pstmt.setString(++pindex, n.getIdentifier());
-			pstmt.setString(++pindex, n.getType());
-			pstmt.setTimestamp(++pindex, new Timestamp(Calendar.getInstance().getTime().getTime()));
-			pstmt.setTimestamp(++pindex, new Timestamp(Calendar.getInstance().getTime().getTime()));
-			pstmt.setInt(++pindex, n.getServiceCount());
-			pstmt.setString(++pindex, n.getInstanceApplicationVersion());
-			pstmt.execute();
-			pstmt.close();
-		} catch (Exception e) {
-			this.log.error(e.getMessage());
-		}
+        int pindex = 0;
+        final String sql = "INSERT INTO nodes (identifier, serviceType, lastUpdated) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE lastUpdated = ?, serviceCount = ?, instanceApplicationVersion = ? ";
 
-		n.setDatabaseUpdateRequired(false);
-	}
+        try {
+            final PreparedStatement pstmt = this.conn.prepareStatement(sql);
+            pstmt.setString(++pindex, n.getIdentifier());
+            pstmt.setString(++pindex, n.getType());
+            pstmt.setTimestamp(++pindex, new Timestamp(Calendar.getInstance().getTime().getTime()));
+            pstmt.setTimestamp(++pindex, new Timestamp(Calendar.getInstance().getTime().getTime()));
+            pstmt.setInt(++pindex, n.getServiceCount());
+            pstmt.setString(++pindex, n.getInstanceApplicationVersion());
+            pstmt.execute();
+            pstmt.close();
+        } catch (final Exception e) {
+            this.log.error(e.getMessage());
+        }
 
-	private void updateService(AbstractService s) {
-		if (!s.isDatabaseUpdateRequired()) {
-			return;
-		}
+        n.setDatabaseUpdateRequired(false);
+    }
 
-		if (!s.isRegistered()) {
-			return;
-		}
+    private void updateService(final AbstractService s) {
+        if (!s.isDatabaseUpdateRequired()) {
+            return;
+        }
 
-		this.log.debug("updating service:" + s.getIdentifier());
+        if (!s.isRegistered()) {
+            return;
+        }
 
-		String sql = "INSERT INTO services (identifier, description, executable, karma) VALUES (?, ?, ?, '') ON DUPLICATE KEY UPDATE karma = ?, secondsRemaining = ?, output = ?, commandLine = ?, lastUpdated = ?, goodCount = ?, estimatedNextCheck = ?, isLocal = ?, node = ?";
+        this.log.debug("updating service:" + s.getIdentifier());
 
-		try {
-			int paramIndex = 1;
-			PreparedStatement stmt = this.conn.prepareStatement(sql);
-			stmt.setString(paramIndex++, s.getIdentifier());
-			stmt.setString(paramIndex++, s.getDescription());
-			stmt.setString(paramIndex++, s.getExecutable());
+        String sql = "INSERT INTO services (identifier, description, executable, karma) VALUES (?, ?, ?, '') ON DUPLICATE KEY UPDATE karma = ?, secondsRemaining = ?, output = ?, commandLine = ?, lastUpdated = ?, goodCount = ?, estimatedNextCheck = ?, isLocal = ?, node = ?";
 
-			stmt.setString(paramIndex++, s.getKarmaString());
-			stmt.setLong(paramIndex++, s.getSecondsRemaining());
-			stmt.setString(paramIndex++, s.getOutput());
-			stmt.setString(paramIndex++, s.getFinalCommandLine(s));
-			stmt.setTimestamp(paramIndex++, new java.sql.Timestamp(s.getLastUpdated().toDate().getTime()));
-			stmt.setLong(paramIndex++, s.getResultConsequtiveCount());
-			stmt.setTimestamp(paramIndex++, new java.sql.Timestamp(s.getEstimatedNextCheck().toDate().getTime()));
-			stmt.setBoolean(paramIndex++, s.isLocal());
-			stmt.setString(paramIndex++, s.getNodeIdentifier());
+        try {
+            int paramIndex = 1;
+            final PreparedStatement stmt = this.conn.prepareStatement(sql);
+            stmt.setString(paramIndex++, s.getIdentifier());
+            stmt.setString(paramIndex++, s.getDescription());
+            stmt.setString(paramIndex++, s.getExecutable());
 
-			stmt.execute();
-			stmt.close();
-		} catch (Exception e) {
-			this.log.error("Insert new/update service: " + s.getDescription(), e);
-		}
+            stmt.setString(paramIndex++, s.getKarmaString());
+            stmt.setLong(paramIndex++, s.getSecondsRemaining());
+            stmt.setString(paramIndex++, s.getOutput());
+            stmt.setString(paramIndex++, s.getFinalCommandLine(s));
+            stmt.setTimestamp(paramIndex++, new java.sql.Timestamp(s.getLastUpdated().toDate().getTime()));
+            stmt.setLong(paramIndex++, s.getResultConsequtiveCount());
+            stmt.setTimestamp(paramIndex++, new java.sql.Timestamp(s.getEstimatedNextCheck().toDate().getTime()));
+            stmt.setBoolean(paramIndex++, s.isLocal());
+            stmt.setString(paramIndex++, s.getNodeIdentifier());
 
-		sql = "INSERT INTO service_check_results (service, checked, karma, output) VALUES (?, ?, ?, ?) ";
+            stmt.execute();
+            stmt.close();
+        } catch (final Exception e) {
+            this.log.error("Insert new/update service: " + s.getDescription(), e);
+        }
 
-		try {
-			PreparedStatement stmt = this.conn.prepareStatement(sql);
-			stmt.setString(1, s.getIdentifier());
-			stmt.setTimestamp(2, new java.sql.Timestamp(s.getLastUpdated().toDate().getTime()));
-			stmt.setString(3, s.getKarmaString());
-			stmt.setString(4, s.getOutput());
-			stmt.execute();
-			stmt.close();
-		} catch (Exception e) {
-			this.log.error("Cannot insert service check result: " + e);
-		}
+        sql = "INSERT INTO service_check_results (service, checked, karma, output) VALUES (?, ?, ?, ?) ";
 
-		s.setDatabaseUpdateRequired(false);
-	}
+        try {
+            final PreparedStatement stmt = this.conn.prepareStatement(sql);
+            stmt.setString(1, s.getIdentifier());
+            stmt.setTimestamp(2, new java.sql.Timestamp(s.getLastUpdated().toDate().getTime()));
+            stmt.setString(3, s.getKarmaString());
+            stmt.setString(4, s.getOutput());
+            stmt.execute();
+            stmt.close();
+        } catch (final Exception e) {
+            this.log.error("Cannot insert service check result: " + e);
+        }
+
+        s.setDatabaseUpdateRequired(false);
+    }
 }

@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import upsilon.Configuration;
 import upsilon.Daemon;
+import upsilon.Database;
 import upsilon.Main;
 import upsilon.util.ResourceResolver;
 
@@ -34,103 +35,108 @@ import com.sun.jersey.core.util.Base64;
 
 @Path("/")
 public class Index {
-	@XmlRootElement
-	public static class InternalStatus {
-		@XmlElement
-		public String getClasspath() {
-			return ManagementFactory.getRuntimeMXBean().getClassPath();
-		}
+    @XmlRootElement
+    public static class InternalStatus {
+        @XmlElement
+        public String getClasspath() {
+            return ManagementFactory.getRuntimeMXBean().getClassPath();
+        }
 
-		@XmlElement
-		public String getConfigurationOveridePath() {
-			if (Main.getConfigurationOverridePath() == null) {
-				return "";
-			} else {
-				return Main.getConfigurationOverridePath().getAbsolutePath();
-			}
-		}
+        @XmlElement
+        public String getConfigurationOveridePath() {
+            if (Main.getConfigurationOverridePath() == null) {
+                return "";
+            } else {
+                return Main.getConfigurationOverridePath().getAbsolutePath();
+            }
+        }
 
-		@XmlElement(name = "daemon")
-		@XmlElementWrapper
-		public Vector<Daemon> getDaemons() {
-			return Main.instance.getDaemons();
-		}
+        @XmlElement(name = "daemon")
+        @XmlElementWrapper
+        public Vector<Daemon> getDaemons() {
+            return Main.instance.getDaemons();
+        }
 
-		@XmlElement
-		public String getPid() {
-			return ManagementFactory.getRuntimeMXBean().getName();
-		}
+        @XmlElement(name = "database", nillable = true, required = false)
+        public String getDb() {
+            return Database.instance.toString();
+        }
 
-		@XmlElement
-		public Date getStartTime() {
-			return new Date(ManagementFactory.getRuntimeMXBean().getStartTime());
-		}
+        @XmlElement
+        public String getPid() {
+            return ManagementFactory.getRuntimeMXBean().getName();
+        }
 
-		@XmlElement(name = "thread")
-		@XmlElementWrapper
-		public Vector<String> getThreads() {
-			Vector<String> threads = new Vector<String>();
+        @XmlElement
+        public Date getStartTime() {
+            return new Date(ManagementFactory.getRuntimeMXBean().getStartTime());
+        }
 
-			for (Thread t : Thread.getAllStackTraces().keySet()) {
-				threads.add(t.getName());
-			}
+        @XmlElement(name = "thread")
+        @XmlElementWrapper
+        public Vector<String> getThreads() {
+            final Vector<String> threads = new Vector<String>();
 
-			Collections.sort(threads);
+            for (final Thread t : Thread.getAllStackTraces().keySet()) {
+                threads.add(t.getName());
+            }
 
-			return threads;
-		}
+            Collections.sort(threads);
 
-		@XmlElement
-		public String getVm() {
-			return ManagementFactory.getRuntimeMXBean().getVmName() + " " + ManagementFactory.getRuntimeMXBean().getVmVersion();
-		}
-	}
+            return threads;
+        }
 
-	@Path("/sslCert")
-	@GET
-	@Produces(MediaType.APPLICATION_OCTET_STREAM)
-	public Response getSslCert() {
-		File keystore = new File(ResourceResolver.getInstance().getConfigDir(), "keyStore.jks");
+        @XmlElement
+        public String getVm() {
+            return ManagementFactory.getRuntimeMXBean().getVmName() + " " + ManagementFactory.getRuntimeMXBean().getVmVersion();
+        }
+    }
 
-		try {
-			FileInputStream fis = new FileInputStream(keystore);
-			KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-			ks.load(fis, Configuration.instance.passwordKeystore.toCharArray());
+    @Path("/sslCert")
+    @GET
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response getSslCert() {
+        final File keystore = new File(ResourceResolver.getInstance().getConfigDir(), "keyStore.jks");
 
-			Certificate c = ks.getCertificate("upsilon.teratan.net");
+        try {
+            final FileInputStream fis = new FileInputStream(keystore);
+            final KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
+            ks.load(fis, Configuration.instance.passwordKeystore.toCharArray());
 
-			String base64cert = new String(Base64.encode(c.getEncoded()));
-			System.out.println(base64cert);
+            final Certificate c = ks.getCertificate("upsilon.teratan.net");
 
-			fis.close();
-			return Response.status(Status.OK).entity(c.getEncoded()).header("Content-Disposition", "attachment; filename=upsilon.crt").build();
-		} catch (NoSuchAlgorithmException | CertificateException | IOException | KeyStoreException e) {
-			e.printStackTrace();
-		}
+            final String base64cert = new String(Base64.encode(c.getEncoded()));
+            System.out.println(base64cert);
 
-		return null;
-	}
+            fis.close();
+            return Response.status(Status.OK).entity(c.getEncoded()).header("Content-Disposition", "attachment; filename=upsilon.crt").build();
+        } catch (NoSuchAlgorithmException | CertificateException | IOException | KeyStoreException e) {
+            e.printStackTrace();
+        }
 
-	@Path("/internalStatus")
-	@GET
-	@Produces(MediaType.APPLICATION_XML)
-	public Response getStatus() {
-		return Response.status(Status.OK).entity(new InternalStatus()).build();
-	}
+        return null;
+    }
 
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Response getWelcomePage() throws Exception {
-		InputStream is = Index.class.getResourceAsStream("/index.xhtml");
-		Scanner s = new Scanner(is);
-		s.useDelimiter("\\A");
-		String htmlFile = s.next();
+    @Path("/internalStatus")
+    @GET
+    @Produces(MediaType.APPLICATION_XML)
+    public Response getStatus() {
+        return Response.status(Status.OK).entity(new InternalStatus()).build();
+    }
 
-		s.close();
-		is.close();
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    public Response getWelcomePage() throws Exception {
+        final InputStream is = Index.class.getResourceAsStream("/index.xhtml");
+        final Scanner s = new Scanner(is);
+        s.useDelimiter("\\A");
+        String htmlFile = s.next();
 
-		htmlFile = htmlFile.replace("$version", Main.getVersion());
+        s.close();
+        is.close();
 
-		return Response.status(Status.OK).entity(htmlFile).build();
-	}
+        htmlFile = htmlFile.replace("$version", Main.getVersion());
+
+        return Response.status(Status.OK).entity(htmlFile).build();
+    }
 }
