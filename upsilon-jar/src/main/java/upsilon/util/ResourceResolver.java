@@ -14,9 +14,8 @@ public abstract class ResourceResolver {
     public static class ResourceResolverJar extends ResourceResolver {
 
         @Override
-        public InputStream getFromFilename(String filename)
-                throws FileNotFoundException {
-            File f = new File(this.getConfigDir(), filename);
+        public InputStream getFromFilename(final String filename) throws FileNotFoundException {
+            final File f = new File(this.getConfigDir(), filename);
 
             if (!f.exists()) {
                 throw new FileNotFoundException(filename);
@@ -24,10 +23,14 @@ public abstract class ResourceResolver {
 
             return new FileInputStream(f);
         }
+
+        @Override
+        public InputStream getInternalFromFilename(final String filename) throws FileNotFoundException {
+            return this.getClass().getResourceAsStream("/" + filename);
+        }
     }
 
-    private transient static final Logger LOG = LoggerFactory
-            .getLogger(ResourceResolver.class);
+    private transient static final Logger LOG = LoggerFactory.getLogger(ResourceResolver.class);
 
     public static ResourceResolver getInstance() {
         return new ResourceResolverJar();
@@ -41,11 +44,12 @@ public abstract class ResourceResolver {
         }
     }
 
-    public abstract InputStream getFromFilename(String filename)
-            throws Exception;
+    public abstract InputStream getFromFilename(String filename) throws Exception;
+
+    public abstract InputStream getInternalFromFilename(String filename) throws Exception;
 
     public File getOsConfigDir() {
-        String os = System.getProperty("os.name");
+        final String os = System.getProperty("os.name");
         File f;
 
         if (os.contains("Windows")) {
@@ -65,9 +69,7 @@ public abstract class ResourceResolver {
 
         if (!f.exists()) {
             if (!f.mkdir()) {
-                ResourceResolver.LOG
-                        .warn("Could not create configuration directory on this platform, which should be: "
-                                + f.getAbsolutePath());
+                ResourceResolver.LOG.warn("Could not create configuration directory on this platform, which should be: " + f.getAbsolutePath());
             }
         }
 

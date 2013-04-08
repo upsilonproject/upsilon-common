@@ -2,12 +2,13 @@ package upsilon.configuration;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Vector;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
@@ -18,6 +19,8 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import upsilon.util.ResourceResolver;
+
 public class XmlConfigurationValidator implements ErrorHandler {
     private final Vector<SAXParseException> parseErrors = new Vector<SAXParseException>();
     private final DocumentBuilder builder;
@@ -27,8 +30,9 @@ public class XmlConfigurationValidator implements ErrorHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(XmlConfigurationValidator.class);
 
-    public XmlConfigurationValidator(final File f) throws ParserConfigurationException, SAXException {
-        final File xsdSchema = new File("src/test/resources/upsilon.xsd");
+    public XmlConfigurationValidator(final File f) throws Exception {
+        final InputStream xsdSchemaStream = ResourceResolver.getInstance().getInternalFromFilename("upsilon.xsd");
+        final StreamSource xsdSchema = new StreamSource(xsdSchemaStream);
 
         final Schema s = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(xsdSchema);
 
