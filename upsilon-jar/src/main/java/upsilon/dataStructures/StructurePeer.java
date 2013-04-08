@@ -46,6 +46,8 @@ public class StructurePeer extends ConfigStructure {
 
     private RestClient restClient;
 
+    private String identifier;
+
     public StructurePeer() {
     }
 
@@ -66,7 +68,7 @@ public class StructurePeer extends ConfigStructure {
 
     @Override
     public String getIdentifier() {
-        return this.getHostname();
+        return this.identifier;
     }
 
     public int getPort() {
@@ -82,7 +84,7 @@ public class StructurePeer extends ConfigStructure {
     }
 
     private void newClient() throws MalformedURLException, IllegalArgumentException, GeneralSecurityException {
-        if (this.restClient != null) {
+        if (this.restClient == null) {
             final String proto;
 
             if (Configuration.instance.isCryptoEnabled) {
@@ -118,6 +120,8 @@ public class StructurePeer extends ConfigStructure {
 
     @Override
     public void update(final XmlNodeHelper xmlNode) {
+        this.identifier = xmlNode.getAttributeValueUnchecked("id");
+
         if (this.getHostname() == null) {
             this.setHostname(xmlNode.getAttributeValueUnchecked("address"));
             this.setPort(xmlNode.getAttributeValue("port", GlobalConstants.DEF_REST_PORT));

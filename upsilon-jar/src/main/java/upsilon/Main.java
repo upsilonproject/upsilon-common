@@ -180,7 +180,7 @@ public class Main implements UncaughtExceptionHandler {
 
     @Override
     public void uncaughtException(final Thread t, final Throwable e) {
-        Main.LOG.error("Exception on a critical thread [" + t.getName() + "], will now shutdown.");
+        Main.LOG.error("Exception on a critical thread [" + t.getName() + "], will now shutdown.", e);
         this.shutdown();
     }
 }

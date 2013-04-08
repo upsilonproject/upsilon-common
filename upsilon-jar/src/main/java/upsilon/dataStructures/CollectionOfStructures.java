@@ -65,10 +65,10 @@ public class CollectionOfStructures<T extends ConfigStructure> implements Iterab
     }
 
     private void debugPrint() {
-        CollectionOfStructures.LOG.debug("Collection (of type " + this.getTitle() + "): ");
+        CollectionOfStructures.LOG.trace("Collection (of type " + this.getTitle() + "): ");
 
         for (int i = 0; i < this.collection.size(); i++) {
-            CollectionOfStructures.LOG.debug("Item {}: {}", new Object[] { i, this.collection.get(i).getIdentifier() });
+            CollectionOfStructures.LOG.trace("Item {}: {}", new Object[] { i, this.collection.get(i).getIdentifier() });
         }
     }
 

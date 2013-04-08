@@ -1,6 +1,6 @@
 <configuration debug = "false">
     <logger name = "upsilon" level = "TRACE" />  
-      
+       
     <!-- 
 	<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
 		<level>${logLevel}</level>

@@ -169,7 +169,6 @@ public class RestClient {
         srs.setFinalCommandLine(s.getFinalCommandLine(s));
         srs.setResultConsequtiveCount(s.getFlexiTimer().getGoodCount());
 
-
         RestClient.LOG.debug("Pushing service: " + s.getIdentifier() + " to: " + this.url);
 
         try {
