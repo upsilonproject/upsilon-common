@@ -26,7 +26,9 @@ public abstract class ResourceResolver {
 
         @Override
         public InputStream getInternalFromFilename(final String filename) throws FileNotFoundException {
-            return this.getClass().getResourceAsStream("/" + filename);
+            final InputStream is = this.getClass().getResourceAsStream("/" + filename);
+
+            return is;
         }
     }
 
