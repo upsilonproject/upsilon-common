@@ -81,7 +81,12 @@ public class Configuration {
                 final int port = dbElement.getAttributeValueOrDefault("port", 3306);
 
                 Database.instance = new Database(hostname, username, password, port, dbname);
-				Database.instance.connect();
+
+				try {
+					Database.instance.connect();
+				} catch (Exception e) {
+					Configuration.LOG.warn("Cannot connect to database: " + e.getMessage());
+				}
 
                 Configuration.LOG.info("Registered DB instance: hostname: {} user: {} port: {} dbname: {}", new Object[] { hostname, username, port, dbname });
             }
