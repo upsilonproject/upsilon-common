@@ -1,0 +1,15 @@
+<assembly>
+	<id>upsilon</id>
+	<formats>
+		<format>tar.gz</format>
+	</formats>
+	<fileSets>
+		<fileSet>
+			<directory>../upsilon-jar/target/</directory>
+			<outputDirectory>binaries</outputDirectory>
+			<includes>
+				<include>*.jar</include>
+			</includes>
+		</fileSet>
+	</fileSets>
+</assembly>

@@ -7,19 +7,21 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <releaseVersion>0.0.97</releaseVersion>
-    <deployUrl>scp://xconspirisist@portia.teratan.net/var/www/tydus.net/upsilonRepos/</deployUrl>
+    <deployUrl>scp://upsilonproject@upsilon-project.co.uk:/public_html/</deployUrl>
   </properties>
   <distributionManagement>
     <repository>
       <id>portia</id>
-      <url>${deployUrl}/maven/</url>
+      <url>${deployUrl}repositories/maven/</url>
     </repository>
   </distributionManagement>
   <packaging>pom</packaging>
   <modules>
     <module>upsilon-jar</module>
-    <module>upsilon-rpm</module>
     <module>upsilon-doc</module>
+    <module>upsilon-rpm</module>
+	<module>upsilon-tgz</module>
+	<module>upsilon-deb</module>
   </modules> 
   
   <build>
