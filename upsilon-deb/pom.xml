@@ -21,9 +21,10 @@
   						<goal>jdeb</goal>
   					</goals>
   					<configuration>
+						<deb>target/upsilon-${releaseVersion}.deb</deb>
   						<dataSet>
   							<data>
-  								<src>../upsilon-jar/target/upsilon-{$releaseVersion}.jar</src>
+  								<src>../upsilon-jar/target/upsilon-${releaseVersion}.jar</src>
   								<type>file</type>
   								<mapper>
   									<type>perm</type>

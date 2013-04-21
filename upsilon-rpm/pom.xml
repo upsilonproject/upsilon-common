@@ -142,7 +142,7 @@ service upsilon stop
 						<configuration>
 							<fromDir>target/rpm/upsilon/RPMS/noarch/</fromDir>
 							<includes>*.rpm</includes>
-							<url>${deployUrl}/yum/</url>
+							<url>${deployUrl}/repositories/rpm/</url>
 						</configuration>
 					</execution>
 				</executions>
