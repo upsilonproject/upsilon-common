@@ -60,17 +60,15 @@ public class DaemonScheduler extends Daemon {
     }
 
     private void queueServices() {
-        synchronized (Configuration.instance.services) {
-            for (final StructureService service : Configuration.instance.services) {
-                this.setStatus("Service being checked for queue: " + service.getIdentifier());
-                Util.lazySleep(Configuration.instance.queueMaintainerDelay);
+        for (final StructureService service : Configuration.instance.services.getImmutable()) {
+            this.setStatus("Service being checked for queue: " + service.getIdentifier());
+            Util.lazySleep(Configuration.instance.queueMaintainerDelay);
 
-                if (service.isReadyToBeChecked()) {
-                    if (this.queue.contains(service)) {
-                        DaemonScheduler.LOG.warn("service check required but it's already in the queue. Executor queue too long?: " + this.queue.size() + " items.");
-                    } else {
-                        this.queue.add(service);
-                    }
+            if (service.isReadyToBeChecked()) {
+                if (this.queue.contains(service)) {
+                    DaemonScheduler.LOG.warn("service check required but it's already in the queue. Executor queue too long?: " + this.queue.size() + " items.");
+                } else {
+                    this.queue.add(service);
                 }
             }
         }

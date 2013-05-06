@@ -5,13 +5,16 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.security.UnrecoverableKeyException;
+import java.util.Collection;
 
 import javax.ws.rs.core.UriBuilder;
 
 import org.glassfish.grizzly.http.server.HttpHandler;
 import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.grizzly.http.server.NetworkListener;
 import org.glassfish.grizzly.ssl.SSLContextConfigurator;
 import org.glassfish.grizzly.ssl.SSLEngineConfigurator;
+import org.glassfish.grizzly.threadpool.ThreadPoolConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
@@ -40,13 +43,6 @@ public class DaemonRest extends Daemon {
     private HttpServer server;
 
     private HttpServer createServer() throws IllegalArgumentException, NullPointerException, IOException {
-        try {
-            Class.forName("com.sun.jersey.json.impl.provider.entity.JSONObjectProvider");
-            this.log.trace("Found jersey-json");
-        } catch (final ClassNotFoundException e) {
-            throw new IOException("Jersey-JSON was not found, which is required by the HTTPServer.", e);
-        }
-
         this.setStatus("Going to try and start webserver at: " + DaemonRest.getBaseUri());
 
         final ResourceConfig rc = new PackagesResourceConfig("upsilon.management.rest");
@@ -102,6 +98,15 @@ public class DaemonRest extends Daemon {
 
         try {
             this.server = this.createServer();
+            this.server.getServerConfiguration().setHttpServerName("upsilon node");
+
+            final ThreadPoolConfig config = ThreadPoolConfig.defaultConfig().copy();
+            config.setPoolName("restServerListener");
+            config.setCorePoolSize(1);
+            config.setMaxPoolSize(100);
+            final Collection<NetworkListener> ls = this.server.getListeners();
+            final NetworkListener listener = this.server.getListeners().iterator().next();
+            listener.getTransport().setWorkerThreadPoolConfig(config);
 
             this.server.start();
             this.setStatus("Server started at: " + DaemonRest.getBaseUri());

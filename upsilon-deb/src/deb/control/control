@@ -4,6 +4,6 @@ Architecture: all
 Depends: openjdk-7-jre
 Description: Upsilon is a distributed, flexible and extensible system monitoring application. 
 Distribution: development
-Version: 1.0.0
+Version: [[releaseVersion]]
 Priority: optional
 Maintainer: Nobody <nobody@upsilon-project.co.uk>

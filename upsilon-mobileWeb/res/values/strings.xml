@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">upsilonMobile</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+    <string name="button_refresh">Refresh</string>
+    <string name="default_status_text">[not yet updated]</string>
+    <string name="action_settings">Refresh</string>
+    <string name="action_about">About</string>
+    <string name="app_launcher_name">Upsilon</string>
+    <string name="action_clear_cache">Clear Cache</string>
+
+</resources>
