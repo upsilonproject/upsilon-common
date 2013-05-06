@@ -95,7 +95,7 @@
 							<directoryIncluded>false</directoryIncluded>
 							<sources>
 								<source>
-									<location>../var/upsilon.repo</location>
+									<location>../../var/upsilon.repo</location>
 									<destination>upsilon-rpm.repo</destination>
 								</source>
 							</sources>
