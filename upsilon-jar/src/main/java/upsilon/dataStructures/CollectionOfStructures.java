@@ -72,7 +72,7 @@ public class CollectionOfStructures<T extends ConfigStructure> implements Iterab
         }
     }
 
-    public synchronized T get(final String identifier) {
+    public T get(final String identifier) {
         for (final T cs : this.collection) {
             if (cs.getIdentifier().equals(identifier)) {
                 return cs;
@@ -128,7 +128,7 @@ public class CollectionOfStructures<T extends ConfigStructure> implements Iterab
     }
 
     public void processTransaction(final CollectionAlterationTransaction<?> cat) {
-        synchronized (this) {
+        synchronized (this.collection) {
             CollectionOfStructures.LOG.warn(cat + " Started (new: {}, old: {}, upd: {})", new Object[] { cat.getNew().size(), cat.getOld().size(), cat.getUpdated().size() });
 
             for (final String structureId : cat.getOldIds()) {

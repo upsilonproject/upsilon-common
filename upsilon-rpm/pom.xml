@@ -32,7 +32,7 @@
 					<description>A distributed, flexible and extensible system monitoring application.</description>
 
 					<requires>
-						<require>nagios-plugins &gt; 1.4.15</require>
+						<require>java-1.7.0-openjdk</require>
 					</requires>
 
 					<mappings>
@@ -134,7 +134,7 @@ service upsilon stop
 				<version>1.0-beta-4</version>
 				<executions>
 					<execution>
-						<id>upload-yum</id>
+						<id>upload-rpm</id>
 						<phase>deploy</phase>
 						<goals>
 							<goal>upload</goal>
@@ -142,7 +142,7 @@ service upsilon stop
 						<configuration>
 							<fromDir>target/rpm/upsilon/RPMS/noarch/</fromDir>
 							<includes>*.rpm</includes>
-							<url>${deployUrl}/repositories/rpm/</url>
+							<url>${deployUrl}/releases/rpm/</url>
 						</configuration>
 					</execution>
 				</executions>
