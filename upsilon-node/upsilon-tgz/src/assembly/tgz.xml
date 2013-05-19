@@ -6,11 +6,11 @@
 	<fileSets>
 		<fileSet>
 			<directory>../../var/</directory>
-			<outputDirectory>setup</directory>
+			<outputDirectory>setup</outputDirectory>
 			<includes>
 				<include>schema.sql</include>
 			</includes>
-		</filSet>
+		</fileSet>
 		<fileSet>
 			<directory>../upsilon-jar/target/</directory>
 			<outputDirectory>binaries</outputDirectory>
