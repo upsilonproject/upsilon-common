@@ -13,7 +13,7 @@ import org.joda.time.Period;
 
 @XmlRootElement
 public class FlexiTimer {
-	public static long getIntWithinBounds(long test, long min, long max) {
+	public static long getIntWithinBounds(final long test, final long min, final long max) {
 		if (test < min) {
 			return min;
 		} else if (test > max) {
@@ -23,8 +23,8 @@ public class FlexiTimer {
 		}
 	}
 
-	public static Duration getPeriodWithinBounds(Duration test, Duration min, Duration max) {
-		return Duration.standardSeconds(getIntWithinBounds(test.getStandardSeconds(), min.getStandardSeconds(), max.getStandardSeconds()));
+	public static Duration getPeriodWithinBounds(final Duration test, final Duration min, final Duration max) {
+		return Duration.standardSeconds(FlexiTimer.getIntWithinBounds(test.getStandardSeconds(), min.getStandardSeconds(), max.getStandardSeconds()));
 	}
 
 	protected Duration sleepMin = GlobalConstants.MIN_SERVICE_SLEEP;
@@ -41,7 +41,7 @@ public class FlexiTimer {
 	protected static final Random RANDOM_TIMER = new Random();
 
 	public FlexiTimer() {
-		lastTouched = Instant.now();
+		this.lastTouched = Instant.now();
 	}
 
 	@XmlElement
@@ -51,8 +51,8 @@ public class FlexiTimer {
 
 	@XmlElement
 	public Instant getEstimatedFireDate() {
-		return lastTouched.plus(currentDelay);
-	} 
+		return this.lastTouched.plus(this.currentDelay);
+	}
 
 	public int getGoodCount() {
 		return this.goodCount;
@@ -87,11 +87,11 @@ public class FlexiTimer {
 		return this.getSecondsRemaining(Calendar.getInstance().getTime());
 	}
 
-	public long getSecondsRemaining(Date from) {
-		Instant fromTime = new Instant(from.getTime());
-		Instant nextDue = lastTouched.plus(currentDelay);
+	public long getSecondsRemaining(final Date from) {
+		final Instant fromTime = new Instant(from.getTime());
+		final Instant nextDue = this.lastTouched.plus(this.currentDelay);
 
-		return new Period(fromTime, nextDue).getSeconds();
+		return new Period(fromTime, nextDue).toStandardDuration().getStandardSeconds();
 
 		// return lastTouched.plus(currentDelay).minus(from.getTime())
 		// return
@@ -107,7 +107,7 @@ public class FlexiTimer {
 		return this.isTouchedPassed(Calendar.getInstance().getTime());
 	}
 
-	public boolean isTouchedPassed(Date from) {
+	public boolean isTouchedPassed(final Date from) {
 		return this.getSecondsRemaining(from) <= 0;
 	}
 

@@ -30,157 +30,157 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 
 public class Main implements UncaughtExceptionHandler {
-    public static final Main instance = new Main();
-    private static File configurationOverridePath;
-    private static String releaseVersion;
+	public static final Main instance = new Main();
+	private static File configurationOverridePath;
+	private static String releaseVersion;
 
-    private static final XmlConfigurationLoader xmlLoader = new XmlConfigurationLoader();
+	private static final XmlConfigurationLoader xmlLoader = new XmlConfigurationLoader();
 
-    private static transient final Logger LOG = LoggerFactory.getLogger(Main.class);
+	private static transient final Logger LOG = LoggerFactory.getLogger(Main.class);
 
-    public static File getConfigurationOverridePath() {
-        return Main.configurationOverridePath;
-    }
+	public static File getConfigurationOverridePath() {
+		return Main.configurationOverridePath;
+	}
 
-    public static String getVersion() {
-        if (Main.releaseVersion == null) {
-            Main.releaseVersion = Main.class.getPackage().getImplementationVersion();
+	public static String getVersion() {
+		if (Main.releaseVersion == null) {
+			Main.releaseVersion = Main.class.getPackage().getImplementationVersion();
 
-            try {
-                final Properties props = new Properties();
-                props.load(Main.class.getResourceAsStream("/releaseVersion.properties"));
-                Main.releaseVersion = props.getProperty("releaseVersion");
-            } catch (IOException | NullPointerException e) {
-                Main.LOG.warn("Could not get release version from jar.", e);
-            }
+			try {
+				final Properties props = new Properties();
+				props.load(Main.class.getResourceAsStream("/releaseVersion.properties"));
+				Main.releaseVersion = props.getProperty("releaseVersion");
+			} catch (IOException | NullPointerException e) {
+				Main.LOG.warn("Could not get release version from jar.", e);
+			}
 
-            if ((Main.releaseVersion == null) || Main.releaseVersion.isEmpty()) {
-                Main.releaseVersion = "?";
-            }
-        }
+			if ((Main.releaseVersion == null) || Main.releaseVersion.isEmpty()) {
+				Main.releaseVersion = "?";
+			}
+		}
 
-        return Main.releaseVersion;
-    }
+		return Main.releaseVersion;
+	}
 
-    public static void main(final String[] args) {
-        if (args.length > 0) {
-            Main.configurationOverridePath = new File(args[0]);
-            Main.xmlLoader.setFile(new File(Main.configurationOverridePath, "config.xml"));
-        } else {
-            Main.xmlLoader.setFile(new File("/etc/upsilon/config.xml"));
-        }
+	public static void main(final String[] args) {
+		if (args.length > 0) {
+			Main.configurationOverridePath = new File(args[0]);
+			Main.xmlLoader.setFile(new File(Main.configurationOverridePath, "config.xml"));
+		} else {
+			Main.xmlLoader.setFile(new File("/etc/upsilon/config.xml"));
+		}
 
-        Main.instance.startup();
-    }
+		Main.instance.startup();
+	}
 
-    private static void setupLogging() {
-        LogManager.getLogManager().getLogger("").setLevel(Level.FINEST);
-        SLF4JBridgeHandler.removeHandlersForRootLogger();
-        SLF4JBridgeHandler.install();
+	private static void setupLogging() {
+		LogManager.getLogManager().getLogger("").setLevel(Level.FINEST);
+		SLF4JBridgeHandler.removeHandlersForRootLogger();
+		SLF4JBridgeHandler.install();
 
-        final File loggingConfiguration = new File(ResourceResolver.getInstance().getConfigDir(), "logging.xml");
+		final File loggingConfiguration = new File(ResourceResolver.getInstance().getConfigDir(), "logging.xml");
 
-        try {
-            if (loggingConfiguration.exists()) {
-                Main.LOG.info("Logging override configuration exists, parsing: " + loggingConfiguration.getAbsolutePath());
+		try {
+			if (loggingConfiguration.exists()) {
+				Main.LOG.info("Logging override configuration exists, parsing: " + loggingConfiguration.getAbsolutePath());
 
-                final JoranConfigurator loggerConfigurator = new JoranConfigurator();
-                loggerConfigurator.setContext((LoggerContext) LoggerFactory.getILoggerFactory());
-                loggerConfigurator.doConfigure(loggingConfiguration);
-            }
-        } catch (final Exception e) {
-            Main.LOG.warn("Could not set up logging config.", e);
-        }
-    }
+				final JoranConfigurator loggerConfigurator = new JoranConfigurator();
+				loggerConfigurator.setContext((LoggerContext) LoggerFactory.getILoggerFactory());
+				loggerConfigurator.doConfigure(loggingConfiguration);
+			}
+		} catch (final Exception e) {
+			Main.LOG.warn("Could not set up logging config.", e);
+		}
+	}
 
-    public final StructureNode node = new StructureNode();
+	public final StructureNode node = new StructureNode();
 
-    private final Vector<Daemon> daemons = new Vector<Daemon>();
+	private final Vector<Daemon> daemons = new Vector<Daemon>();
 
-    public DaemonScheduler queueMaintainer;
+	public DaemonScheduler queueMaintainer;
 
-    public Vector<Daemon> getDaemons() {
-        return this.daemons;
-    }
+	public Vector<Daemon> getDaemons() {
+		return this.daemons;
+	}
 
-    public XmlConfigurationLoader getXmlConfigurationLoader() {
-        return Main.xmlLoader;
-    }
+	public XmlConfigurationLoader getXmlConfigurationLoader() {
+		return Main.xmlLoader;
+	}
 
-    public String guessNodeType() {
-        return this.guessNodeType(Database.instance, Configuration.instance.peers);
-    }
+	public String guessNodeType() {
+		return this.guessNodeType(Database.instance, Configuration.instance.peers);
+	}
 
-    public String guessNodeType(final Database db, final CollectionOfStructures<StructurePeer> peers) {
-        if ((db == null) && !peers.isEmpty()) {
-            return "service-node";
-        }
+	public String guessNodeType(final Database db, final CollectionOfStructures<StructurePeer> peers) {
+		if ((db == null) && !peers.isEmpty()) {
+			return "service-node";
+		}
 
-        if ((db != null) && peers.isEmpty()) {
-            return "super-node";
-        }
+		if ((db != null) && peers.isEmpty()) {
+			return "super-node";
+		}
 
-        if ((db == null) && peers.isEmpty()) {
-            return "useless-testing-node";
-        }
+		if ((db == null) && peers.isEmpty()) {
+			return "useless-testing-node";
+		}
 
-        return "non-standard-node";
-    }
+		return "non-standard-node";
+	}
 
-    private void setupMbeans() {
-        final MBeanServer srv = ManagementFactory.getPlatformMBeanServer();
+	private void setupMbeans() {
+		final MBeanServer srv = ManagementFactory.getPlatformMBeanServer();
 
-        try {
-            srv.registerMBean(new MainMBeanImpl(), new ObjectName("upsilon.mbeansImpl:type=MainMBeanImpl"));
-        } catch (InstanceAlreadyExistsException | MBeanRegistrationException | NotCompliantMBeanException | MalformedObjectNameException e) {
-            Main.LOG.error("Could not register MBean", e);
-        }
-    }
+		try {
+			srv.registerMBean(new MainMBeanImpl(), new ObjectName("upsilon.mbeansImpl:type=MainMBeanImpl"));
+		} catch (InstanceAlreadyExistsException | MBeanRegistrationException | NotCompliantMBeanException | MalformedObjectNameException e) {
+			Main.LOG.error("Could not register MBean", e);
+		}
+	}
 
-    public void shutdown() {
-        for (final Daemon t : this.daemons) {
-            t.stop();
-        }
+	public void shutdown() {
+		for (final Daemon t : this.daemons) {
+			t.stop();
+		}
 
-        Main.LOG.warn("All daemons have been requested to stop. Main application should now shutdown.");
-    }
+		Main.LOG.warn("All daemons have been requested to stop. Main application should now shutdown.");
+	}
 
-    private void startDaemon(final Daemon r) {
-        final Thread t = new Thread(r, r.getClass().getSimpleName());
-        this.daemons.add(r);
+	private void startDaemon(final Daemon r) {
+		final Thread t = new Thread(r, r.getClass().getSimpleName());
+		this.daemons.add(r);
 
-        t.start();
-        t.setUncaughtExceptionHandler(this);
-        Thread.setDefaultUncaughtExceptionHandler(this);
-    }
+		t.start();
+		t.setUncaughtExceptionHandler(this);
+		Thread.setDefaultUncaughtExceptionHandler(this);
+	}
 
-    private void startup() {
-        Main.setupLogging();
+	private void startup() {
+		Main.setupLogging();
 
-        Main.LOG.info("Upsilon " + Main.getVersion());
-        Main.LOG.info("----------");
-        Main.LOG.debug("CP: " + System.getProperty("java.class.path"));
-        Main.LOG.trace("OS: " + System.getProperty("os.name"));
+		Main.LOG.info("Upsilon " + Main.getVersion());
+		Main.LOG.info("----------");
+		Main.LOG.debug("CP: " + System.getProperty("java.class.path"));
+		Main.LOG.trace("OS: " + System.getProperty("os.name"));
 
-        Main.xmlLoader.load();
+		Main.xmlLoader.load();
 
-        if (Main.xmlLoader.getValidator().isParseClean()) {
-            this.setupMbeans();
+		if (Main.xmlLoader.getValidator().isParseClean()) {
+			this.setupMbeans();
 
-            this.startDaemon(new DaemonRest());
-            this.startDaemon(new DaemonScheduler());
+			this.startDaemon(new DaemonRest());
+			this.startDaemon(new DaemonScheduler());
 
-            Main.LOG.debug("Best guess at node type: " + this.guessNodeType());
-        } else {
-            Main.xmlLoader.stopFileWatchers();
+			Main.LOG.debug("Best guess at node type: " + this.guessNodeType());
+		} else {
+			Main.xmlLoader.stopFileWatchers();
 
-            Main.LOG.error("Could not parse the initial configuration file. Upsilon cannot ever have a good configuration if it does not start off with a good configuration. Exiting.");
-        }
-    }
+			Main.LOG.error("Could not parse the initial configuration file. Upsilon cannot ever have a good configuration if it does not start off with a good configuration. Exiting.");
+		}
+	}
 
-    @Override
-    public void uncaughtException(final Thread t, final Throwable e) {
-        Main.LOG.error("Exception on a critical thread [" + t.getName() + "], will now shutdown.", e);
-        this.shutdown();
-    }
+	@Override
+	public void uncaughtException(final Thread t, final Throwable e) {
+		Main.LOG.error("Exception on a critical thread [" + t.getName() + "], will now shutdown.", e);
+		this.shutdown();
+	}
 }
