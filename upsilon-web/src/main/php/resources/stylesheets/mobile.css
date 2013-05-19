@@ -1,0 +1,62 @@
+body {
+	font-family: Verdana;
+}
+
+span.metricIndicator {
+	background-color: gray;
+	display: inline-block;
+	min-width: 1em;
+	min-height: 1em;
+	width: 3em;
+}
+
+ul {
+	list-style: none;
+	padding: 0;
+}
+
+li {
+	margin-bottom: 1em;
+}
+
+tr:nth-child(even) {
+	background-color: #efefef;
+}
+
+.bad {
+	background-color: salmon !important;
+}
+
+.good {
+	background-color: lightgreen !important;
+}
+
+.warning {
+	background-color: orange !important;
+}
+
+table {
+	width: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a.node abbr {
+	display: block;
+}
+
+.metricText {
+	display: inline-block;
+}
+
+div.block {
+	min-width: 100%;
+	border: 1px solid black;
+}
+
+hr {
+	border: 0;
+	border-bottom: 1px solid black;
+}
