@@ -100,10 +100,9 @@
 			<xs:element name="truststore" type="securityStore" minOccurs="0" maxOccurs="1" />
 			<xs:element name="database" type = "database" minOccurs="0" maxOccurs="1" />
 		</xs:sequence>
-		<xs:attribute name="crypto" type="xs:boolean" default="true"
-			use="optional" />
-		<xs:attribute name="schedulerDelay" type="intervalType"
-			use="optional" default="PT15S" /> 
+		<xs:attribute name="crypto" type="xs:boolean" default="true" use="optional" />
+		<xs:attribute name="schedulerDelay" type="intervalType" use="optional" default="PT15S" />
+		<xs:attribute name="queueMaintainerDelay" type = "intervalType" use = "optional" /> 
 		<xs:attribute name="restPort" use="optional" type="portType" />
 	</xs:complexType>
 	<xs:complexType name="database">  
