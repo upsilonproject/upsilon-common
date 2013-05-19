@@ -6,7 +6,7 @@
   <version>1.0.3</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <releaseVersion>0.102.0</releaseVersion>
+    <releaseVersion>0.103.0</releaseVersion>
     <deployUrl>sftp://upsilonproject@upsilon-project.co.uk:/public_html/</deployUrl>
   </properties>
 
