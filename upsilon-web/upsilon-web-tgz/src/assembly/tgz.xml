@@ -1,0 +1,19 @@
+<assembly>
+	<id>upsilon</id>
+	<formats>
+		<format>tar.gz</format>
+	</formats>
+	<fileSets>
+		<fileSet>
+			<directory>../../var/</directory>
+			<outputDirectory>setup</outputDirectory>
+			<includes>
+				<include>schema.sql</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>../src/main/php/</directory>
+			<outputDirectory>upload</outputDirectory>
+		</fileSet>
+	</fileSets>
+</assembly>
