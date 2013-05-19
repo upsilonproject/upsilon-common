@@ -1,0 +1,119 @@
+body {
+	background-color: black;
+	color: gray;
+}
+
+div.block {
+	background-color: #666;
+	color: #bbb;
+}
+
+div.navigationMenuItems h2 {
+	color: white;
+}
+
+h3 {
+}
+
+h2 {
+	color: #bbb;
+}
+
+.metricIndicator {
+	color: black;
+}
+
+.metricTitle {
+	color: #0b0;
+}
+
+.metricOutput {
+	color: #0b0;
+}
+
+a, a:visited {
+	color: skyblue;
+}
+
+
+div.serviceDetail, th, tr:nth-child(2n), table, table.taskList td {
+	background-color: #333;
+}
+
+tr:nth-child(odd) {
+	background-color: #000;
+}
+
+td {
+	padding: .2em;
+}
+
+table.hover tr:hover td {
+	background-color: #69695a;
+	color: white;
+}
+
+div.navigationMenuItems, div.box {
+	background-color: #666;
+}
+
+div.box {
+	color: white;
+}
+
+table th, .formSection {
+	background-color: #666;
+	color: white;
+}
+
+table.dataTable th:hover {
+	background-color: #666;
+}
+
+pre {
+	background-color: inherit;
+	color: #0b0;
+}
+
+svg g[inkscape\:label="floors"] {
+	fill: gray;
+}
+
+svg g[inkscape\:label="voids"] {
+	fill: black;
+}
+
+svg g[inkscape\:label="walls"] {
+	fill: none; 
+	stroke: #666; 
+	stroke-width: 8; 
+	stroke-linejoin: miter; 
+	stroke-linecap:round;
+}
+
+svg g[inkscape\:label="openings"] {
+	fill: none; 
+	stroke: white; 
+	stroke-width: 3; 
+	stroke-dasharray: 10 3.5;
+}
+
+td.poor, td.bad, td.good, td.warning, td.skipped {
+	color: black;
+}
+
+form fieldset:nth-of-type(even) {
+	background-color: #333;
+}
+
+form fieldset:nth-of-type(odd) {
+	background-color: black;
+}
+
+form {
+	border: 2px solid black;
+}
+
+div.graph {
+	color: white;
+}
