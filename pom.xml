@@ -3,10 +3,44 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>upsilon</groupId>
   <artifactId>upsilon</artifactId>
-  <version>1.0.0</version>
+  <version>2.0.0</version>
+
+  <distributionManagement>
+    <repository>
+      <id>upsilon-project.co.uk</id>
+      <url>${deployUrl}repositories/maven/</url>
+    </repository>
+  </distributionManagement>
+
+  <properties>
+    <deployUrl>sftp://upsilonproject@upsilon-project.co.uk:/public_html/</deployUrl>
+  </properties>
 
   <packaging>pom</packaging>
   <modules>
     <module>upsilon-node</module>
+    <module>upsilon-web</module>
   </modules>   
+
+  <build>
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh</artifactId>
+        <version>2.2</version>
+      </extension>
+    </extensions> 
+    <plugins> 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <source>1.7</source>
+          <target>1.7</target>
+        </configuration>  
+      </plugin> 
+  </plugins>  
+  </build>
+
 </project>

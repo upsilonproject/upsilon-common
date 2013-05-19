@@ -8,8 +8,8 @@
 	</properties>
 	<parent>
 		<groupId>upsilon</groupId>
-		<artifactId>upsilon-pom</artifactId>
-		<version>1.0.2</version>
+		<artifactId>upsilon-node</artifactId>
+		<version>2.0.0</version>
 	</parent>
 	<artifactId>upsilon-rpm</artifactId>
 	<packaging>rpm</packaging>
