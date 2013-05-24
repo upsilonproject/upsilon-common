@@ -1,14 +1,20 @@
-<div id = "graphService{$serviceId}" class = "graph">
+	<div id = "graphService{$instanceGraphIndex}" class = "graph">
 
-</div>
-<script type = "text/javascript">
-fetchServiceMetricResultGraph('{$metric}', '{$serviceId}');
+	</div>
+	<script type = "text/javascript">
+datasets = []
 
-{literal}
-pm = window.plotMarkings[{/literal}{$serviceId}{literal}] = [];
-{/literal}
-
-{foreach from = $yAxisMarkings item = marking}
-pm.push({$marking})
+{foreach from = $listServiceId item = serviceId}
+datasets.push({$serviceId});
 {/foreach}
-</script>
+
+	fetchServiceMetricResultGraph('{$metric}', datasets, '{$instanceGraphIndex}');
+
+	{literal}
+pm = window.plotMarkings[{/literal}{$instanceGraphIndex}{literal}] = [];
+	{/literal}
+
+	{foreach from = $yAxisMarkings item = marking}
+pm.push({$marking})
+	{/foreach}
+	</script>

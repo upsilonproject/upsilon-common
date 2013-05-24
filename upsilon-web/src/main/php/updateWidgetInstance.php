@@ -26,7 +26,10 @@ class FormUpdateWidgetInstance extends Form {
 	private function addElementsWidgetOptions() {
 		foreach ($this->widgetInstance->getArguments() as $name => $value) {
 			$el = $this->widgetInstance->getArgumentFormElement($name);
-			$el->setValue($this->widgetInstance->getArgumentValue($name));
+
+			$val = $this->widgetInstance->getArgumentValue($name);
+	
+			$el->setValue($val);
 
 			$this->addElement($el);
 		}
@@ -53,9 +56,15 @@ class FormUpdateWidgetInstance extends Form {
 		$stmt->bindValue(':instance', $this->getElementValue('id'));
 
 		foreach ($this->widgetInstance->getArguments() as $name => $oldValue) {
+			$val = $this->getElementValue($name);
+
+			if (is_array($val)) {
+				$val = implode(";", $val);
+			}
+
 			$stmt->bindValue(':name', $name);
-			$stmt->bindValue(':value', $this->getElementValue($name));
-			$stmt->bindValue(':value2', $this->getElementValue($name));
+			$stmt->bindValue(':value', $val);
+			$stmt->bindValue(':value2', $val);
 			$stmt->execute();
 		}
 	}
