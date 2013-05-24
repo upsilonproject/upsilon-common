@@ -2,18 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>upsilon</groupId>
-  <artifactId>upsilon-node</artifactId>
+  <artifactId>upsilon</artifactId>
   <version>2.0.0</version>
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <releaseVersion>0.103.0</releaseVersion>
-  </properties>
-
-  <parent>
-    <groupId>upsilon</groupId>
-    <artifactId>upsilon</artifactId>
-    <version>2.0.0</version>
-  </parent>
 
   <distributionManagement>
     <repository>
@@ -22,15 +12,16 @@
     </repository>
   </distributionManagement>
 
+  <properties>
+    <deployUrl>sftp://upsilonproject@upsilon-project.co.uk:/public_html/</deployUrl>
+  </properties>
+
   <packaging>pom</packaging>
   <modules>
-    <module>upsilon-jar</module>
-    <module>upsilon-doc</module>
-    <module>upsilon-rpm</module>
-	<module>upsilon-tgz</module>
-	<module>upsilon-deb</module>
-  </modules> 
-  
+    <module>upsilon-node</module>
+    <module>upsilon-web</module>
+  </modules>   
+
   <build>
     <extensions>
       <extension>
@@ -51,4 +42,5 @@
       </plugin> 
   </plugins>  
   </build>
+
 </project>

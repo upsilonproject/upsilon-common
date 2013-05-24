@@ -14,7 +14,7 @@
 	<artifactId>upsilon-rpm</artifactId>
 	<packaging>rpm</packaging>
 	<build>
-		<finalName>upsilon-${releaseVersion}</finalName>
+		<finalName>upsilon-${releaseVersion}-fedora</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -29,10 +29,17 @@
 					<changelogFile>../doc/changelog.txt</changelogFile>
 					<name>upsilon</name>
 					<summary>Upsilon is a distributed, flexible and extensible system monitoring application.</summary>
-					<description>This RPM is intended for all RPM distributions where a more specific package is not available.</description>
+					<description>A distributed, flexible and extensible system monitoring application.</description>
 
 					<requires>
 						<require>java-1.7.0-openjdk</require>
+						<require>logback</require>
+						<require>slf4j</require>
+						<require>jersey</require>
+						<require>jul-to-slf4j-stub</require>
+						<require>joda-time</require>
+						<require>jakarta-commons-httpclient</require>
+						<require>guava</require>
 					</requires>
 
 					<mappings>
@@ -42,7 +49,7 @@
 							<directoryIncluded>false</directoryIncluded>
 							<sources>
 								<source>
-									<location>../upsilon-jar/target/upsilon-${releaseVersion}.jar</location>
+									<location>../upsilon-jar/target/upsilon-${releaseVersion}-nodeps.jar</location>
 									<destination>upsilon-${releaseVersion}.jar</destination>
 								</source>
 							</sources>
@@ -52,8 +59,7 @@
 							<directoryIncluded>false</directoryIncluded>
 							<dependency>
 								<includes>
-									<include>mysql:mysql-connector-java</include>
-									<include>jmock:jmock</include>
+									<!--<include>mysql:mysql-connector-java</include>!-->
 								</includes>
 							</dependency>
 						</mapping>

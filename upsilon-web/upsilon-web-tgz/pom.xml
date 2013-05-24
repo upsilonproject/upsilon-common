@@ -9,10 +9,10 @@
 	</properties>
 	<parent>
 		<groupId>upsilon</groupId>
-		<artifactId>upsilon-node</artifactId>
-		<version>2.0.0</version>
+		<artifactId>upsilon-web</artifactId>
+		<version>1.0.0</version>
 	</parent>
-	<artifactId>upsilon-tgz</artifactId>
+	<artifactId>upsilon-web-tgz</artifactId>
 
 	<build>
 		<plugins>
@@ -21,7 +21,7 @@
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
 					<descriptor>src/assembly/tgz.xml</descriptor>
-					<finalName>upsilon-${releaseVersion}</finalName>
+					<finalName>upsilon-web-${releaseVersion}</finalName>
 					<appendAssemblyId>false</appendAssemblyId>
 				</configuration>
 				<executions>
@@ -47,7 +47,7 @@
 						<configuration>
 							<fromDir>target/</fromDir>
 							<includes>*.tar.gz</includes>
-							<url>${deployUrl}/releases/tgz/</url>
+							<url>${deployUrl}/releases/upsilon-web-tgz/</url>
 						</configuration>
 					</execution>
 				</executions>
