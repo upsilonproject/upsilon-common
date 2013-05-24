@@ -112,21 +112,28 @@ function getServiceMetrics($results, $field) {
 	return $metrics;
 }
 
-$results = getServiceResults($_REQUEST['id']);
-$results = array_reverse($results);
-
 $field = Sanitizer::getInstance()->filterString('metric');
 
 if (empty($field)) {
 	$field = 'karma';
 }
 
-$metrics = getServiceMetrics($results, $field);
+$metrics = array();
+
+foreach ($_REQUEST['services'] as $service) {
+	$results = getServiceResults($service);
+	$results = array_reverse($results);
+
+	$metrics[] = array(
+		'serviceId' => $service,
+		'metrics' => getServiceMetrics($results, $field)
+	);
+}
 
 header('Content-Type: application/json');
 echo json_encode(array(
-	'serviceId' => $_REQUEST['id'],
-	'metrics' => $metrics
+	'graphIndex' => $_REQUEST['graphIndex'],
+	'services' => $metrics
 ));
 
 exit;

@@ -27,8 +27,7 @@ function rawPlot(plot, ctx) {
 }
 
 function updateGraph(results) {
-	$('#graphService' + results.serviceId).empty();
-	valuesArray = [];
+	$('#graphService' + results.graphIndex).empty();
 
 	options = {
 		points: { show: true}, 
@@ -38,35 +37,56 @@ function updateGraph(results) {
 		grid: { backgroundColor: {colors: ["#cecece", '#cecece'] }, markings: [] }
 	};
 
-	$(window.plotMarkings[results.serviceId]).each(function(index, item) {
+	$(window.plotMarkings[results.graphIndex]).each(function(index, item) {
 		options.grid.markings.push({
 			"yaxis": { from: item, to: item},
 			"color": "red"
 		});
 	});
 
+	axisData = []
 
-	$(results.metrics).each(function(index, result) {
-		valuesArray.push([result.date*1000, result.value, result.karma])
+	$(results.services).each(function(index, service) {
+		valuesArray = [];
+
+		$(service.metrics).each(function(index, result) {
+			valuesArray.push([result.date*1000, result.value, result.karma])
+		});
+
+		axisData.push({ 
+			"color": getAxisColor($(axisData).size()),
+			"data": valuesArray
+		});
 	});
 
 	var plot = $.plot(
-		$("#graphService" + results.serviceId),
-		[{ color: '#000', data: valuesArray}],
+		$("#graphService" + results.graphIndex),
+		axisData,
 		options
 	);  
 
-	window.plots[results.serviceId] = plot;
+	window.plots[results.graphIndex] = plot;
+}
+
+function getAxisColor(index) {
+	switch(index) {
+		default: return "black";
+	}
 }
 
 window.plots = {};
 window.plotMarkings = {};
 
-function fetchServiceMetricResultGraph(metric, id) {
-	window.serviceResultGraphUrl = 'viewServiceResultGraph.php?id=' + id + '&metric=' + metric;
-	$.getJSON(window.serviceResultGraphUrl, updateGraph);
+function fetchServiceMetricResultGraph(metric, id, graphIndex) {
+	data = {
+		"services": id,
+		"metric": metric,
+		"graphIndex": graphIndex
+	}
 
-	$('h4#graphTitle').text('Graph (Showing metric: ' + metric + ')')
+	window.serviceResultGraphUrl = 'viewServiceResultGraph.php';
+
+	$.getJSON(window.serviceResultGraphUrl, data, updateGraph);
 }
 
 

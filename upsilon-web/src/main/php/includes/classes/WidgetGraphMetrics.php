@@ -6,21 +6,34 @@ use \libAllure\ElementNumeric;
 use \libAllure\ElementTextbox;
 
 class WidgetGraphMetrics extends Widget {
+	private static $graphIndex = 0;
+
 	public function __construct() {
 		parent::__construct();
-		$this->arguments['service'] = null;
+	
+		$this->instanceGraphIndex = self::$graphIndex++;
+
+		$this->arguments['service[]'] = null;
 		$this->arguments['metric'] = null;
 		$this->arguments['yAxisMarkings'] = null;
 	}
 
 	public function render() {
-		$id = $this->getArgumentValue('service');
-		$metric = $this->getArgumentValue('metric');
+		$id = $this->getArgumentValue('service[]');
 
 		global $tpl;
-		$tpl->assign('serviceId', $id);
-		$tpl->assign('metric', $metric);
-		$tpl->assign('yAxisMarkings', explode("\n", $this->getArgumentValue('yAxisMarkings')));
+		$tpl->assign('listServiceId', $id);
+		$tpl->assign('metric', $this->getArgumentValue('metric'));
+
+		$v = trim($this->getArgumentValue('yAxisMarkings'));
+		if (empty($v)) {
+			$v = array(); 
+		} else {
+			$v = explode("\n", $v);
+		}
+
+		$tpl->assign('yAxisMarkings', $v);
+		$tpl->assign('instanceGraphIndex', $this->instanceGraphIndex);
 		$tpl->display('widgetGraphMetric.tpl');
 
 	}
@@ -37,7 +50,9 @@ class WidgetGraphMetrics extends Widget {
 	}
 
 	public function addLinks() {
-		$this->links->add('viewService.php?id=' . $this->getArgumentValue('service'), 'Service');
+		foreach ($this->getArgumentValue('service[]') as $service) {
+			$this->links->add('viewService.php?id=' . $service, 'Service ' . $service);
+		}
 	}
 }
 
