@@ -12,11 +12,8 @@
 			</includes>
 		</fileSet>
 		<fileSet>
-			<directory>../upsilon-jar/target/</directory>
-			<outputDirectory>binaries</outputDirectory>
-			<includes>
-				<include>*.jar</include>
-			</includes>
+			<directory>../src/main/php/</directory>
+			<outputDirectory>upload</outputDirectory>
 		</fileSet>
 	</fileSets>
 </assembly>

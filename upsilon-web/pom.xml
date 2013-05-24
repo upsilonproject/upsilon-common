@@ -2,12 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>upsilon</groupId>
-  <artifactId>upsilon-node</artifactId>
-  <version>2.0.0</version>
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <releaseVersion>0.103.0</releaseVersion>
-  </properties>
+  <artifactId>upsilon-web</artifactId>
+  <version>1.0.0</version>
 
   <parent>
     <groupId>upsilon</groupId>
@@ -15,22 +11,22 @@
     <version>2.0.0</version>
   </parent>
 
-  <distributionManagement>
-    <repository>
-      <id>upsilon-project.co.uk</id>
-      <url>${deployUrl}repositories/maven/</url>
-    </repository>
-  </distributionManagement>
+  <properties>
+  	<releaseVersion>1.0.0</releaseVersion>
+  </properties>
 
   <packaging>pom</packaging>
   <modules>
-    <module>upsilon-jar</module>
-    <module>upsilon-doc</module>
-    <module>upsilon-rpm</module>
-	<module>upsilon-tgz</module>
-	<module>upsilon-deb</module>
-  </modules> 
-  
+    <module>upsilon-web-tgz</module>
+  </modules>   
+
+  <distributionManagement>
+    <repository>
+      <id>upsilon-project.co.uk</id>
+      <url>${deployUrl}repositories/web/maven/</url>
+    </repository>
+  </distributionManagement>
+
   <build>
     <extensions>
       <extension>
@@ -51,4 +47,5 @@
       </plugin> 
   </plugins>  
   </build>
+
 </project>
