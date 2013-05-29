@@ -43,9 +43,17 @@ public class RobustProcessExecutor implements Callable<Integer> {
 
 	@Override
 	public Integer call() throws Exception {
-		this.p.waitFor();
-
-		return this.p.exitValue();
+		int ret;
+		
+		try {
+			ret = this.p.exitValue();
+		} catch (IllegalStateException e ){
+			this.p.waitFor();			 
+		}
+		
+		ret = this.p.exitValue();
+		
+		return ret;
 	}
 
 	public void destroy() {
@@ -123,7 +131,7 @@ public class RobustProcessExecutor implements Callable<Integer> {
 		RobustProcessExecutor.executingThreadPool.execute(monitoringThread);
 	}
 
-	public String getOutput() {
+	private String getOutput() {
 		String output = "";
 		final String errorStream = this.outputStreamToString(this.p.getErrorStream());
 
@@ -136,7 +144,7 @@ public class RobustProcessExecutor implements Callable<Integer> {
 		return output;
 	}
 
-	public int getReturn() throws InterruptedException, ExecutionException, TimeoutException {
+	private int getReturn() throws InterruptedException, ExecutionException, TimeoutException {
 		if (RobustProcessExecutor.monitoringThreadPool.isShutdown() || RobustProcessExecutor.monitoringThreadPool.isTerminated()) {
 			this.log.warn("Service check cannot be executed, because the threadpool has been shutdown. Assuming exit status of 0.");
 			return 0;

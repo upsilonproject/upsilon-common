@@ -50,8 +50,8 @@ public class RestClient {
         if (uri.getPort() == 0) {
             throw new IllegalArgumentException("The port for the remote host URL in a rest client is not valid: " + uri.getPort());
         }
-
-        if ((uri.getHost() == null) || uri.getHost().isEmpty()) {
+        
+        if (uri.getHost().isEmpty()) {
             throw new IllegalArgumentException("The host part for the remote host URL in a rest client is not valid: " + uri.getHost());
         }
 
