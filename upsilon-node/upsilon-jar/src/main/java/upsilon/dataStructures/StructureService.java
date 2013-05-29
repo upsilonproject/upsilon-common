@@ -221,6 +221,10 @@ public class StructureService extends ConfigStructure implements AbstractService
 	public void setUpdateIncrement(final Duration increment) {
 		this.ft.setInc(increment);
 	}
+	
+	public String toString() {
+		return this.identifier;
+	}
 
 	@Override
 	public void update(final XmlNodeHelper el) {
