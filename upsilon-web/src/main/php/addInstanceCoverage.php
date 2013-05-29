@@ -70,11 +70,10 @@ class FormUpdateInstanceCoverage extends Form {
 	}
 
 	public function process() {
-		$sql = 'DELETE FROM class_service_assignments WHERE instance = :instance AND service = :service AND requirement = :requirement ';
+		$sql = 'DELETE FROM class_service_assignments WHERE instance = :instance AND requirement = :requirement ';
 		$stmt = DatabaseFactory::getInstance()->prepare($sql);
 		$stmt->bindValue(':instance', $this->getElementValue('instance'));
 		$stmt->bindValue(':requirement', $this->getElementValue('requirement'));
-		$stmt->bindValue(':service', $this->getElementValue('service'));
 		$stmt->execute();
 
 		$sql = 'INSERT INTO class_service_assignments(instance, requirement, service) values (:instance, :requirement, :service)';

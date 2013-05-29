@@ -12,8 +12,6 @@ class Widget {
 
 	public function __construct() {
 		$this->arguments['title'] = null;
-		$this->arguments['service'] = null;
-
 	}
 
 	public function getTitle() {
@@ -37,8 +35,16 @@ class Widget {
 		echo 'Empty Widget!';
 	}
 
-	private function getFormElementService() {
-		$el = new ElementSelect('service', 'Service');
+	private function getFormElementService($multi = false) {
+		if (!$multi) {
+			$el = new ElementSelect('service', 'Service');
+		} else if ($multi) {
+			$el = new ElementSelect('service[]', 'Services');
+			$el->setSize(5);
+			$el->multiple = true;
+		} else {
+			throw new Exception('No service arg in widget');
+		}
 
 		$sql = 'SELECT s.id, s.identifier FROM services s';
 		$stmt = DatabaseFactory::getInstance()->prepare($sql);
@@ -64,13 +70,22 @@ class Widget {
 			return null;
 		}
 
-		return $this->arguments[$key];
+		$val = $this->arguments[$key];
+
+		if (strpos($key, '[]') !== FALSE) {
+			$val = explode(';', $val);
+		}
+
+
+		return $val;
 	}
 
 	public function getArgumentFormElement($optionName) {
 		switch ($optionName) {
+		case 'service[]':
+			return $this->getFormElementService(true);
 		case 'service':
-			return $this->getFormElementService();
+			return $this->getFormElementService(false);
 		default:
 			return new ElementInput($optionName, ucwords($optionName), null);
 		}
