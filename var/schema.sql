@@ -177,7 +177,7 @@ CREATE TABLE `nodes` (
   `instanceApplicationVersion` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `identifier` (`identifier`)
-) ENGINE=InnoDB AUTO_INCREMENT=751643 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=751715 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -298,7 +298,7 @@ CREATE TABLE `service_check_results` (
   `output` longtext,
   PRIMARY KEY (`id`),
   KEY `ix_service` (`service`)
-) ENGINE=InnoDB AUTO_INCREMENT=1378584 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1378615 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -352,7 +352,7 @@ CREATE TABLE `services` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `identifier` (`identifier`),
   KEY `identifier_2` (`identifier`)
-) ENGINE=InnoDB AUTO_INCREMENT=1369662 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1369693 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -481,4 +481,4 @@ CREATE TABLE `widgets` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-05-30 19:26:27
+-- Dump completed on 2013-05-30 19:31:23
