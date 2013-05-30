@@ -8,5 +8,7 @@ if (Session::isLoggedIn()) {
 	Session::logout();
 }
 
+redirect('index.php', 'Logged out');
+
 ?>
 <h1><a href = "/">Logged out</a></h1>

@@ -1,5 +1,14 @@
 <?php
 
+require_once 'includes/common.php';
+
+$title = 'API Clients';
+
+use \libAllure\HtmlLinksCollection;
+
+$links = new HtmlLinksCollection();
+$links->add('createApiClient.php', 'Create API Client');
+
 require_once 'includes/widgets/header.php';
 
 use \libAllure\DatabaseFactory;

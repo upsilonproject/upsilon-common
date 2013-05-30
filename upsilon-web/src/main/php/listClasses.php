@@ -3,6 +3,7 @@
 require_once 'includes/common.php';
 
 use \libAllure\HtmlLinksCollection;
+use \libAllure\Sanitizer;
 
 $id = (Sanitizer::getInstance()->filterUint('id'));
 
@@ -20,7 +21,6 @@ $title = 'Classes';
 require_once 'includes/widgets/header.php';
 
 use \libAllure\DatabaseFactory;
-use \libAllure\Sanitizer;
 
 # leaf/edge nodes
 $ssql = 'SELECT n.id, n.title AS parentId FROM classes AS n WHERE n.r = n.l + 1';

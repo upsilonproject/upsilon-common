@@ -1,5 +1,3 @@
-<a href = "createGroup.php">Create Group</a>
-
 <div class = "box">
 	<h2>Groups</h2>
 	
