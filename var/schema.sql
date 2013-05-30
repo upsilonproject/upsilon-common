@@ -16,6 +16,119 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+<<<<<<< HEAD
+=======
+-- Table structure for table `apiClients`
+--
+
+DROP TABLE IF EXISTS `apiClients`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `apiClients` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `identifier` varchar(32) DEFAULT NULL,
+  `user` int(11) NOT NULL,
+  `anonymousLogin` tinyint(4) DEFAULT NULL,
+  `drawHeader` tinyint(4) DEFAULT '1',
+  `drawNavigation` tinyint(4) NOT NULL,
+  `drawBigClock` tinyint(4) NOT NULL,
+  `redirect` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `class_instance_parents`
+--
+
+DROP TABLE IF EXISTS `class_instance_parents`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `class_instance_parents` (
+  `parent` int(11) NOT NULL,
+  `instance` int(11) DEFAULT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `class_instances`
+--
+
+DROP TABLE IF EXISTS `class_instances`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `class_instances` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(64) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `class_service_assignments`
+--
+
+DROP TABLE IF EXISTS `class_service_assignments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `class_service_assignments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `instance` int(11) DEFAULT NULL,
+  `service` varchar(128) DEFAULT NULL,
+  `requirement` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=80 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `class_service_requirements`
+--
+
+DROP TABLE IF EXISTS `class_service_requirements`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `class_service_requirements` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(32) DEFAULT NULL,
+  `class` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `classes`
+--
+
+DROP TABLE IF EXISTS `classes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `classes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(32) DEFAULT NULL,
+  `l` int(11) DEFAULT NULL,
+  `r` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `dashboard`
+--
+
+DROP TABLE IF EXISTS `dashboard`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `dashboard` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+>>>>>>> b809770530fc696695347ba00509baf165c68a65
 -- Table structure for table `group_memberships`
 --
 
@@ -29,7 +142,11 @@ CREATE TABLE `group_memberships` (
   `service` varchar(128) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `group` (`group`,`service`)
+<<<<<<< HEAD
 ) ENGINE=InnoDB AUTO_INCREMENT=544773 DEFAULT CHARSET=utf8;
+=======
+) ENGINE=InnoDB AUTO_INCREMENT=103427841 DEFAULT CHARSET=utf8;
+>>>>>>> b809770530fc696695347ba00509baf165c68a65
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -48,7 +165,11 @@ CREATE TABLE `groups` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`title`),
   UNIQUE KEY `name_UNIQUE` (`name`)
+<<<<<<< HEAD
 ) ENGINE=InnoDB AUTO_INCREMENT=193906 DEFAULT CHARSET=utf8;
+=======
+) ENGINE=InnoDB AUTO_INCREMENT=16083620 DEFAULT CHARSET=utf8;
+>>>>>>> b809770530fc696695347ba00509baf165c68a65
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -66,7 +187,26 @@ CREATE TABLE `nodes` (
   `lastUpdated` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `identifier` (`identifier`)
+<<<<<<< HEAD
 ) ENGINE=InnoDB AUTO_INCREMENT=601365 DEFAULT CHARSET=latin1;
+=======
+) ENGINE=InnoDB AUTO_INCREMENT=751643 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `peers`
+--
+
+DROP TABLE IF EXISTS `peers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `peers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `child` int(11) NOT NULL,
+  `parent` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+>>>>>>> b809770530fc696695347ba00509baf165c68a65
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -111,6 +251,56 @@ CREATE TABLE `privileges_u` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+<<<<<<< HEAD
+=======
+-- Table structure for table `remote_config_services`
+--
+
+DROP TABLE IF EXISTS `remote_config_services`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `remote_config_services` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `identifier` varchar(128) DEFAULT NULL,
+  `config` int(11) DEFAULT NULL,
+  `parent` varchar(128) DEFAULT NULL,
+  `commandRef` varchar(128) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `identifier` (`identifier`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `remote_configs`
+--
+
+DROP TABLE IF EXISTS `remote_configs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `remote_configs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `identifier` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `rooms`
+--
+
+DROP TABLE IF EXISTS `rooms`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `rooms` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `filename` varchar(128) DEFAULT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+>>>>>>> b809770530fc696695347ba00509baf165c68a65
 -- Table structure for table `service_check_results`
 --
 
@@ -123,8 +313,14 @@ CREATE TABLE `service_check_results` (
   `checked` datetime DEFAULT NULL,
   `karma` varchar(32) DEFAULT NULL,
   `output` longtext,
+<<<<<<< HEAD
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=290586 DEFAULT CHARSET=latin1;
+=======
+  PRIMARY KEY (`id`),
+  KEY `ix_service` (`service`)
+) ENGINE=InnoDB AUTO_INCREMENT=1378584 DEFAULT CHARSET=utf8;
+>>>>>>> b809770530fc696695347ba00509baf165c68a65
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -142,7 +338,11 @@ CREATE TABLE `service_metadata` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`),
   UNIQUE KEY `service` (`service`)
+<<<<<<< HEAD
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+=======
+) ENGINE=InnoDB AUTO_INCREMENT=219 DEFAULT CHARSET=latin1;
+>>>>>>> b809770530fc696695347ba00509baf165c68a65
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -166,8 +366,28 @@ CREATE TABLE `services` (
   `estimatedNextCheck` datetime DEFAULT NULL,
   `isLocal` tinyint(4) DEFAULT NULL,
   PRIMARY KEY (`id`),
+<<<<<<< HEAD
   UNIQUE KEY `identifier` (`identifier`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12059 DEFAULT CHARSET=utf8;
+=======
+  UNIQUE KEY `identifier` (`identifier`),
+  KEY `identifier_2` (`identifier`)
+) ENGINE=InnoDB AUTO_INCREMENT=1369662 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `settings`
+--
+
+DROP TABLE IF EXISTS `settings`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `settings` (
+  `key` varchar(32) NOT NULL,
+  `value` longtext,
+  PRIMARY KEY (`key`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+>>>>>>> b809770530fc696695347ba00509baf165c68a65
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -201,6 +421,61 @@ CREATE TABLE `users` (
   `lastLogin` datetime DEFAULT NULL,
   `daytimeBegin` varchar(32) DEFAULT NULL,
   `daytimeEnd` varchar(32) DEFAULT NULL,
+<<<<<<< HEAD
+=======
+  `metadata` varchar(128) DEFAULT NULL,
+  `promptBeforeDeletions` tinyint(4) NOT NULL DEFAULT '1',
+  `oldServiceThreshold` int(11) DEFAULT '3600',
+  `tutorialMode` int(11) DEFAULT '1',
+  `enableDebug` tinyint(4) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `widget_instance_arguments`
+--
+
+DROP TABLE IF EXISTS `widget_instance_arguments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `widget_instance_arguments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(32) DEFAULT NULL,
+  `value` longtext,
+  `instance` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `instance` (`instance`,`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=133 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `widget_instances`
+--
+
+DROP TABLE IF EXISTS `widget_instances`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `widget_instances` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `widget` int(11) DEFAULT NULL,
+  `dashboard` int(11) DEFAULT NULL,
+  `options` longtext,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `widgets`
+--
+
+DROP TABLE IF EXISTS `widgets`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `widgets` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `class` varchar(32) DEFAULT NULL,
+>>>>>>> b809770530fc696695347ba00509baf165c68a65
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -214,4 +489,8 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
+<<<<<<< HEAD
 -- Dump completed on 2013-05-30 19:25:25
+=======
+-- Dump completed on 2013-05-30 19:26:27
+>>>>>>> b809770530fc696695347ba00509baf165c68a65
