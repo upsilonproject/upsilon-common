@@ -17,6 +17,7 @@
      
     <!-- disable low level XML messages -->
     <logger name = "com.sun.xml.bind.v2" level = "WARN" />
+    <logger name = "com.sun.xml.internal.bind.v2" level = "WARN" /> 
     <logger name = "javax.xml.bind" level = "WARN" />
     
     <logger name = "upsilon" level = "DEBUG" />  
@@ -24,7 +25,7 @@
     <root>
         <appender class="ch.qos.logback.core.ConsoleAppender">   
         	<encoder>   
-        		<pattern>%d{HH:mm:ss.SSS} %-5level [%thread] %msg%n</pattern>
+        		<pattern>%d{HH:mm:ss.SSS} %-5level [%thread] %C %msg%n</pattern>
         	</encoder>    
         </appender>    
     </root>   

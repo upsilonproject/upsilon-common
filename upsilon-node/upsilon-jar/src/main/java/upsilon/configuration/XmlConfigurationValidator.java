@@ -27,11 +27,14 @@ public class XmlConfigurationValidator implements ErrorHandler {
     private final File f;
     private Document d;
     private boolean isParsed = false;
+	private boolean remote = false;
 
     private static final Logger LOG = LoggerFactory.getLogger(XmlConfigurationValidator.class);
 
-    public XmlConfigurationValidator(final File f) throws Exception {
-        final InputStream xsdSchemaStream = ResourceResolver.getInstance().getInternalFromFilename("upsilon.xsd");
+    public XmlConfigurationValidator(final File f, boolean remote) throws Exception {
+    	this.remote = remote;
+    	
+        final InputStream xsdSchemaStream = selectSchema(f);
         final StreamSource xsdSchema = new StreamSource(xsdSchemaStream);
 
         final Schema s = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(xsdSchema);
@@ -43,6 +46,15 @@ public class XmlConfigurationValidator implements ErrorHandler {
         this.builder = dbf.newDocumentBuilder();
         this.builder.setErrorHandler(this);
     }
+        
+    private InputStream selectSchema(File f) throws Exception {
+    	if (this.remote) {  
+    		LOG.debug("remote xsd selected");
+    		return ResourceResolver.getInstance().getInternalFromFilename("upsilon-remote.xsd");
+    	} else {
+    		return ResourceResolver.getInstance().getInternalFromFilename("upsilon.xsd");
+    	}
+    } 
 
     @Override
     public void error(final SAXParseException exception) throws SAXException {

@@ -46,7 +46,7 @@ public class Configuration {
 		fingerprint = fingerprint.trim();
 		fingerprint = fingerprint.replace(" ", "");
 		fingerprint = fingerprint.replace(":", "");
-		fingerprint = fingerprint.toLowerCase();
+	 	fingerprint = fingerprint.toLowerCase();
 
 		final Pattern p = Pattern.compile("[a-z|0-9]{40}");
 		final Matcher m = p.matcher(fingerprint);

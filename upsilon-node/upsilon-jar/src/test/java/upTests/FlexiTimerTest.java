@@ -50,16 +50,19 @@ public class FlexiTimerTest {
 	}
 
 	@Test
-	@Ignore
 	public void testDateTimer() {
-		MutableFlexiTimer ft = new MutableFlexiTimer(Duration.standardSeconds(10), Duration.standardSeconds(100), Duration.standardSeconds(10), "");
+		MutableFlexiTimer ft = new MutableFlexiTimer(Duration.standardSeconds(1), Duration.standardSeconds(100), Duration.standardSeconds(10), "");
 
+		Assert.assertFalse(ft.isTouchedPassed());
+		
 		ft.touch();
-		Assert.assertEquals(0, ft.getSecondsRemaining());
-
-		Util.lazySleep(Duration.millis(100));
+		Assert.assertEquals(1, ft.getSecondsRemaining());
+ 
+		Util.lazySleep(Duration.millis(10)); 
 
 		Assert.assertTrue(ft.isTouchedPassed());
+		 
+		Assert.assertNotNull(ft.toString());
 	}
 
 	@Test
