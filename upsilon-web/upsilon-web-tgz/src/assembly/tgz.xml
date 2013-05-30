@@ -10,6 +10,7 @@
 			<includes>
 				<include>schema.sql</include>
 				<include>initialData.sql</include>
+				<include>importdb.sh</include>
 			</includes>
 		</fileSet>
 		<fileSet>
