@@ -9,6 +9,7 @@
 			<outputDirectory>setup</outputDirectory>
 			<includes>
 				<include>schema.sql</include>
+				<include>initialData.sql</include>
 			</includes>
 		</fileSet>
 		<fileSet>
