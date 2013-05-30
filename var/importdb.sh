@@ -15,12 +15,12 @@ echo "Press CTRL+C to quit without importing anything."
 read -sp "Enter your MySQL password (ENTER for none) to continue: " sqlpassword
 
 if [ -n "$sqlpassword" ]; then
-		sqlpassword="";
-else
 		sqlpassword="-p$sqlpassword";
+else
+		sqlpassword="";
 fi
 
-mysql -u root $sqlpassword -e 'DROP DATABASE upsilon; '
+mysql -u root $sqlpassword -e 'DROP DATABASE IF EXISTS upsilon; '
 mysql -u root $sqlpassword -e 'CREATE DATABASE upsilon'
 mysql -u root $sqlpassword upsilon < schema.sql 
 mysql -u root $sqlpassword upsilon < initialData.sql
