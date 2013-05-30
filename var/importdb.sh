@@ -20,6 +20,6 @@ else
 		sqlpassword="-p $sqlpassword";
 fi
 
-mysql -u root $sqlpassword -e 'CREATE DATABASE upsilon'
+mysql -u root $sqlpassword -e 'DROP DATABASE upsilon; CREATE DATABASE upsilon'
 mysql -u root $sqlpassword upsilon < schema.sql 
 mysql -u root $sqlpassword upsilon < initialData.sql
