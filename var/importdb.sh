@@ -17,7 +17,7 @@ read -sp "Enter your MySQL password (ENTER for none) to continue: " sqlpassword
 if [ -n "$sqlpassword" ]; then
 		sqlpassword="";
 else
-		sqlpassword="-p $sqlpassword";
+		sqlpassword="-p$sqlpassword";
 fi
 
 mysql -u root $sqlpassword -e 'DROP DATABASE upsilon; '
