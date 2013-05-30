@@ -1,5 +1,6 @@
 <?php
 
+$title = 'Add group membership';
 require_once 'includes/common.php';
 
 use \libAllure\Form;

@@ -1,5 +1,6 @@
 <?php
 
+$title = 'Login';
 require_once 'includes/common.php';
 require_once 'libAllure/util/FormLogin.php';
 

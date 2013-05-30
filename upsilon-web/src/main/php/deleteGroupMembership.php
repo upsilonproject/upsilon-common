@@ -1,5 +1,6 @@
 <?php
 
+$title = 'Delete group membership';
 require_once 'includes/common.php';
 
 use \libAllure\Sanitizer;

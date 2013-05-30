@@ -1,5 +1,6 @@
 <?php
 
+$title = 'Create remote config service';
 require_once 'includes/common.php';
 
 $sql = 'INSERT INTO remote_config_services (config) VALUES (:config) ';

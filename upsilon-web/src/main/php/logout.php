@@ -1,5 +1,6 @@
 <?php
 
+$title = 'Logout';
 require_once 'includes/common.php';
 
 use \libAllure\Session;

@@ -1,5 +1,6 @@
 <?php
 
+$title = 'View mobile stats';
 require_once 'includes/widgets/header.php';
 
 use \libAllure\DatabaseFactory;

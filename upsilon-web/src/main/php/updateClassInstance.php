@@ -1,5 +1,6 @@
 <?php
 
+$title = 'Update class instance';
 require_once 'includes/widgets/header.php';
 
 require_once 'libAllure/FormHandler.php';

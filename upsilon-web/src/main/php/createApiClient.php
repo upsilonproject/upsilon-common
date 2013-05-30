@@ -1,5 +1,6 @@
 <?php
 
+$title = 'Create API client';
 require_once 'includes/common.php';
 
 use \libAllure\Form;

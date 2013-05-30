@@ -2,7 +2,7 @@
 
 require_once 'includes/common.php';
 
-$tpl->assign('title', 'View Classes');
+$title = 'View class';
 require_once 'includes/widgets/header.php';
 
 use \libAllure\DatabaseFactory;

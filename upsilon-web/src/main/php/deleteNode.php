@@ -1,5 +1,6 @@
 <?php
 
+$title = 'Delete node';
 require_once 'includes/common.php';
 require_once 'includes/functions.php';
 

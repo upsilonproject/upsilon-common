@@ -8,7 +8,7 @@ setupCollapseableForms();
 	<p>
 		<strong>Crypto:</strong> <span class = "{if $crypto == "on"}good{else}bad{/if}">{$crypto}</span>
 		&nbsp;&nbsp;&nbsp;&nbsp;
-	{if $apiClient}
+	{if isset($apiClient)}
 		<strong>API Client:</strong> {$apiClient}
 	{else}
 		<strong>Time now:</strong> {$date}

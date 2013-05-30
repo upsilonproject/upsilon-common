@@ -1,5 +1,6 @@
 <?php
 
+$title = 'Add instance coverage';
 require_once 'includes/widgets/header.php';
 
 use \libAllure\Form;

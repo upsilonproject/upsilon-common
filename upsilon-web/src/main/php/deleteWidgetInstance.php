@@ -1,5 +1,6 @@
 <?php
 
+$title = 'Delete widget instance';
 require_once 'includes/common.php';
 
 use \libAllure\Sanitizer;

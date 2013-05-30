@@ -1,5 +1,6 @@
 <?php
 
+$title = 'Update group';
 require_once 'includes/common.php';
 
 use \libAllure\Form;

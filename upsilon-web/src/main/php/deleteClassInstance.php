@@ -1,5 +1,6 @@
 <?php
 
+$title = 'Delete class instance';
 require_once 'includes/common.php';
 
 use \libAllure\Sanitizer;

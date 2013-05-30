@@ -1,5 +1,6 @@
 <?php
 
+$title = 'Update API client';
 require_once 'includes/widgets/header.php';
 
 use \libAllure\FormHandler;

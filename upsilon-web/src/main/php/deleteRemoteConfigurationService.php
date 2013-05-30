@@ -1,5 +1,6 @@
 <?php
 
+$title = 'Delete remote configuration service';
 require_once 'includes/common.php';
 
 $sql = 'DELETE FROM remote_config_services WHERE id = :id';

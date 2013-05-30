@@ -1,5 +1,6 @@
 <?php
 
+$title = 'Update remote configuration service';
 require_once 'includes/common.php';
 
 use \libAllure\Form;

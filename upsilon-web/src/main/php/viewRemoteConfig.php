@@ -1,5 +1,6 @@
 <?php
 
+$title = 'View remote config';
 require_once 'includes/common.php';
 
 $sql = 'SELECT rc.* FROM remote_configs rc WHERE rc.id = :id';

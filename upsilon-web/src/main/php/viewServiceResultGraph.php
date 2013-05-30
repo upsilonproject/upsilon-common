@@ -1,6 +1,6 @@
 <?php
 
-
+$title = 'View service result graph';
 require_once 'includes/common.php';
 
 use \libAllure\DatabaseFactory;

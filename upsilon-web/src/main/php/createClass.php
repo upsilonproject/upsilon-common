@@ -1,5 +1,6 @@
 <?php
 
+$title = 'Create class';
 require_once 'includes/common.php';
 
 use \libAllure\Form;

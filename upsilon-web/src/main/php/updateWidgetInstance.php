@@ -1,5 +1,6 @@
 <?php
 
+$title = 'Update widget instance';
 require_once 'includes/common.php';
 require_once 'includes/classes/Widget.php';
 

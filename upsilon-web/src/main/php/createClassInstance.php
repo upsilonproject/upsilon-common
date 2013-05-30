@@ -1,5 +1,6 @@
 <?php
 
+$title = 'Create class instance';
 require_once 'includes/widgets/header.php';
 
 use \libAllure\Form;

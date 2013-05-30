@@ -1,5 +1,6 @@
 <?php
 
+$title = 'Create remote configuration';
 require_once 'includes/common.php';
 
 use \libAllure\Form;
