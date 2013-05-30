@@ -12,7 +12,7 @@
   </parent>
 
   <properties>
-  	<releaseVersion>1.0.0</releaseVersion>
+  	<releaseVersion>1.1.0</releaseVersion>
   </properties>
 
   <packaging>pom</packaging>

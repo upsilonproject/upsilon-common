@@ -11,9 +11,9 @@ class FormInstallationQuestions extends Form {
                 parent::__construct('formInstallation', 'Generate config.php - installation questions');
 
                 $this->addSection('Database');
-                $this->addElement(new ElementAlphaNumeric('dbName', 'Database name'));
+                $this->addElement(new ElementAlphaNumeric('dbName', 'Database name', 'upsilon'));
                 $this->addElement(new ElementAlphaNumeric('dbUser', 'Database username'));
-                $this->addElement(new ElementPassword('dbPass', 'Database password'));
+                $this->addElement(new ElementPassword('dbPass', 'Database user password'));
                 $this->getElement('dbPass')->setOptional(true);
 
                 $this->addSection('Administrator');

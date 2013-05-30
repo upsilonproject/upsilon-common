@@ -15,6 +15,9 @@
 		<fileSet>
 			<directory>../src/main/php/</directory>
 			<outputDirectory>upload</outputDirectory>
+			<excludes>
+				<exclude>includes/config.php</exclude>
+			</excludes>
 		</fileSet>
 	</fileSets>
 </assembly>
