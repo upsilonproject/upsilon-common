@@ -33,10 +33,4 @@ public class Util {
 			Util.LOG.warn("Insomnia in thread.", e);
 		}
 	}
-
-	public static Duration parseDuration(final String attributeValue) {
-		return Duration.parse(attributeValue);
-		// final PeriodFormatter simpleFormatter = new
-		// PeriodFormatterBuilder().appendSeconds().appendSuffix("s");
-	}
 }

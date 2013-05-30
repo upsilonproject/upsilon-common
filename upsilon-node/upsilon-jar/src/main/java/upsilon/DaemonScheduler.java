@@ -35,8 +35,7 @@ public class DaemonScheduler extends Daemon {
 		if (this.queue.isEmpty()) {
 			return null;
 		} else {
-			final StructureService s = this.queue.get(this.queue.size() - 1);
-			this.queue.remove(this.queue.size() - 1);
+			final StructureService s = this.queue.remove(this.queue.size() - 1);
 
 			Collections.shuffle(this.queue); // Stops bad services holding up
 												// other services.

@@ -4,7 +4,7 @@ import org.joda.time.Duration;
 
 public class GlobalConstants {
 	public static final Duration DEF_TIMER_EXECUTOR_DELAY = Duration.standardSeconds(2);
-	public static final Duration DEF_TIMER_QUEUE_MAINTAINER_DELAY = Duration.standardSeconds(3);
+	public static final Duration DEF_TIMER_QUEUE_MAINTAINER_DELAY = Duration.standardSeconds(60);
 
 	public static final Duration MAX_UPDATE_FREQUENCY = Duration.standardSeconds(60);
 	public static final Duration MIN_UPDATE_FREQUENCY = Duration.standardSeconds(10);
