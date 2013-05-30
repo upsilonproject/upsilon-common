@@ -3,6 +3,10 @@
 require_once 'includes/common.php';
 
 use \libAllure\DatabaseFactory;
+use \libAllure\HtmlLinksCollection;
+
+$links = new HtmlLinksCollection();
+$links->add('listRemoteConfigurations.php', 'Remote configurations');
 
 $title = 'Nodes';
 require_once 'includes/widgets/header.php';

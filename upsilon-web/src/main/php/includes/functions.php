@@ -2,6 +2,66 @@
 
 use \libAllure\DatabaseFactory;
 use \libAllure\Session;
+use \libAllure\Sanitizer;
+
+function getSiteSetting($key, $default = '') {
+        global $settings;
+        global $db;
+
+        if (empty($settings)) {
+                $sql = 'SELECT s.`key`, s.value FROM settings s';
+                $stmt = DatabaseFactory::getInstance()->prepare($sql);
+                $stmt->execute();
+
+                foreach ($stmt->fetchAll() as $row) {
+                        $settings[$row['key']] = $row['value'];
+                }
+        }
+
+
+        if (!isset($settings[$key])) {
+                return $default;
+        } else {
+                return $settings[$key];
+        }
+}
+
+function connectDatabase() {
+        try {
+                $db = new \libAllure\Database(CFG_DB_DSN, CFG_DB_USER, CFG_DB_PASS);
+                \libAllure\DatabaseFactory::registerInstance($db);
+        } catch (Exception $e) {
+                throw new Exception('Could not connect to database. Check the username, password, host, port and database name.<br />' . $e->getMessage(), null, $e);
+        }
+
+        try {
+                $maint = getSiteSetting('maintenanceMode', 'NONE');
+        } catch (Exception $e) {
+                if ($e->getCode() == '42S02') {
+                        throw new Exception('Settings table not found. Did you import the table schema?', null, $e);
+                } else {
+                        throw new Exception('Unhandled SQL error while getting settings table: ' . $e->getMessage(), null, $e);
+                }
+        }
+
+        if ($maint === 'NONE') {
+                throw new Exception('Essential setting "maintenanceMode" does not exist in the DB. Did you import the initial data?');
+        }
+
+        return $db;
+}
+
+function insertId() {
+	return DatabaseFactory::getInstance()->lastInsertId();
+}
+
+function stmt($sql) {
+	return DatabaseFactory::getInstance()->prepare($sql);
+}
+
+function san() {
+	return Sanitizer::getInstance();
+}
 
 function redirect($url) {
 	header('Location: ' . $url);

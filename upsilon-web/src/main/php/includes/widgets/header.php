@@ -54,8 +54,5 @@ $tpl->assign('userLinks', $userLinks);
 
 $tpl->display('header.tpl');
 
-if (!Session::isLoggedIn()) {
-	require_once 'login.php';
-}
 
 ?>
