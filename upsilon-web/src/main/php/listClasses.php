@@ -4,9 +4,16 @@ require_once 'includes/common.php';
 
 use \libAllure\HtmlLinksCollection;
 
+$id = (Sanitizer::getInstance()->filterUint('id'));
+
+if (empty($id)) {
+	$id = 1;
+}
+
+
 $links = new HtmlLinksCollection();
 $links->add('createClass.php', 'Create Class');
-$links->add('createClassRequirement', 'Create Requirement');
+$links->add('createClassRequirement.php?id=' . $id, 'Create Requirement');
 
 $title = 'Classes';
 
@@ -62,12 +69,6 @@ SELECT
 FROM 
 	classes AS c
 SQL;
-
-$id = (Sanitizer::getInstance()->filterUint('id'));
-
-if (empty($id)) {
-	$id = 13;
-}
 
 $sql = $sqlImmediateChildren;
 $stmt = DatabaseFactory::getInstance()->prepare($sql);
@@ -130,12 +131,20 @@ $tpl->assign('listInstances', $listInstances);
 
 $tpl->assign('listClasses', $listClasses);
 
-$sql = 'SELECT c.* FROM classes c WHERE c.id = :id';
+if ($id == 1) {
+	$sql = 'SELECT c.* FROM classes c WHERE l = 0';
+} else {
+	$sql = 'SELECT c.* FROM classes c WHERE c.id = :id';
+}
 $stmt = DatabaseFactory::getInstance()->prepare($sql);
 $stmt->bindValue(':id', $id);
 $stmt->execute();
 
-$tpl->assign('itemClass', $stmt->fetchRowNotNull());
+try {
+	$tpl->assign('itemClass', $stmt->fetchRowNotNull());
+} catch (Exception $e) {
+	$tpl->error('Could not find class: ' . $id);
+}
 
 $sql = 'SELECT r.id, r.title FROM class_service_requirements r WHERE r.class = :id ';
 $stmt = DatabaseFactory::getInstance()->prepare($sql);

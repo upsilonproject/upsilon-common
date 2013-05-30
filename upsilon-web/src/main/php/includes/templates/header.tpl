@@ -70,7 +70,7 @@
 		{if $loggedIn}
 		<a href = "index.php">Service HUD</a> | 
 		<a href = "viewDashboard.php?id=1">Dashboard</a> | 
-		<a href = "listClasses.php?id=13">Classes</a> | 
+		<a href = "listClasses.php?">Classes</a> | 
 		<a href = "listNodes.php">Nodes</a> | 
 		<a href = "viewTasks.php">Tasks</a> |
 		<a href = "viewList.php">List</a>

@@ -39,7 +39,9 @@ $tpl->assign('loggedIn', Session::isLoggedIn());
 if (!isset($_SERVER['HTTPS'])) {
 	$_SERVER['HTTPS'] = 'off';
 }
-$tpl->assign('crypto', $_SERVER['HTTPS']);
+
+$crypto = $_SERVER['HTTPS'];
+$tpl->assign('crypto', $crypto);
 $tpl->assign('drawHeader', isset($_SESSION['drawHeader']) ? $_SESSION['drawHeader'] : true);
 $tpl->assign('drawNavigation', isset($_SESSION['drawNavigation']) ? $_SESSION['drawNavigation'] : true);
 $tpl->assign('drawBigClock', isset($_SESSION['drawBigClock']) ? $_SESSION['drawBigClock'] : false);

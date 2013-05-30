@@ -1,5 +1,6 @@
 <?php
 
+$title = 'View Class Instance';
 require_once 'includes/common.php';
 
 function findMemberClasses($listInstanceRequirements) {
