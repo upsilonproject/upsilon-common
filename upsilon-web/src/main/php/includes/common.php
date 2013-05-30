@@ -2,6 +2,8 @@
 
 date_default_timezone_set('Europe/London');
 
+set_include_path(get_include_path() . PATH_SEPARATOR . 'includes/libraries/');
+
 require_once 'includes/functions.php';
 
 require_once 'libAllure/ErrorHandler.php';
