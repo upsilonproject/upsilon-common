@@ -69,26 +69,17 @@
 
 <div class = "box" id = "graphContainer">
 	<h4 id = "graphTitle">Graph</h4>
-{*
-	<img id = "serviceResultGraph" src = "viewServiceResultGraph.php?id={$itemService.id}" alt = "service result graph" />
-*}
-<div class = "graph" id = "graphService{$itemService.id}" style = "min-height: 300px;">graph</div>
-<script type = "text/javascript">
-{literal}
 
-
-$(document).ready(function() {
-	fetchServiceMetricResultGraph("{/literal}{$metadata.defaultMetric|trim|default:'karma'}", "{$itemService.id}{literal}");
-});
-
-		{/literal}
-	</script>
+	{include file = "widgetGraphMetric.tpl"}
 
 	<p>
-	<strong>Metric:</strong>
-	{foreach from = $metadata.metrics item = metric}
-		<a href = "#graphContainer" onclick = "javascript:fetchServiceMetricResultGraph('{$metric|trim}', {$itemService.id})">{$metric|trim}</a>&nbsp;&nbsp;&nbsp;&nbsp;
-	{/foreach}
+
+	{if !empty($metadata.metrics)}
+		<strong>Metric:</strong>
+		{foreach from = $metadata.metrics item = metric}
+			<a href = "#graphContainer" onclick = "javascript:fetchServiceMetricResultGraph('{$metric|trim}', {$itemService.id})">{$metric|trim}</a>&nbsp;&nbsp;&nbsp;&nbsp;
+		{/foreach}
+	{/if}
 	</p>
 </div>
 

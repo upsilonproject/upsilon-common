@@ -17,7 +17,7 @@
 
 			<ul>
 			{foreach from = $listRequirements item = itemRequirement}
-				<li>{$itemRequirement.title} <a href = "deleteClassRequirement.php?requirement={$itemRequirement.id}">Del</a></li>
+				<li>{$itemRequirement.title} [<a href = "deleteClassRequirement.php?requirement={$itemRequirement.id}">X</a>]</li>
 			{/foreach}
 			</ul>
 		</div>

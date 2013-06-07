@@ -35,7 +35,7 @@ if ($stmt->numRows() == 0) {
 	$metadata = $stmt->fetchRow();
 }
 
-$metadata['metrics'] = explode("\n", $metadata['metrics']);
+$metadata['metrics'] = explodeOrEmpty("\n", trim($metadata['metrics']));
 
 $tpl->assign('metadata', $metadata);
 
@@ -59,6 +59,10 @@ if (!empty($listResults)) {
 
 $tpl->assign('listResults', $listResults);
 
+$tpl->assign('instanceGraphIndex', 0);
+$tpl->assign('listServiceId', array($service['id']));
+$tpl->assign('metric', 'karma');
+$tpl->assign('yAxisMarkings', array());
 $tpl->display('viewService.tpl');
 
 require_once 'includes/widgets/footer.php';

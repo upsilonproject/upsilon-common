@@ -52,10 +52,15 @@ class Template extends \Smarty {
 		$this->register_modifier('externUrl', array($this, 'externUrl'));
 		$this->register_modifier('externUrlOr', array($this, 'externUrlOr'));
 		$this->register_modifier('inflectorQuantify', array('Inflector', 'quantify'));
+		$this->register_modifier('gt', array($this, 'getText'));
 	}
 
 	public function addAutoClearVar($var) {
 		$this->autoClearVars[] = $var;
+	}
+
+	public function getText($input) {
+		return _($input);
 	}
 
 	public function htmlify($content, $paragraphs = true) {

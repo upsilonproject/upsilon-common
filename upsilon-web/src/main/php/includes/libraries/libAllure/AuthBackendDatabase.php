@@ -22,7 +22,7 @@ namespace libAllure;
 require_once 'libAllure/AuthBackend.php';
 require_once 'libAllure/Database.php';
 
-class AuthBackendDatabase extends \libAllure\AuthBackend {
+class AuthBackendDatabase extends \libAllure\AuthBackend implements AuthPasswordModification {
 	// sha1 as default isn't the most secure, but it's a good trade off of security vs speed.
 	private $hashAlgo = 'sha1'; 
 	private $database;
@@ -111,6 +111,18 @@ class AuthBackendDatabase extends \libAllure\AuthBackend {
 		foreach($sql as $sqlQuery) {
 			$this->database->query($sqlQuery);
 		}
+	}
+
+	public function setSessionUserPassword($newPlaintextPassword) {
+		$user = Session::getUser();
+		$username = $user->getUsername();
+		$password = $this->hashPassword($newPlaintextPassword);
+	
+		$sql = 'UPDATE `users` SET password = :password WHERE username = :username';
+		$stmt = $this->database->prepare($sql);
+		$stmt->bindValue(':password', $password);
+		$stmt->bindValue(':username', $username);
+		$stmt->execute();
 	}
 }
 

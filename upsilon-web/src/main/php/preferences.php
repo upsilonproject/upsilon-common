@@ -13,6 +13,7 @@ use \libAllure\ElementCheckbox;
 use \libAllure\ElementNumeric;
 use \libAllure\DatabaseFactory;
 use \libAllure\Session;
+use \libAllure\AuthBackend;
 
 class UserPreferences extends Form {
 	public function __construct() {
@@ -28,15 +29,23 @@ class UserPreferences extends Form {
 		$this->addElement(new ElementNumeric('oldServiceThreshold', 'Old Service Threshold', Session::getUser()->getData('oldServiceThreshold')));
 		$this->addElement(new ElementCheckbox('enableDebug', 'Enable Debug', Session::getUser()->getData('enableDebug')));
 
-/**
+
 		$this->addSection('Password');
-		$this->addElement(new ElementPassword('password', 'Password'));
-		$this->getElement('password')->setMinMaxLengths(0, 64);
-		$this->addElement(new ElementPassword('passwordConfirm', 'Password (confirm)'));
-		$this->getElement('passwordConfirm')->setMinMaxLengths(0, 64);
-*/
+
+		if ($this->supportsPasswords()) {
+			$this->addElement(new ElementPassword('password', 'Password'));
+	//		$this->getElement('password')->setMinMaxLengths(0, 64);
+			$this->addElement(new ElementPassword('passwordConfirm', 'Password (confirm)'));
+	//		$this->getElement('passwordConfirm')->setMinMaxLengths(0, 64);
+		} else {
+			$this->addElementReadOnly('Password', 'Password modification is not supported by backend (' . get_class(AuthBackend::getInstance()) . ')');	
+		}
 
 		$this->addDefaultButtons();
+	}
+
+	private function supportsPasswords() {
+		return AuthBackend::getInstance() instanceof \libAllure\AuthPasswordModification;
 	}
 
 	public function process() {
@@ -47,6 +56,10 @@ class UserPreferences extends Form {
 		Session::getUser()->setData('tutorialMode', $this->getElementValue('tutorialMode'));
 		Session::getUser()->setData('enableDebug', $this->getElementValue('enableDebug'));
 		Session::getUser()->getAttribute('username', false);
+
+		if ($this->supportsPasswords() && strlen($this->getElementValue('password')) > 0) {
+			AuthBackend::getInstance()->setSessionUserPassword($this->getElementValue('password'));
+		}
 	}
 }
 

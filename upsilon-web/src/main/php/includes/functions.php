@@ -4,6 +4,16 @@ use \libAllure\DatabaseFactory;
 use \libAllure\Session;
 use \libAllure\Sanitizer;
 
+function explodeOrEmpty($delimiter = null, $serialString = "") {
+	$serialString = trim($serialString);
+
+	if (strlen($serialString) == 0) {
+		return array();
+	} else {
+		return explode($delimiter, $serialString);
+	}
+}
+
 function getSiteSetting($key, $default = '') {
         global $settings;
         global $db;

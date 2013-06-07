@@ -40,7 +40,7 @@ if (!isset($_SERVER['HTTPS'])) {
 	$_SERVER['HTTPS'] = 'off';
 }
 
-$crypto = $_SERVER['HTTPS'];
+$crypto = $_SERVER['HTTPS'] == 'on';
 $tpl->assign('crypto', $crypto);
 $tpl->assign('drawHeader', isset($_SESSION['drawHeader']) ? $_SESSION['drawHeader'] : true);
 $tpl->assign('drawNavigation', isset($_SESSION['drawNavigation']) ? $_SESSION['drawNavigation'] : true);
