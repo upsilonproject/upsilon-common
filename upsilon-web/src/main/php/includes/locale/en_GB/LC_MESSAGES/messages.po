@@ -15,3 +15,9 @@ msgstr "Greetings! %s "
 
 msgid "test"
 msgstr "[German] Test, Ya?!"
+
+msgid "List Users"
+msgstr "List of Users"
+
+msgid "Users"
+msgstr "User List"

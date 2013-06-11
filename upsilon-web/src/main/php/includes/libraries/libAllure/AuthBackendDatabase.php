@@ -113,9 +113,7 @@ class AuthBackendDatabase extends \libAllure\AuthBackend implements AuthPassword
 		}
 	}
 
-	public function setSessionUserPassword($newPlaintextPassword) {
-		$user = Session::getUser();
-		$username = $user->getUsername();
+	public function setUserPassword($username, $newPlaintextPassword) {
 		$password = $this->hashPassword($newPlaintextPassword);
 	
 		$sql = 'UPDATE `users` SET password = :password WHERE username = :username';
@@ -123,6 +121,13 @@ class AuthBackendDatabase extends \libAllure\AuthBackend implements AuthPassword
 		$stmt->bindValue(':password', $password);
 		$stmt->bindValue(':username', $username);
 		$stmt->execute();
+
+	}
+
+	public function setSessionUserPassword($newPlaintextPassword) {
+		$user = Session::getUser();
+
+		$this->setUserPassword($user->getUsername(), $newPlaintextPassword);
 	}
 }
 

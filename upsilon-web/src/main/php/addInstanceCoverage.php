@@ -8,6 +8,7 @@ use \libAllure\Sanitizer;
 use \libAllure\DatabaseFactory;
 use \libAllure\ElementSelect;
 use \libAllure\FormHandler;
+use \libAllure\ElementButton;
 
 class FormUpdateInstanceCoverage extends Form {
 	public function __construct() {
@@ -48,6 +49,7 @@ class FormUpdateInstanceCoverage extends Form {
 
 	private function addElementSelectServiceCheck() {
 		$el = new ElementSelect('service', 'Service');
+		$el->addOption('(none)', '');
 
 		$sql = 'SELECT s.id, s.identifier, s.node FROM services s ORDER BY s.node ASC, s.identifier ASC';
 		$stmt = DatabaseFactory::getInstance()->prepare($sql);
@@ -77,12 +79,14 @@ class FormUpdateInstanceCoverage extends Form {
 		$stmt->bindValue(':requirement', $this->getElementValue('requirement'));
 		$stmt->execute();
 
-		$sql = 'INSERT INTO class_service_assignments(instance, requirement, service) values (:instance, :requirement, :service)';
-		$stmt = DatabaseFactory::getInstance()->prepare($sql);
-		$stmt->bindValue(':instance', $this->getElementValue('instance'));
-		$stmt->bindValue(':requirement', $this->getElementValue('requirement'));
-		$stmt->bindValue(':service', $this->getElementValue('service'));
-		$stmt->execute();
+		if ($this->getElementValue('service') != '') {
+			$sql = 'INSERT INTO class_service_assignments(instance, requirement, service) values (:instance, :requirement, :service)';
+			$stmt = DatabaseFactory::getInstance()->prepare($sql);
+			$stmt->bindValue(':instance', $this->getElementValue('instance'));
+			$stmt->bindValue(':requirement', $this->getElementValue('requirement'));
+			$stmt->bindValue(':service', $this->getElementValue('service'));
+			$stmt->execute();
+		}
 	}
 }
 

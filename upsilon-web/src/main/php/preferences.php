@@ -34,8 +34,10 @@ class UserPreferences extends Form {
 
 		if ($this->supportsPasswords()) {
 			$this->addElement(new ElementPassword('password', 'Password'));
+			$this->getElement('password')->setOptional(true);
 	//		$this->getElement('password')->setMinMaxLengths(0, 64);
 			$this->addElement(new ElementPassword('passwordConfirm', 'Password (confirm)'));
+			$this->getElement('passwordConfirm')->setOptional(true);
 	//		$this->getElement('passwordConfirm')->setMinMaxLengths(0, 64);
 		} else {
 			$this->addElementReadOnly('Password', 'Password modification is not supported by backend (' . get_class(AuthBackend::getInstance()) . ')');	

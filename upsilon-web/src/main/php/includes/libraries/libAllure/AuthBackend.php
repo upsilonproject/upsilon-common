@@ -70,6 +70,7 @@ abstract class AuthBackend {
 
 interface AuthPasswordModification {
 	public function setSessionUserPassword($newPlaintextPassword);	
+	public function setUserPassword($username, $password);
 }
 
 ?>

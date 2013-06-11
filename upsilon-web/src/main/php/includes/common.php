@@ -4,6 +4,7 @@ date_default_timezone_set('Europe/London');
 
 putenv("LANG=en_GB");
 setlocale(LC_ALL, 'en_GB');
+bindtextdomain('messages', 'includes/locale/nocache');
 bindtextdomain('messages', 'includes/locale/');
 textdomain('messages');
 

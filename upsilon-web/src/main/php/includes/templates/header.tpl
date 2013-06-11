@@ -76,7 +76,8 @@
 		<a href = "viewList.php">List</a>
 		<a href = "viewList.php?problems">(Problems)</a> |
 		<a href = "viewRoom.php?id=1">Rooms</a> |
-		<a href = "listGroups.php">Groups</a> 
+		<a href = "listGroups.php">Groups</a> | 
+		<a href = "listUsers.php">Users</a> 
 		{/if}
 		</div>
 	</div>
