@@ -38,7 +38,6 @@
 
 <div class = "box">
 <h3>All Instances</h3>
-<a href = "createClassInstance.php">Create class instance</a>
 <table class = "dataTable hover">
 	<thead>
 		<tr>

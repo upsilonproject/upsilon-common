@@ -14,7 +14,7 @@ $services = $stmt->fetchAll();
 
 $tpl->assign('listServices', $services);
 
-header('Last-Modified: ' . date(DATE_RFC2822));
+header('Last-Modified: ' . date(DATE_RFC2822, strtotime('1st Jan 1987')));
 header('Content-Type: application/xml');
 $tpl->display('config.xml');
 

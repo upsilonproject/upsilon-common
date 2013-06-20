@@ -8,9 +8,12 @@
 
 <script type = "text/javascript">
 {literal}
+$(document).ready(function() {
+
 toggleEmptyGroups();
 toggleGroups();
 layoutBoxes(true);
+});
 {/literal}
 </script>
 

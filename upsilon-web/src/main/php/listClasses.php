@@ -15,6 +15,7 @@ if (empty($id)) {
 $links = new HtmlLinksCollection();
 $links->add('createClass.php', 'Create Class');
 $links->add('createClassRequirement.php?id=' . $id, 'Create Requirement');
+$links->add('createClassInstance.php?', 'Create class instance');
 
 $title = 'Classes';
 

@@ -261,9 +261,11 @@ function setupSortableTables() {
 	$('table.dataTable').dataTable({
 		'sDom': 'flpitpil',
 		'aaSorting': [[ 1, 'desc ']],
+		'oLanguage': {
 		'oPaginate': {
-			'sNext': '',
-			'sPrev': ''
+			'sNext': '&nbsp;',
+			'sPrevious': '&nbsp;'
+		}
 		}
 	});
 

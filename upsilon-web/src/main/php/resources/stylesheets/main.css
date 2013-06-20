@@ -11,9 +11,16 @@ input, button, select, option {
 	font-family: Verdana, sans-serif;
 }
 
-div.block {
-	border: 1px solid black;
+div.serviceDetail, div.box, div.block {
+	display: block;
+	text-align: left;
 	background-color: #dee3e7;
+	border: 1px solid #999;
+	margin: 1em;
+	padding: 1em;
+}
+
+div.block {
 	padding: 1em;
 	width: 10em;
 	vertical-align: top;
@@ -21,15 +28,6 @@ div.block {
 	margin-top: 1em;
 	text-align: left;
 	min-width: 360px;
-}
-
-div.serviceDetail, div.box {
-	display: block;
-	text-align: left;
-	background-color: #dee3e7;
-	border: 1px solid black;
-	margin: 1em;
-	padding: 1em;
 }
 
 div.metricgroup:hover {
@@ -405,7 +403,7 @@ table.dataTable th:hover, p.collapseable:hover {
 }
 
 input[type="buton"], button, a[role="button"] {
-	border: 1px solid black;
+	border: 1px solid #666;
 	padding: .2em;
 	display: inline-block;
 	background-color: beige;
@@ -418,6 +416,7 @@ input[type="buton"], button, a[role="button"] {
 input[type="buton"]:hover, button:hover, a[role="button"]:hover {
 	text-decoration: none;
 	background-color: #444;
+	border: 1px solid black;
 	color: white;
 	cursor: pointer;
 }
