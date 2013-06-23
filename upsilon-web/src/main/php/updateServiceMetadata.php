@@ -63,6 +63,7 @@ class FormUpdateMetadata extends Form {
 		$this->addElementDefaultMetric($metadata['defaultMetric']);
 		$this->addElement($this->getElementServiceIcon($this->metadata['icon']));
 		$this->addElement(new ElementCheckbox('hasTasks', 'Has Tasks', $this->metadata['hasTasks']));
+		$this->addElement(new ElementCheckbox('hasEvents', 'Has Events', $this->metadata['hasEvents']));
 
 		$this->addSection('Result Casting');
 		$this->addElement(new ElementHtml('desc', 'Desc', '<p>Sometimes, you need to change the the result of a service check to display differently to the actual check result.</p>'));
@@ -151,7 +152,7 @@ class FormUpdateMetadata extends Form {
 	}
 
 	public function process() {
-		$sql = 'UPDATE service_metadata SET actions = :actions, alias = :alias, metrics = :metrics, defaultMetric = :defaultMetric, icon = :icon, hasTasks = :hasTasks, room = :room, roomPositionX = :roomPositionX, roomPositionY = :roomPositionY, criticalCast = :criticalCast, goodCast = :goodCast, acceptableDowntime = :acceptableDowntime  WHERE service = :identifier';
+		$sql = 'UPDATE service_metadata SET actions = :actions, alias = :alias, metrics = :metrics, defaultMetric = :defaultMetric, icon = :icon, hasTasks = :hasTasks, hasEvents = :hasEvents, room = :room, roomPositionX = :roomPositionX, roomPositionY = :roomPositionY, criticalCast = :criticalCast, goodCast = :goodCast, acceptableDowntime = :acceptableDowntime  WHERE service = :identifier';
 		$stmt = DatabaseFactory::getInstance()->prepare($sql);
 		$stmt->bindValue(':actions', $this->getElementValue('actions'));
 		$stmt->bindValue(':alias', $this->getElementValue('alias'));
@@ -160,6 +161,7 @@ class FormUpdateMetadata extends Form {
 		$stmt->bindValue(':identifier', $this->serviceIdentifier);
 		$stmt->bindValue(':defaultMetric', $this->getElementValue('defaultMetric'));
 		$stmt->bindValue(':hasTasks', $this->getElementValue('hasTasks'));
+		$stmt->bindValue(':hasEvents', $this->getElementValue('hasEvents'));
 		$stmt->bindValue(':room', $this->getElementValue('room'));
 		$stmt->bindValue(':roomPositionX', $this->getElementValue('roomPositionX'));
 		$stmt->bindValue(':roomPositionY', $this->getElementValue('roomPositionY'));

@@ -20,6 +20,11 @@
 </div>
 
 <script type = "text/javascript">
-layoutBoxes();
-toggleGroups();
+{literal}
+$(document).ready(function() {
+	layoutBoxes();
+	toggleGroups();
+});
+{/literal}
 </script>
+

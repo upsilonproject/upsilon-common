@@ -1,0 +1,2 @@
+default:
+	msgfmt *.po

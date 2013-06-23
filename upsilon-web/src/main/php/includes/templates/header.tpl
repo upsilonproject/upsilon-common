@@ -4,16 +4,6 @@
 <head>
 	<title>Upsilon</title>
 
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js" type="text/javascript"></script>
-	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"></script>
-	<script src="resources/javascript/jquery.masonry.min.js"></script>
-	<script src="resources/javascript/jquery.flot.js"></script>
-	<script src="resources/javascript/jquery.flot.time.min.js"></script>
-	<script src="resources/javascript/jquery.cookie.js"></script>
-	<script src="resources/javascript/jquery.svg.js"></script>
-	<script src="resources/javascript/jquery.dataTables.min.js"></script>
-	<script src="resources/javascript/jquery.jsplmb.js"></script>
-	<script src="resources/javascript/jquery.select2.min.js"></script>
 
 	{if not $mobile}
 	<meta http-equiv = "refresh" content = "60" />
@@ -26,8 +16,14 @@
 	<link rel = "stylesheet" type = "text/css" href = "//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js" />
 	<link rel = "stylesheet" type = "text/css" href = "resources/stylesheets/select2.css" />
 	{/if}
+	<link rel = "{if $isNighttime}stylesheet{/if}" type = "text/css" href = "resources/stylesheets/main-nighttime.css" title = "nighttime" />
+
+	<link rel = "shortcut icon" href = "resources/images/icons/logo96pxblackbg.png" title = "Shortcut icon" type = "image/png" />
+
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js" type="text/javascript"></script>
+	<script src="resources/javascript/jquery.cookie.js"></script>
 	<script src="resources/javascript/hud.js"></script>
-	<link rel = "{if $isNighttime}stylesheet{/if}" type = "text/css" href = "resources/stylesheets/main.nighttime.css" title = "nighttime" />
+
 </head>
 
 <body class = "{if $mobile}mobile{else}full{/if}">
@@ -76,7 +72,8 @@
 		<a href = "viewList.php">List</a>
 		<a href = "viewList.php?problems">(Problems)</a> |
 		<a href = "viewRoom.php?id=1">Rooms</a> |
-		<a href = "listGroups.php">Groups</a> 
+		<a href = "listGroups.php">Groups</a> | 
+		<a href = "listUsers.php">Users</a> 
 		{/if}
 		</div>
 	</div>

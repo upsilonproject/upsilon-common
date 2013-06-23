@@ -4,6 +4,16 @@ use \libAllure\DatabaseFactory;
 use \libAllure\Session;
 use \libAllure\Sanitizer;
 
+function explodeOrEmpty($delimiter = null, $serialString = "") {
+	$serialString = trim($serialString);
+
+	if (strlen($serialString) == 0) {
+		return array();
+	} else {
+		return explode($delimiter, $serialString);
+	}
+}
+
 function getSiteSetting($key, $default = '') {
         global $settings;
         global $db;
@@ -218,6 +228,10 @@ function parseOutputJson(&$service) {
 
 		if (isset($json['tasks'])) {
 			$service['tasks'] = $json['tasks'];
+		}
+
+		if (isset($json['events'])) {
+			$service['events'] = $json['events'];
 		}
 
 		$service['stabilityProbibility'] = rand(1, 100);
@@ -456,7 +470,7 @@ function redirectApiClients() {
 				case 'dashboard':
 					redirect('viewDashboard.php', 'API Login complete. Redirecting to Dashboard.');
 				default:
-					redirect('index.php', 'API login complete.');
+					redirect($_SERVER['REQUEST_URI'], 'API login complete.');
 			}
 	}
 }
@@ -479,29 +493,48 @@ function getServiceById($id) {
 		return $service;
 }
 
-function getTasks() {
-		$sql = 'SELECT s.id, s.identifier, s.output FROM services s JOIN service_metadata m ON m.service = s.identifier AND m.hasTasks = 1 ';
-		$stmt = DatabaseFactory::getInstance()->prepare($sql);
-		$stmt->execute();
+function getEvents() {
+	$sql = 'SELECT s.id, s.identifier, s.output FROM services s JOIN service_metadata m ON m.service = s.identifier AND m.hasEvents = 1';
+	$stmt = DatabaseFactory::getInstance()->prepare($sql);
+	$stmt->execute();
 
-		$listServices = $stmt->fetchAll();
+	$events = array();
+	$listEvents = $stmt->fetchAll();
 
-		$tasks = array(
-			'hihu' => array(),
-			'hilu' => array(),
-			'lihu' => array(),
-			'lilu' => array()
-		);
+	foreach ($listEvents as $itemServiceWithEvents) {
+		parseOutputJson($itemServiceWithEvents);
 
-		foreach ($listServices as $itemService) {
-			parseOutputJson($itemService);
-
-			if (isset($itemService['tasks'])) {
-				$tasks = array_merge_recursive($tasks, $itemService['tasks']);
-			}
+		if (!empty($itemServiceWithEvents['events'])) {
+			$events = array_merge_recursive($events, $itemServiceWithEvents['events']);
 		}
+	}
 
-		return $tasks;
+	return $events;
+}
+
+function getTasks() {
+	$sql = 'SELECT s.id, s.identifier, s.output FROM services s JOIN service_metadata m ON m.service = s.identifier AND m.hasTasks = 1 ';
+	$stmt = DatabaseFactory::getInstance()->prepare($sql);
+	$stmt->execute();
+
+	$listServices = $stmt->fetchAll();
+
+	$tasks = array(
+		'hihu' => array(),
+		'hilu' => array(),
+		'lihu' => array(),
+		'lilu' => array()
+	);
+
+	foreach ($listServices as $itemService) {
+		parseOutputJson($itemService);
+
+		if (isset($itemService['tasks'])) {
+			$tasks = array_merge_recursive($tasks, $itemService['tasks']);
+		}
+	}
+
+	return $tasks;
 }
 
 

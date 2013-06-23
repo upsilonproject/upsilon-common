@@ -31,6 +31,12 @@ function dbquery($sql) {
 }
 
 function metric($title, $value) {
+	if (is_bool($value)) {
+		$value = 'True';
+	} else {
+		$value = 'False';
+	}
+
 	echo '<p><strong>' . $title . '</strong>: ' . $value . '</p>';
 }
 
@@ -69,6 +75,11 @@ echo '<a href = "?purgeDeadGroups" class = "badButton">Purge dead groups</a>';
 //$tpl->assign('listServiceResults', getServiceResults());
 //$tpl->display('schedule.tpl');
 
-require_once 'includes/widgets/footer.php';
+$modules = apache_get_modules();
+
+echo '<h2> Apache modules</h2>';
+metric('mod_expires?', in_array('mod_expires', $modules));
+
+require_once 'includes/widgets/footer.php'
 
 ?>

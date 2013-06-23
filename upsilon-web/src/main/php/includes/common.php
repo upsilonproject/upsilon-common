@@ -2,7 +2,13 @@
 
 date_default_timezone_set('Europe/London');
 
-set_include_path(get_include_path() . PATH_SEPARATOR . 'includes/libraries/');
+putenv("LANG=en_GB");
+setlocale(LC_ALL, 'en_GB');
+bindtextdomain('messages', 'includes/locale/nocache');
+bindtextdomain('messages', 'includes/locale/');
+textdomain('messages');
+
+set_include_path('includes/libraries/' . PATH_SEPARATOR . get_include_path());
 
 require_once 'includes/functions.php';
 
