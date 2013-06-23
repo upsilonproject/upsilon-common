@@ -41,10 +41,10 @@ public class MutableFlexiTimer extends FlexiTimer {
 		this.recalculateDelay();
 	}
 
-	public final void setMin(Duration min) {
-		if (min.getStandardSeconds() < Duration.standardSeconds(1).getStandardSeconds()) {
-			throw new IllegalArgumentException("Flexitimer minimum is below the threshold of 10");
-		}
+	public final void setMin(Duration min) { 
+		if (min.isShorterThan(GlobalConstants.MIN_SERVICE_EXECUTION_DELAY)) {
+			throw new IllegalArgumentException("Flexitimer minimum is below the threshold of: " + GlobalConstants.MIN_SERVICE_EXECUTION_DELAY);
+		} 
 
 		this.sleepMin = min;
 		this.recalculateDelay();

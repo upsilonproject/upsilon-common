@@ -193,11 +193,25 @@ public class XmlConfigurationLoader implements FileChangeWatcher.Listener {
                 this.buildAndRunConfigurationTransaction("config/command", Configuration.instance.commands, d);
                 this.buildAndRunConfigurationTransaction("config/service", Configuration.instance.services, d);
                 this.buildAndRunConfigurationTransaction("config/peer", Configuration.instance.peers, d);
+                this.parseTrusts(d);
                 this.parseConfiguration(d); 
                 this.parseIncludedConfiguration(d);   
             }
         } catch (final Exception e) {
             XmlConfigurationLoader.LOG.error("Could not reparse configuration: " + e.getMessage(), e);
+        }
+    }
+    
+    private void parseTrusts(Document d) throws XPathExpressionException {
+        final XPathExpression xpe = XPathFactory.newInstance().newXPath().compile("config/trust");
+        final NodeList nl = (NodeList) xpe.evaluate(d, XPathConstants.NODESET);
+        
+        Vector<XmlNodeHelper> nodes = parseNodelist(nl); 
+  
+        for (XmlNodeHelper node : nodes) {
+        	String fingerprint = node.getAttributeValueUnchecked("certSha1Fingerprint");
+        	 
+        	Configuration.instance.parseTrustFingerprint(fingerprint);
         }
     }
 

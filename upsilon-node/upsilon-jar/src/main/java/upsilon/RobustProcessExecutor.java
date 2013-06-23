@@ -42,18 +42,10 @@ public class RobustProcessExecutor implements Callable<Integer> {
 	}
 
 	@Override
-	public Integer call() throws Exception {
-		int ret;
+	public Integer call() throws IllegalThreadStateException, InterruptedException {
+		this.p.waitFor();
 		
-		try {
-			ret = this.p.exitValue();
-		} catch (IllegalStateException e ){
-			this.p.waitFor();			 
-		}
-		
-		ret = this.p.exitValue();
-		
-		return ret;
+		return this.p.exitValue();
 	}
 
 	public void destroy() {
@@ -98,7 +90,7 @@ public class RobustProcessExecutor implements Callable<Integer> {
 					final String output = RobustProcessExecutor.this.getOutput();
 
 					if (!output.isEmpty()) {
-						RobustProcessExecutor.this.log.debug("Output: " + output);
+						RobustProcessExecutor.this.log.debug("Output {}: " + output, new Object[] { service.getIdentifier() });
 					}
 
 					switch (RobustProcessExecutor.this.getReturn()) {
@@ -114,9 +106,9 @@ public class RobustProcessExecutor implements Callable<Integer> {
 					default:
 						RobustProcessExecutor.this.service.addResult(ResultKarma.UNKNOWN, output);
 					}
-				} catch (final IOException e) {
+				} catch (final IOException | ExecutionException e) {
 					RobustProcessExecutor.this.service.addResult(ResultKarma.BAD, "Java Exception (" + e.getClass().getSimpleName() + ") occoured: " + e.toString());
-				} catch (InterruptedException | TimeoutException | ExecutionException e) {
+				} catch (InterruptedException | TimeoutException e) {
 					RobustProcessExecutor.this.log.warn("Timeout exceeded while waiting for service check to complete: " + RobustProcessExecutor.this.service.getIdentifier());
 
 					RobustProcessExecutor.this.service.addResult(ResultKarma.TIMEOUT, "Timeout of " + Math.max(GlobalConstants.DEF_TIMEOUT.getStandardSeconds(), RobustProcessExecutor.this.service.getTimeout().getStandardSeconds()) + " exceeded");

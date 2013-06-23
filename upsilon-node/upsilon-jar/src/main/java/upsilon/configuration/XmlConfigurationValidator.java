@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.CookieStore;
@@ -26,6 +27,8 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+import org.xml.sax.ext.DefaultHandler2;
+import org.xml.sax.helpers.DefaultHandler;
 
 import upsilon.util.Path;
 import upsilon.util.ResourceResolver;
@@ -55,8 +58,8 @@ public class XmlConfigurationValidator implements ErrorHandler {
         dbf.setSchema(s);
   
         this.path = u;  
-        this.builder = dbf.newDocumentBuilder();
-        this.builder.setErrorHandler(this);
+        this.builder = dbf.newDocumentBuilder();  
+        this.builder.setErrorHandler(this); 
     }
         
     private InputStream selectSchema() throws Exception {
@@ -100,8 +103,9 @@ public class XmlConfigurationValidator implements ErrorHandler {
             XmlConfigurationValidator.LOG.warn("Wont parse thing on filesystem, it does not look like a file: " + this.path);
         } else {   
 	    	InputSource is = new InputSource(path.getInputStream());
-	    	   
+	    	
 	        this.d = this.builder.parse(is);
+
 	        this.isParsed = true;
         }
     }

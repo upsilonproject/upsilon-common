@@ -6,9 +6,11 @@ import java.security.GeneralSecurityException;
 
 import junit.framework.Assert;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import upsilon.management.rest.client.RestClient;
+import upsilon.util.SslUtil;
 
 public class HttpClientTest {
 	@Test(expected=MalformedURLException.class)
@@ -32,6 +34,11 @@ public class HttpClientTest {
 		
 		Assert.assertEquals(new URL("http://localhost:1234"), client.getUrl());
 	}  
+	
+	@BeforeClass  
+	public static void setupSsl() throws Exception {
+		SslUtil.init();
+	}
 	
 }
  

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.management.ManagementFactory;
+import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -15,10 +16,17 @@ import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 
+import org.glassfish.grizzly.ssl.SSLUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
+
+import com.sun.jersey.client.urlconnection.HTTPSProperties;
 
 import upsilon.configuration.DirectoryWatcher;
 import upsilon.configuration.FileChangeWatcher;
@@ -29,6 +37,7 @@ import upsilon.dataStructures.StructurePeer;
 import upsilon.management.jmx.MainMBeanImpl;
 import upsilon.util.Path;
 import upsilon.util.ResourceResolver;
+import upsilon.util.SslUtil;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 
@@ -65,7 +74,7 @@ public class Main implements UncaughtExceptionHandler {
 		return Main.releaseVersion;  
 	}
  
-	public static void main(final String[] args) throws Exception {
+	public static void main(final String[] args) throws Exception {		
 		if (args.length > 0) {
 			Main.configurationOverridePath = new File(args[0]); 
 			Main.xmlLoader.setUrl(new Path(Main.configurationOverridePath, "config.xml"));
@@ -161,9 +170,10 @@ public class Main implements UncaughtExceptionHandler {
 		t.setUncaughtExceptionHandler(this);
 		Thread.setDefaultUncaughtExceptionHandler(this);
 	}
-
-	private void startup() {
+	
+	private void startup() throws Exception { 
 		Main.setupLogging();
+		SslUtil.init();
 
 		Main.LOG.info("Upsilon " + Main.getVersion());
 		Main.LOG.info("----------");

@@ -3,6 +3,7 @@ package upsilon.util;
 import org.joda.time.Duration;
 
 public abstract class GlobalConstants {
+	public static final Duration MIN_SERVICE_EXECUTION_DELAY = Duration.standardSeconds(10); 
 	public static final Duration DEF_TIMER_EXECUTOR_DELAY = Duration.standardSeconds(2);
 	public static final Duration DEF_TIMER_QUEUE_MAINTAINER_DELAY = Duration.standardSeconds(60);
 

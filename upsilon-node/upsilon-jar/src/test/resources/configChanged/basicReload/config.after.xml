@@ -9,5 +9,5 @@
 	
 	<command id = "check_ping" exec = "/usr/local/sbin/nix/check_ping" />
 	 
-	<service id = "baseService"  commandRef = "check_ping" register = "false" minDelay = "PT5S" maxDelay = "PT10S" />
+	<service id = "baseService"  commandRef = "check_ping" register = "false" minDelay = "PT10S" maxDelay = "PT10S" />
 </config>        

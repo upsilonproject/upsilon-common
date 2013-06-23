@@ -12,6 +12,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -24,6 +25,7 @@ import upsilon.Main;
 import upsilon.dataStructures.StructureNode;
 import upsilon.dataStructures.StructureRemoteService;
 import upsilon.dataStructures.StructureService;
+import upsilon.util.SslUtil;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientHandlerException;
@@ -55,18 +57,13 @@ public class RestClient {
             throw new IllegalArgumentException("The host part for the remote host URL in a rest client is not valid: " + uri.getHost());
         }
 
-        final ClientConfig config = new DefaultClientConfig();
+        final ClientConfig config = new DefaultClientConfig(); 
+        config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, new HTTPSProperties(SslUtil.getInsecureHostnameVerifier(), SslUtil.getContext()));
 
-        if (Configuration.instance.isCryptoEnabled) {
-            final SSLContext ctx = SSLContext.getInstance("SSL");
-            ctx.init(null, this.getInsecureTrustManager(), null);
-            config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, new HTTPSProperties(this.getInsecureHostnameVerifier(), ctx));
-        }
-
-        this.client = Client.create(config);
+        this.client = Client.create(config);  
         this.client.addFilter(new ClientFilter() {
             @Override
-            public ClientResponse handle(final ClientRequest cr) throws ClientHandlerException {
+            public ClientResponse handle(final ClientRequest cr) throws ClientHandlerException { 
                 cr.getHeaders().add(HttpHeaders.USER_AGENT, "Upsilon " + Main.getVersion());
 
                 return this.getNext().handle(cr);
@@ -74,51 +71,7 @@ public class RestClient {
         });
     }
 
-    private HostnameVerifier getInsecureHostnameVerifier() {
-        return new HostnameVerifier() {
-            @Override
-            public boolean verify(final String arg0, final SSLSession arg1) {
-                return true;
-            }
-        };
-    }
-
-    private TrustManager[] getInsecureTrustManager() {
-        return new TrustManager[] { new X509TrustManager() {
-
-            @Override
-            public void checkClientTrusted(final X509Certificate[] arg0, final String arg1) throws CertificateException {
-
-                RestClient.LOG.warn("check client trusted");
-            }
-
-            @Override
-            public void checkServerTrusted(final X509Certificate[] certs, final String arg1) throws CertificateException {
-                MessageDigest md;
-
-                try {
-                    md = MessageDigest.getInstance("SHA1");
-                } catch (final NoSuchAlgorithmException e) {
-                    throw new CertificateException("No such alg: SHA1");
-                }
-
-                for (final X509Certificate crt : certs) {
-                    final byte[] digest = md.digest(crt.getEncoded());
-                    final String fingerprint = new BigInteger(digest).toString(16);
-
-                    if (!Configuration.instance.trustedCertificates.contains(fingerprint)) {
-                        RestClient.LOG.warn("Server certificate fingerprint is not trusted: " + fingerprint);
-                        throw new CertificateException("Server certificiate fingerprint is not trusted: " + fingerprint);
-                    }
-                }
-            }
-
-            @Override
-            public X509Certificate[] getAcceptedIssuers() {
-                return new X509Certificate[] {};
-            }
-        } };
-    }
+ 
 
     protected WebResource getNewResouce() {
         return this.client.resource(this.url.toString());

@@ -9,6 +9,7 @@
 					<xs:element name="peer" type="peer" minOccurs="0" />
 					<xs:element name="include" type = "include" minOccurs="0" />
 					<xs:element name="service" type="service" minOccurs="0" />
+					<xs:element name="trust" type="trust" minOccurs="0" />
 				</xs:choice> 
 			</xs:sequence>
 			<xs:attribute name="schemaVersion" type="xs:integer" />
@@ -119,5 +120,9 @@
 			<xs:pattern value="[a-zA-Z0-9]{40}"></xs:pattern>
 		</xs:restriction>
 	</xs:simpleType>
+
+    <xs:complexType name="trust"> 
+    	<xs:attribute name="certSha1Fingerprint" use="required" type="sha1fingerprint"></xs:attribute>
+    </xs:complexType>
 </xs:schema> 
  
