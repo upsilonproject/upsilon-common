@@ -8,35 +8,33 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import upTests.configurationChanged.AbstractConfigurationChangeTest;
 import upsilon.Configuration;
 import upsilon.configuration.FileChangeWatcher;
 import upsilon.configuration.XmlConfigurationLoader;
 import upsilon.util.Path;
 
-public class ConfigurationReloadTest {
-    private static final transient Logger LOG = LoggerFactory.getLogger(ConfigurationReloadTest.class);
+public class BasicReloadTest extends AbstractConfigurationChangeTest {
+    public BasicReloadTest() throws Exception {
+		super("basicReload"); 
+	} 
+
+	private static final transient Logger LOG = LoggerFactory.getLogger(BasicReloadTest.class);
 
     @Test
     public void testConfig() throws Exception {
-        ConfigurationReloadTest.LOG.debug("Reloading config");
-
-        final Path one = new Path("src/test/resources/configChanged/config.before.xml");
-        final Path two = new Path("src/test/resources/configChanged/config.after.xml");
-
-        two.setLastModified(one.lastModified() + 1000);
-
-        Assert.assertTrue(one.lastModified() < two.lastModified());
+        BasicReloadTest.LOG.debug("Reloading config");
 
         final XmlConfigurationLoader loader = new XmlConfigurationLoader();
-        final FileChangeWatcher fcw = loader.load(one, false);
+        final FileChangeWatcher fcw = loader.load(before, false);
  
         Assert.assertTrue(loader.getValidator().isParseClean());
 
         Assert.assertTrue(Configuration.instance.services.containsId("baseService"));
         Assert.assertTrue(Configuration.instance.services.containsId("mindstormPing"));
         Assert.assertEquals(Configuration.instance.services.size(), 2);
-  
-        fcw.setWatchedFile(two); 
+    
+        fcw.setWatchedFile(after); 
         fcw.checkForModification();
  
         Assert.assertTrue(Configuration.instance.services.containsId("baseService"));

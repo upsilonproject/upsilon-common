@@ -18,11 +18,6 @@ public class InvalidDependantCommand extends AbstractConfigurationChangeTest {
         super("invalidDependantCommand");
     } 
     
-    @Before
-    public void setupConfig() {
-    	Configuration.instance.clear();
-    }
-
     @Test 
     public void testConfig() throws Exception {
         final XmlConfigurationLoader loader = new XmlConfigurationLoader();

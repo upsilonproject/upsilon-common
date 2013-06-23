@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
  
+import upsilon.Configuration;
 import upsilon.util.Path;
 
 public abstract class AbstractConfigurationChangeTest {
@@ -21,6 +22,11 @@ public abstract class AbstractConfigurationChangeTest {
         this.after = new Path("src/test/resources/configChanged/" + folderName + "/config.after.xml");
 
         AbstractConfigurationChangeTest.LOG.debug("before: [{}] after: [{}]", new Object[] { this.before, this.after });
+    }
+    
+    @Before
+    public void setupConfig() {
+    	Configuration.instance.clear();
     }
 
     @Before

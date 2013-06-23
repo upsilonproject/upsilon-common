@@ -52,7 +52,7 @@ public class Main implements UncaughtExceptionHandler {
 			try {
 				final Properties props = new Properties();
 				props.load(Main.class.getResourceAsStream("/releaseVersion.properties"));
-				Main.releaseVersion = props.getProperty("releaseVersion");
+				Main.releaseVersion = props.getProperty("releaseVersion"); 
 			} catch (IOException | NullPointerException e) {
 				Main.LOG.warn("Could not get release version from jar.", e);
 			}
