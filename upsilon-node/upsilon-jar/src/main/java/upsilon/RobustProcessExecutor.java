@@ -71,8 +71,8 @@ public class RobustProcessExecutor implements Callable<Integer> {
 		this.future = null;
 	}
 
-	private void exec() throws IOException {
-		this.log.debug("Executing: " + Arrays.toString(this.executableAndArguments));
+	private void exec() throws IOException { 
+		this.log.debug("Executing " + this.service.getIdentifier() + ": " + Arrays.toString(this.executableAndArguments));
 
 		this.p = Runtime.getRuntime().exec(this.executableAndArguments);
 	}

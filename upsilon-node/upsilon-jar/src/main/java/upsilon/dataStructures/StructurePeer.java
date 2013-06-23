@@ -40,7 +40,6 @@ public class StructurePeer extends ConfigStructure {
     private String hostname;
 
     private int port = 4000;
-    private URL remoteConfig;
 
     private static final transient Logger LOG = LoggerFactory.getLogger(StructurePeer.class);
 
@@ -75,14 +74,6 @@ public class StructurePeer extends ConfigStructure {
         return this.port;
     }
 
-    public URL getRemoteConfig() {
-        return this.remoteConfig;
-    }
-
-    public boolean isRemoteConfigProvider() {
-        return this.remoteConfig != null;
-    }
-
     private void newClient() throws MalformedURLException, IllegalArgumentException, GeneralSecurityException {
         if (this.restClient == null) {
             final String proto;
@@ -105,19 +96,7 @@ public class StructurePeer extends ConfigStructure {
     public void setPort(final int port) {
         this.port = port;
     }
-
-    public void setRemoteConfig(final String path) {
-        if ((path == null) || path.isEmpty()) {
-            return;
-        }
-
-        try {
-            this.remoteConfig = new URL("https://" + this.hostname + ":" + this.port + "/remoteConfig/" + path);
-        } catch (final MalformedURLException e) {
-            StructurePeer.LOG.warn("Could not register remote config, malformed url.");
-        }
-    }
-
+ 
     @Override
     public void update(final XmlNodeHelper xmlNode) {
         this.identifier = xmlNode.getAttributeValueUnchecked("id");

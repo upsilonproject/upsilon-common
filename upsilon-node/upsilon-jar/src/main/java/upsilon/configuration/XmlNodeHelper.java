@@ -14,7 +14,12 @@ public class XmlNodeHelper {
     public XmlNodeHelper(final Node node) {
         this.node = node;
     }
-
+    
+    public XmlNodeHelper(final Node node, String source) {
+    	this.node = node;
+    	this.source = source; 
+    }
+    
     public <T> T getAttributeValue(final String key, final T def) {
         return this.getAttributeValueOrParentOrDefault(key, def);
     }
@@ -111,4 +116,14 @@ public class XmlNodeHelper {
     public void setParent(final XmlNodeHelper search) {
         this.parent = search;
     }
+
+	public String getSource() {
+		return source;
+	}
+	
+	private String source = "";
+	
+	public void setSource(String source) {
+		this.source = source;
+	}
 }

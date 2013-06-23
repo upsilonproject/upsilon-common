@@ -20,11 +20,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
+import upsilon.configuration.DirectoryWatcher;
+import upsilon.configuration.FileChangeWatcher;
 import upsilon.configuration.XmlConfigurationLoader;
 import upsilon.dataStructures.CollectionOfStructures;
 import upsilon.dataStructures.StructureNode;
 import upsilon.dataStructures.StructurePeer;
 import upsilon.management.jmx.MainMBeanImpl;
+import upsilon.util.Path;
 import upsilon.util.ResourceResolver;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
@@ -39,7 +42,7 @@ public class Main implements UncaughtExceptionHandler {
 	private static transient final Logger LOG = LoggerFactory.getLogger(Main.class);
 
 	public static File getConfigurationOverridePath() {
-		return Main.configurationOverridePath;
+		return Main.configurationOverridePath; 
 	}
 
 	public static String getVersion() {
@@ -59,16 +62,16 @@ public class Main implements UncaughtExceptionHandler {
 			}
 		}
 
-		return Main.releaseVersion;
+		return Main.releaseVersion;  
 	}
-
-	public static void main(final String[] args) {
+ 
+	public static void main(final String[] args) throws Exception {
 		if (args.length > 0) {
-			Main.configurationOverridePath = new File(args[0]);
-			Main.xmlLoader.setFile(new File(Main.configurationOverridePath, "config.xml"));
+			Main.configurationOverridePath = new File(args[0]); 
+			Main.xmlLoader.setUrl(new Path(Main.configurationOverridePath, "config.xml"));
 		} else {
-			Main.xmlLoader.setFile(new File("/etc/upsilon/config.xml"));
-		}
+			Main.xmlLoader.setUrl(new Path("/etc/upsilon/config.xml"));
+		}  
 
 		Main.instance.startup();
 	}
@@ -141,6 +144,11 @@ public class Main implements UncaughtExceptionHandler {
 		for (final Daemon t : this.daemons) {
 			t.stop();
 		}
+		
+		DirectoryWatcher.stopAll();
+		RobustProcessExecutor.executingThreadPool.shutdown();
+		RobustProcessExecutor.monitoringThreadPool.shutdown(); 
+		FileChangeWatcher.stopAll();
 
 		Main.LOG.warn("All daemons have been requested to stop. Main application should now shutdown.");
 	}
@@ -166,8 +174,11 @@ public class Main implements UncaughtExceptionHandler {
 
 		if (Main.xmlLoader.getValidator().isParseClean()) {
 			this.setupMbeans();
-
-			this.startDaemon(new DaemonRest());
+ 
+			if (Configuration.instance.daemonRestEnabled) {
+				this.startDaemon(new DaemonRest());
+			}
+			
 			this.startDaemon(new DaemonScheduler());
 
 			Main.LOG.debug("Best guess at node type: " + this.guessNodeType());

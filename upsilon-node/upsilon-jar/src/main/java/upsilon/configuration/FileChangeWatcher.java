@@ -1,56 +1,98 @@
 package upsilon.configuration;
 
 import java.io.File;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.HashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import upsilon.util.GlobalConstants;
+import upsilon.util.Path;
 
 public class FileChangeWatcher {
-	interface Listener {
-		public void fileChanged(File f);
-	}
+	private static final HashMap<Path, FileChangeWatcher> fileChangeRegistry = new HashMap<Path, FileChangeWatcher>(); 
+	
+	interface Listener {  
+		public void fileChanged(Path url); 
+	} 
 
 	private static final transient Logger LOG = LoggerFactory.getLogger(FileChangeWatcher.class);
 
-	private File fileBeingWatched;
-	private long mtime = 0;
 	private final Listener l;
-	private final Thread t;
+	private Thread monitoringThread;
 	private boolean continueMonitoring = true;
+	private Path path;
+	
+	public FileChangeWatcher(final Path path, final Listener l) {
+		this.path = path;
+		this.l = l; 
+		 
+		FileChangeWatcher.updateMtime(path, path.lastModified());
+		
+		setupMonitoringThread();
+	}
 
-	public FileChangeWatcher(final File f, final Listener l) {
-		this.fileBeingWatched = f;
-		this.mtime = this.fileBeingWatched.lastModified();
-		this.l = l;
-		this.t = new Thread("File watcher for: " + this.fileBeingWatched.getName()) {
+	public static boolean isAlreadyMonitoring(Path path) {
+		return fileChangeRegistry.containsKey(path); 
+	}   
+ 
+	public void setupMonitoringThread() { 
+		fileChangeRegistry.put(this.path, this);
+		   
+		this.monitoringThread = new Thread("File watcher for: " + path.getFilename()) {
 			@Override
 			public void run() {
 				FileChangeWatcher.this.watchForChanges();
 			}
-		};
+		}; 
 	}
 
 	public void checkForModification() {
-		FileChangeWatcher.LOG.trace("Checking file for modification: " + this.mtime + " vs " + this.fileBeingWatched.lastModified() + " watching:" + this.fileBeingWatched.getAbsolutePath() + " ");
-
-		if (this.mtime < this.fileBeingWatched.lastModified()) {
-			this.mtime = this.fileBeingWatched.lastModified();
-
+		if (FileChangeWatcher.isChanged(this.path)) {  
+			FileChangeWatcher.updateMtime(this.path, getMtime(path));
 			FileChangeWatcher.LOG.debug("Configuration file has changed, notifying listeners.");
-			this.l.fileChanged(this.fileBeingWatched);
+			
+			this.l.fileChanged(path);   
 		}
+	} 
+		
+	private static final HashMap<Path, Long> fileChangeMap = new HashMap<>();
+	 
+	public static long getMtime(Path path) {
+		long mtime;
+		
+		if (fileChangeMap.containsKey(path)) {
+			mtime = fileChangeMap.get(path);
+		} 
+		
+		mtime = path.getMtime();
+		 
+		return mtime;
 	}
+	
+	public static boolean isChanged(Path url) throws IllegalStateException {
+		long mtime = getMtime(url); 
+		long dbmtime = fileChangeMap.get(url);
+		
+		FileChangeWatcher.LOG.trace("Checking file for modification: " + dbmtime + " vs " + mtime);
+		 
+		return mtime > dbmtime;	
+	} 
+	
+	public static void updateMtime(Path url, long newTime) {
+		fileChangeMap.put(url, newTime); 
+	}
+ 
+	public void setWatchedFile(final Path path) { 
+		FileChangeWatcher.LOG.debug("Watched file changed from " + this.path + " to " + path);
 
-	public void setWatchedFile(final File f) {
-		FileChangeWatcher.LOG.debug("Watched file changed from " + this.fileBeingWatched.getName() + " to " + f.getName());
-
-		this.fileBeingWatched = f;
+		this.path = path;
 	}
 
 	public void start() {
-		this.t.start();
+		this.monitoringThread.start();
 	}
 
 	public synchronized void stop() {
@@ -60,16 +102,23 @@ public class FileChangeWatcher {
 
 	private synchronized void watchForChanges() {
 		while (FileChangeWatcher.this.continueMonitoring) {
-			this.checkForModification();
-
 			try {
 				this.wait(GlobalConstants.CONFIG_WATCHER_DELAY.getMillis());
-			} catch (final InterruptedException e) {
-				e.printStackTrace();
-				break;
-			}
-		}
+				
+				this.checkForModification(); 
+			} catch (final InterruptedException | IllegalStateException e) {
+				continueMonitoring = false;
+			} 
+		}  
+  
+		FileChangeWatcher.LOG.info("No longer watching file for changes: " + this.path);
+		fileChangeRegistry.remove(path);  
+		DirectoryWatcher.allowReloading(path); 
+	}  
 
-		FileChangeWatcher.LOG.info("No longer watching file for changes: " + this.fileBeingWatched.getAbsolutePath());
-	}
-}
+	public static void stopAll() {
+		for (FileChangeWatcher fcw : fileChangeRegistry.values()) {
+			fcw.continueMonitoring = false; 
+		} 
+	}  
+} 
