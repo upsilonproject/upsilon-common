@@ -58,23 +58,23 @@ public class FileChangeWatcher {
 		}
 	} 
 		
-	private static final HashMap<Path, Long> fileChangeMap = new HashMap<>();
+	private static final HashMap<Path, Long> fileModificationTimes = new HashMap<>();
 	 
 	public static long getMtime(Path path) {
 		long mtime;
 		
-		if (fileChangeMap.containsKey(path)) {
-			mtime = fileChangeMap.get(path);
+		if (fileModificationTimes.containsKey(path)) {
+			mtime = fileModificationTimes.get(path);
 		} 
 		
 		mtime = path.getMtime();
 		 
 		return mtime;
 	}
-	
-	public static boolean isChanged(Path url) throws IllegalStateException {
+	 
+	private static boolean isChanged(Path url) throws IllegalStateException {
 		long mtime = getMtime(url); 
-		long dbmtime = fileChangeMap.get(url);
+		long dbmtime = fileModificationTimes.get(url);
 		
 		FileChangeWatcher.LOG.trace("Checking file for modification: " + dbmtime + " vs " + mtime);
 		 
@@ -82,10 +82,13 @@ public class FileChangeWatcher {
 	} 
 	
 	public static void updateMtime(Path url, long newTime) {
-		fileChangeMap.put(url, newTime); 
+		fileModificationTimes.put(url, newTime); 
 	}
  
-	public void setWatchedFile(final Path path) { 
+	public void setWatchedFile(final Path path) {
+		fileModificationTimes.put(this.path, path.getMtime() - 1);
+		fileModificationTimes.put(path, path.getMtime() - 1); 
+		     
 		FileChangeWatcher.LOG.debug("Watched file changed from " + this.path + " to " + path);
 
 		this.path = path;

@@ -22,6 +22,7 @@ public class MultiConfigurationTest {
 	public void setupConfig() {
 		Configuration.instance.clear();
 	}
+	
 	@Test
 	public void testMultiConfiguration() throws Exception {
 		final Path masterFile = new Path("file://src/test/resources/multi/config.xml");
@@ -51,7 +52,7 @@ public class MultiConfigurationTest {
 		assertThat(config.commands.getImmutable(), hasSize(2));
 		     
 		fcwSlave.setWatchedFile(new Path("file://src/test/resources/multi/config.empty.xml"));
-		fcwSlave.checkForModification(); 
+		fcwSlave.checkForModification();  
 		 
 		assertThat(config.services.getImmutable(), hasSize(1));
 		assertThat(config.services.containsId("hostname"), is(true));
