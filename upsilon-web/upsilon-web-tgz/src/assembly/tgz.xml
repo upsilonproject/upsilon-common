@@ -18,6 +18,7 @@
 			<outputDirectory>upload</outputDirectory>
 			<excludes>
 				<exclude>includes/config.php</exclude>
+				<exclude>includes/locale/</exclude>
 			</excludes>
 		</fileSet>
 	</fileSets>
