@@ -2,6 +2,8 @@ package upTests;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import upTests.customMatchers.RegexMatcher;
 import upsilon.Database;
@@ -10,6 +12,8 @@ import upsilon.dataStructures.CollectionOfStructures;
 import upsilon.dataStructures.StructurePeer;
 
 public class MainTest {
+	private static final Logger LOG = LoggerFactory.getLogger(MainTest.class);
+	
     @Test
     public void testGetters() {
         Assert.assertNotNull(null, Main.instance.getDaemons());
@@ -32,6 +36,8 @@ public class MainTest {
     @Test
     public void testVersion() {
         final String releaseVersion = Main.getVersion();
+          
+        LOG.info("Testing version is well formed: " + releaseVersion);
 
         Assert.assertThat(releaseVersion, RegexMatcher.matches("\\d+\\.\\d+\\.\\d+"));
     }
