@@ -59,44 +59,55 @@ public class Configuration {
 			Configuration.LOG.info("Trusting certificate with SHA1 fingerprint: " + fingerprint);
 		}
 	}
-
+ 
 	public void update(final XmlNodeHelper node) {
-		if (this.initialFileParsed == false) {
-			this.restPort = node.getAttributeValueOrDefault("restPort", GlobalConstants.DEF_REST_PORT);
-			this.queueMaintainerDelay = Duration.parse(node.getAttributeValueOrDefault("queueMaintainerDelay", GlobalConstants.DEF_TIMER_QUEUE_MAINTAINER_DELAY.toString()));
-			this.daemonRestEnabled = node.getAttributeValueOrDefault("daemonRestEnabled", GlobalConstants.DEF_DAEMON_REST_ENABLED);
-			this.isCryptoEnabled = node.getAttributeValueOrDefault("crypto", GlobalConstants.DEF_CRYPTO_ENABLED);
-			this.maxThreadsRestKernel = node.getAttributeValueOrDefault("maxThreadsRestKernel", 1);
-			this.maxThreadsRestWorkers = node.getAttributeValueOrDefault("maxThreadsRestWorkers", 1);
-
-			if (node.hasChildElement("keystore")) {
-				this.passwordKeystore = node.getFirstChildElement("keystore").getAttributeValueOrDefault("password", "");
-			}
-
-			if (node.hasChildElement("truststore")) {
-				this.passwordTrustStore = node.getFirstChildElement("truststore").getAttributeValueOrDefault("password", "");
-			}
-
-			if (node.hasChildElement("database")) {
-				final XmlNodeHelper dbElement = node.getFirstChildElement("database");
-				final String hostname = dbElement.getAttributeValueUnchecked("hostname");
-				final String username = dbElement.getAttributeValueUnchecked("username");
-				final String password = dbElement.getAttributeValueUnchecked("password");
-				final String dbname = dbElement.getAttributeValueUnchecked("dbname");
-				final int port = dbElement.getAttributeValueOrDefault("port", 3306);
-
-				Database.instance = new Database(hostname, username, password, port, dbname);
-
-				try {
-					Database.instance.connect();
-				} catch (final Exception e) {
-					Configuration.LOG.warn("Cannot connect to database: " + e.getMessage());
+		synchronized (this) {
+			if (this.initialFileParsed == false) {
+				this.restPort = node.getAttributeValueOrDefault("restPort", GlobalConstants.DEF_REST_PORT);
+				this.queueMaintainerDelay = Duration.parse(node.getAttributeValueOrDefault("queueMaintainerDelay", GlobalConstants.DEF_TIMER_QUEUE_MAINTAINER_DELAY.toString()));
+				this.daemonRestEnabled = node.getAttributeValueOrDefault("daemonRestEnabled", GlobalConstants.DEF_DAEMON_REST_ENABLED);
+				this.isCryptoEnabled = node.getAttributeValueOrDefault("crypto", GlobalConstants.DEF_CRYPTO_ENABLED);
+				this.maxThreadsRestKernel = node.getAttributeValueOrDefault("maxThreadsRestKernel", 1);
+				this.maxThreadsRestWorkers = node.getAttributeValueOrDefault("maxThreadsRestWorkers", 1);
+	
+				if (node.hasChildElement("keystore")) {
+					this.passwordKeystore = node.getFirstChildElement("keystore").getAttributeValueOrDefault("password", "");
 				}
-
-				Configuration.LOG.info("Registered DB instance: hostname: {} user: {} port: {} dbname: {}", new Object[] { hostname, username, port, dbname });
+	
+				if (node.hasChildElement("truststore")) {
+					this.passwordTrustStore = node.getFirstChildElement("truststore").getAttributeValueOrDefault("password", "");
+				}
+	
+				if (node.hasChildElement("database")) {
+					final XmlNodeHelper dbElement = node.getFirstChildElement("database");
+					final String hostname = dbElement.getAttributeValueUnchecked("hostname");
+					final String username = dbElement.getAttributeValueUnchecked("username");
+					final String password = dbElement.getAttributeValueUnchecked("password");
+					final String dbname = dbElement.getAttributeValueUnchecked("dbname");
+					final int port = dbElement.getAttributeValueOrDefault("port", 3306);
+	
+					Database.instance = new Database(hostname, username, password, port, dbname);
+	
+					try {
+						Database.instance.connect();
+					} catch (final Exception e) {
+						Configuration.LOG.warn("Cannot connect to database: " + e.getMessage());
+					}
+	
+					Configuration.LOG.info("Registered DB instance: hostname: {} user: {} port: {} dbname: {}", new Object[] { hostname, username, port, dbname });
+				}
+	
+				this.initialFileParsed = true;
+				
 			}
+		} 
+	}
 
-			this.initialFileParsed = true;
-		}
+	public void clear() {
+		commands.clear();
+		services.clear();
+		peers.clear();
+		remoteServices.clear();
+		remoteNodes.clear();  
 	}
 }

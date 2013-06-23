@@ -45,6 +45,8 @@ public class CollectionOfStructures<T extends ConfigStructure> implements Iterab
 		default:
 			throw new IllegalArgumentException("Cant construct structure with element name: " + newElement.getNodeName());
 		}
+		 
+		s.setSource(newElement.getSource());
 
 		return (T) s;
 	}
@@ -64,13 +66,20 @@ public class CollectionOfStructures<T extends ConfigStructure> implements Iterab
 
 		return false;
 	}
+	 
+	@Override
+	public String toString() { 
+		return "CollectionOfStructures (of type" + this.getTitle() + "), " + this.size() + " item(s)";
+	}
 
-	private void debugPrint() {
-		CollectionOfStructures.LOG.trace("Collection (of type " + this.getTitle() + "): ");
-
-		for (int i = 0; i < this.collection.size(); i++) {
-			CollectionOfStructures.LOG.trace("Item {}: {}", new Object[] { i, this.collection.get(i).getIdentifier() });
-		}
+	private void dumpToLog() {
+		if (CollectionOfStructures.LOG.isTraceEnabled()) {  
+			CollectionOfStructures.LOG.trace("Dumping CollectionOfStructures (of type " + this.getTitle() + "): ");
+	
+			for (int i = 0; i < this.collection.size(); i++) {
+				CollectionOfStructures.LOG.trace("Item {}: {}", new Object[] { i, this.collection.get(i).getIdentifier() });
+			}
+		} 
 	}
 
 	public T get(final String identifier) {
@@ -93,14 +102,18 @@ public class CollectionOfStructures<T extends ConfigStructure> implements Iterab
 		throw new NullPointerException("Structure with ID does not exist:" + id);
 	}
 
-	public Vector<String> getIds() {
+	public Vector<String> getIdsWithSource(String source) {
 		final Vector<String> ids = new Vector<String>();
 
 		final Iterator<T> it = this.iterator();
 
 		while (it.hasNext()) {
-			ids.add(it.next().getIdentifier());
-		}
+			T cs = it.next();
+			
+			if (cs.getSource().equals(source)) {
+				ids.add(cs.getIdentifier());
+			}
+		}   
 
 		return ids;
 	}
@@ -124,17 +137,21 @@ public class CollectionOfStructures<T extends ConfigStructure> implements Iterab
 		return this.collection.iterator();
 	}
 
-	public CollectionAlterationTransaction<T> newTransaction() {
-		return new CollectionAlterationTransaction<T>(this);
+	public CollectionAlterationTransaction<T> newTransaction(String source) {
+		return new CollectionAlterationTransaction<T>(this, source);
 	}
 
 	public void processTransaction(final CollectionAlterationTransaction<?> cat) {
+		if (cat.isEmpty()) {
+			return;
+		}
+		
 		synchronized (this.collection) {
 			CollectionOfStructures.LOG.warn(cat + " Started (new: {}, old: {}, upd: {})", new Object[] { cat.getNew().size(), cat.getOld().size(), cat.getUpdated().size() });
 
 			for (final String structureId : cat.getOldIds()) {
-				CollectionOfStructures.LOG.warn(cat + " Removing: " + structureId);
-				this.collection.remove(this.getById(structureId));
+				CollectionOfStructures.LOG.warn(cat + " Removing: " + structureId + ", src:" + this.getById(structureId).getSource());
+				this.collection.remove(this.getById(structureId)); 
 			}
 
 			for (final Entry<String, XmlNodeHelper> newStructure : cat.getNew().entrySet()) {
@@ -142,8 +159,9 @@ public class CollectionOfStructures<T extends ConfigStructure> implements Iterab
 
 				try {
 					final T s = this.constructElement(newStructure.getValue());
-
-					this.collection.add(s);
+					s.setSource(newStructure.getValue().getSource());
+ 
+					this.collection.add(s);  
 				} catch (final Exception e) {
 					CollectionOfStructures.LOG.error("Could not construct element" + e.getMessage(), e);
 					continue;
@@ -159,7 +177,7 @@ public class CollectionOfStructures<T extends ConfigStructure> implements Iterab
 
 			CollectionOfStructures.LOG.warn(cat + " Finished");
 
-			this.debugPrint();
+			this.dumpToLog();
 		}
 	}
 
@@ -185,4 +203,8 @@ public class CollectionOfStructures<T extends ConfigStructure> implements Iterab
 	public synchronized int size() {
 		return this.collection.size();
 	}
+
+	public void clear() {
+		this.collection.clear();
+	} 
 }

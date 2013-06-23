@@ -7,14 +7,14 @@
 					<xs:element name="system" type="system" minOccurs="0" maxOccurs="1" />
 					<xs:element name="command" type="command" minOccurs="0" />
 					<xs:element name="peer" type="peer" minOccurs="0" />
-					<xs:element name="remoteConfig" type = "remoteConfig" minOccurs="0" />
+					<xs:element name="include" type = "include" minOccurs="0" />
 					<xs:element name="service" type="service" minOccurs="0" />
 				</xs:choice> 
 			</xs:sequence>
 			<xs:attribute name="schemaVersion" type="xs:integer" />
 		</xs:complexType>
 
-		<xs:key name="serviceId">
+		<xs:key name="serviceId"> 
 			<xs:selector xpath="service" />
 			<xs:field xpath="@id" />
 		</xs:key>
@@ -54,9 +54,10 @@
 			<xs:pattern value="[A-Za-z0-9_:]+"></xs:pattern>
 		</xs:restriction>
 	</xs:simpleType>
-	
-	<xs:complexType name="remoteConfig">
-		<xs:attribute name = "path" type = "xs:anyURI" use="required" />
+	 
+	<xs:complexType name="include">
+		<xs:attribute name = "path" type = "xs:anyURI" use="required" /> 
+		<xs:attribute name = "monitor" type = "intervalType" use = "optional" />
 	</xs:complexType>  
 
 	<xs:complexType name="command">
@@ -97,7 +98,8 @@
 		<xs:attribute name="crypto" type="xs:boolean" default="true" use="optional" />
 		<xs:attribute name="schedulerDelay" type="intervalType" use="optional" default="PT15S" />
 		<xs:attribute name="queueMaintainerDelay" type = "intervalType" use = "optional" /> 
-		<xs:attribute name="restPort" use="optional" type="portType" />
+		<xs:attribute name="restPort" use="optional" type="portType" /> 
+		<xs:attribute name="daemonRestEnabled" use = "optional" type = "xs:boolean" />
 	</xs:complexType>
 	<xs:complexType name="database">  
 		<xs:attribute name = "hostname" type = "xs:string" use = "required" />

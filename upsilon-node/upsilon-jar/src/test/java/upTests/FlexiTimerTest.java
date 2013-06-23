@@ -50,6 +50,7 @@ public class FlexiTimerTest {
 	}
 
 	@Test
+	@Ignore
 	public void testDateTimer() {
 		MutableFlexiTimer ft = new MutableFlexiTimer(Duration.standardSeconds(1), Duration.standardSeconds(100), Duration.standardSeconds(10), "");
 

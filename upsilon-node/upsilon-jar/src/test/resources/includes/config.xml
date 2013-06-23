@@ -1,0 +1,5 @@
+<config>
+	<system crypto = "false" />
+	
+	<include path = "src/test/resources/" 
+</config> 

@@ -9,100 +9,90 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import upsilon.util.GlobalConstants;
+import upsilon.util.Path;
 
 public class FileChangeWatcher {
-	private static final HashMap<String, FileChangeWatcher> registry = new HashMap<String, FileChangeWatcher>(); 
+	private static final HashMap<Path, FileChangeWatcher> fileChangeRegistry = new HashMap<Path, FileChangeWatcher>(); 
 	
-	interface Listener {
-		public void fileChanged(File f);
-		public void fileChanged(URL url); 
-	}
+	interface Listener {  
+		public void fileChanged(Path url); 
+	} 
 
 	private static final transient Logger LOG = LoggerFactory.getLogger(FileChangeWatcher.class);
 
-	private File fileBeingWatched;
-	private long mtime = 0;
 	private final Listener l;
-	private Thread t;
+	private Thread monitoringThread;
 	private boolean continueMonitoring = true;
-	private URL url;
+	private Path path;
 	
-	public FileChangeWatcher(final URL url, final Listener l) {
-		this.url = url;
+	public FileChangeWatcher(final Path path, final Listener l) {
+		this.path = path;
 		this.l = l; 
+		 
+		FileChangeWatcher.updateMtime(path, path.lastModified());
 		
 		setupMonitoringThread();
 	}
 
-	public FileChangeWatcher(final File f, final Listener l) {
-		if (registry.containsKey(f.getAbsolutePath())) {  
-			throw new IllegalStateException("Already monitoring: " + f.getAbsolutePath());
-		} else {
-			registry.put(f.getAbsolutePath(), this);			
-		}
-		
-		this.fileBeingWatched = f;
-		this.mtime = this.fileBeingWatched.lastModified();
-		this.l = l;
-		
-		setupMonitoringThread();
-	}
-	
-	public void setupMonitoringThread() {
-		String path;
-		
-		if (fileBeingWatched == null) {
-			path = url.toString();
-		} else {
-			path = fileBeingWatched.getAbsolutePath();
-		}
-		 
-		this.t = new Thread("File watcher for: " + path) {
+	public static boolean isAlreadyMonitoring(Path path) {
+		return fileChangeRegistry.containsKey(path); 
+	}   
+ 
+	public void setupMonitoringThread() { 
+		fileChangeRegistry.put(this.path, this);
+		   
+		this.monitoringThread = new Thread("File watcher for: " + path.getFilename()) {
 			@Override
 			public void run() {
 				FileChangeWatcher.this.watchForChanges();
 			}
-		};
+		}; 
 	}
 
 	public void checkForModification() {
-		long mtime = 0;
-				
-		if (url == null) {
-			mtime = fileBeingWatched.lastModified();
-		} else {
-			try {
-				URLConnection conn = url.openConnection();
-				mtime = conn.getLastModified(); 
-			} catch (Exception e) {
-				LOG.warn("Cannot monitor URL: " + e.toString());
-				return;
-			}  
-		}
-		  
-		FileChangeWatcher.LOG.trace("Checking file for modification: " + this.mtime + " vs " + mtime);
-
-		if (this.mtime < mtime) {
-			this.mtime = mtime;
-
+		if (FileChangeWatcher.isChanged(this.path)) {  
+			FileChangeWatcher.updateMtime(this.path, getMtime(path));
 			FileChangeWatcher.LOG.debug("Configuration file has changed, notifying listeners.");
 			
-			if (url == null) {
-				this.l.fileChanged(this.fileBeingWatched);
-			} else { 
-				this.l.fileChanged(url);
-			}
+			this.l.fileChanged(path);   
 		}
 	} 
+		
+	private static final HashMap<Path, Long> fileChangeMap = new HashMap<>();
+	 
+	public static long getMtime(Path path) {
+		long mtime;
+		
+		if (fileChangeMap.containsKey(path)) {
+			mtime = fileChangeMap.get(path);
+		} 
+		
+		mtime = path.getMtime();
+		 
+		return mtime;
+	}
+	
+	public static boolean isChanged(Path url) throws IllegalStateException {
+		long mtime = getMtime(url); 
+		long dbmtime = fileChangeMap.get(url);
+		
+		FileChangeWatcher.LOG.trace("Checking file for modification: " + dbmtime + " vs " + mtime);
+		 
+		return mtime > dbmtime;	
+	} 
+	
+	public static void updateMtime(Path url, long newTime) {
+		fileChangeMap.put(url, newTime); 
+	}
+ 
+	public void setWatchedFile(final Path path) { 
+		FileChangeWatcher.LOG.debug("Watched file changed from " + this.path + " to " + path);
 
-	public void setWatchedFile(final File f) {
-		FileChangeWatcher.LOG.debug("Watched file changed from " + this.fileBeingWatched.getName() + " to " + f.getName());
-
-		this.fileBeingWatched = f;
+		this.path = path;
 	}
 
 	public void start() {
-		this.t.start();
+		this.monitoringThread.start();
 	}
 
 	public synchronized void stop() {
@@ -112,16 +102,23 @@ public class FileChangeWatcher {
 
 	private synchronized void watchForChanges() {
 		while (FileChangeWatcher.this.continueMonitoring) {
-			this.checkForModification();
-
 			try {
 				this.wait(GlobalConstants.CONFIG_WATCHER_DELAY.getMillis());
-			} catch (final InterruptedException e) {
-				e.printStackTrace();
-				break;
-			}
-		}
+				
+				this.checkForModification(); 
+			} catch (final InterruptedException | IllegalStateException e) {
+				continueMonitoring = false;
+			} 
+		}  
+  
+		FileChangeWatcher.LOG.info("No longer watching file for changes: " + this.path);
+		fileChangeRegistry.remove(path);  
+		DirectoryWatcher.allowReloading(path); 
+	}  
 
-		FileChangeWatcher.LOG.info("No longer watching file for changes: " + this.fileBeingWatched.getAbsolutePath());
-	}
-}
+	public static void stopAll() {
+		for (FileChangeWatcher fcw : fileChangeRegistry.values()) {
+			fcw.continueMonitoring = false; 
+		} 
+	}  
+} 

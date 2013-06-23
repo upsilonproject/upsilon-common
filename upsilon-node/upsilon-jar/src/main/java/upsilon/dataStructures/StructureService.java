@@ -25,6 +25,7 @@ import upsilon.util.Util;
 public class StructureService extends ConfigStructure implements AbstractService {
 	private String identifier;
 
+
 	private StructureCommand command;
 	@XmlElement
 	private ResultKarma karma;
@@ -249,4 +250,6 @@ public class StructureService extends ConfigStructure implements AbstractService
 			this.setRegistered(false);
 		}
 	}
+	
+
 }

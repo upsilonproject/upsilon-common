@@ -17,11 +17,6 @@
 			<xs:field xpath="@id" />
 		</xs:key>
  
-		<xs:keyref name="keyrefGroupMemberService" refer="serviceId">
-			<xs:selector xpath="group/member" />  
-			<xs:field xpath="@serviceRef" />
-		</xs:keyref> 
-
 		<xs:key name="commandId">
 			<xs:selector xpath="command" />
 			<xs:field xpath="@id" />  
@@ -52,7 +47,7 @@
 			<xs:element minOccurs="0" maxOccurs="unbounded" name="argument"
 				type="xs:string" />
 		</xs:sequence>
-		<xs:attribute name="id" type="identifier"></xs:attribute>
+		<xs:attribute name="id" type="identifier" use="required"></xs:attribute>
 		<xs:attribute name="minDelay" type="intervalType" use="optional"></xs:attribute>
 		<xs:attribute name="maxDelay" type="intervalType" use="optional"></xs:attribute>
 		<xs:attribute name="timeout" type="intervalType" use="optional"></xs:attribute>

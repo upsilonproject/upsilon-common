@@ -8,11 +8,8 @@ public abstract class ConfigStructure {
     private boolean databaseUpdateRequired = true;
 
     private boolean peerUpdateRequired = true;
-
-    public StructureService construct() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    
+	private String source;
 
     @Override
     public final boolean equals(final Object obj) {
@@ -65,4 +62,12 @@ public abstract class ConfigStructure {
 
     }
 
+    public void setSource(String source) {
+    	this.source = source;
+    }
+      
+    @XmlTransient
+    public String getSource() {
+    	return this.source;
+    }
 }

@@ -23,9 +23,9 @@ public class CollectionAlterationTransaction<T extends ConfigStructure> {
     private Vector<String> oldList = new Vector<String>();
     private final HashMap<String, XmlNodeHelper> updList = new HashMap<>();
 
-    public CollectionAlterationTransaction(final CollectionOfStructures<T> list) {
-        this.list = list;
-        this.oldList = list.getIds();
+    public CollectionAlterationTransaction(final CollectionOfStructures<T> list, String source) {
+        this.list = list;  
+        this.oldList = list.getIdsWithSource(source);
         this.id = ++CollectionAlterationTransaction.catIndex;
     }
 
@@ -68,8 +68,6 @@ public class CollectionAlterationTransaction<T extends ConfigStructure> {
         this.printList("new", this.getNewIds());
         this.printList("old", this.getOldIds());
         this.printList("upd", this.getUpdatedIds());
-
-        CollectionAlterationTransaction.LOG.info("End of transactions");
     }
 
     public void printList(final String name, final Collection<String> col) {
@@ -77,18 +75,22 @@ public class CollectionAlterationTransaction<T extends ConfigStructure> {
             return;
         }
 
-        CollectionAlterationTransaction.LOG.info(name);
-        CollectionAlterationTransaction.LOG.info("---------");
+        CollectionAlterationTransaction.LOG.trace(name);
+        CollectionAlterationTransaction.LOG.trace("---------");
 
         for (final String s : col) {
-            CollectionAlterationTransaction.LOG.info("* " + s);
+            CollectionAlterationTransaction.LOG.trace("* " + s);
         }
-
-        CollectionAlterationTransaction.LOG.info("");
+  
+        CollectionAlterationTransaction.LOG.trace("");
     }
 
     @Override
     public String toString() {
         return "CAT<" + this.list.getTitle() + "> #" + this.id;
     }
+
+	public boolean isEmpty() { 
+		return newList.isEmpty() && oldList.isEmpty() && updList.isEmpty(); 
+	}
 }

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Vector;
 
@@ -20,23 +21,35 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXParseException;
-
-import ch.qos.logback.core.pattern.parser.Node;
-
+ 
 import upsilon.Configuration;
 import upsilon.dataStructures.CollectionOfStructures;
+import upsilon.util.Path;
+import upsilon.util.Util;
 
 public class XmlConfigurationLoader implements FileChangeWatcher.Listener {
     private static final transient Logger LOG = LoggerFactory.getLogger(XmlConfigurationLoader.class);
-    private File f;
 
     protected XmlConfigurationValidator val;
 
     private final Vector<FileChangeWatcher> listWatchers = new Vector<FileChangeWatcher>();
-	private boolean remote = false;
-
-    private void buildAndRunConfigurationTransaction(final String xpath, final CollectionOfStructures<?> col, final Document d) throws XPathExpressionException, JAXBException {
-        final CollectionAlterationTransaction<?> cat = col.newTransaction();
+    
+    private Path path;
+    
+    public void setUrl(Path path) {  
+    	this.path = path;  
+    }  
+    
+    private String getSourcetag() {
+    	String file = path.getFilename();
+    	 
+    	return file.substring(0, file.indexOf("."));
+    }
+    
+	private void buildAndRunConfigurationTransaction(final String xpath, final CollectionOfStructures<?> col, final Document d) throws XPathExpressionException, JAXBException {
+		String sourceTag = getSourcetag();  
+		  
+        final CollectionAlterationTransaction<?> cat = col.newTransaction(sourceTag); 
 
         final XPathExpression xpe = XPathFactory.newInstance().newXPath().compile(xpath);
         final NodeList els = (NodeList) xpe.evaluate(d, XPathConstants.NODESET);
@@ -44,17 +57,14 @@ public class XmlConfigurationLoader implements FileChangeWatcher.Listener {
         this.parseNodeParents(list);
 
         for (final XmlNodeHelper node : list) {
-            XmlConfigurationLoader.LOG.trace("xpath result: " + xpath + " = " + node.getNodeName());
+            XmlConfigurationLoader.LOG.trace("Node found. xpath: " + xpath + ". name: " + node.getNodeName());
+            node.setSource(sourceTag);
+            
             cat.considerFromConfig(node);
         }
 
+        cat.print(); 
         col.processTransaction(cat);
-    }
-
-    @Override
-    public void fileChanged(final File newFile) {
-        this.f = newFile;
-        this.reparse();
     }
 
     private void findParent(final XmlNodeHelper node, final Vector<XmlNodeHelper> linage, final Vector<XmlNodeHelper> availableNodes) {
@@ -73,40 +83,37 @@ public class XmlConfigurationLoader implements FileChangeWatcher.Listener {
         }
     }
 
-    public File getFile() {
-        return this.f;
-    }
-
     public XmlConfigurationValidator getValidator() {
-        if (this.val.getFile() != this.f) {
+        if (this.val.getPath() != this.path) {
             throw new IllegalArgumentException("Validator has expired. It refers to a file that is not current with the loader.");
-        }
+        } 
 
         return this.val;
     }
 
     public void load() {
-        this.load(this.f, true);
+        this.load(this.path, true);
     }
 
-    public FileChangeWatcher load(final File f) {
-        return this.load(f, true);
+    public FileChangeWatcher load(final Path u) {
+        return this.load(u, true);
     }
 
-    public FileChangeWatcher load(final File f, final boolean watch) {
-        this.f = f;
-        XmlConfigurationLoader.LOG.info("XMLConfigurationLoader is loading file: " + f);
-
-        final FileChangeWatcher fcw = new FileChangeWatcher(f, this);
-        this.listWatchers.add(fcw);
-
-        if (watch) {
-            fcw.start();
-        }
-
-        this.reparse();
-
-        return fcw;
+    public FileChangeWatcher load(Path path, final boolean watch) {
+    	LOG.info("XMLConfigurationLoader is loading file: " + path);
+    	 
+    	this.path = path; 
+    	 
+    	FileChangeWatcher fcw = new FileChangeWatcher(path, this);
+    	this.listWatchers.add(fcw);
+    	
+    	this.reparse(); 
+    	 
+    	if (watch) { 
+    		fcw.start();
+    	} 
+    	 
+    	return fcw;
     }
 
     private void parseConfiguration(final Document d) throws XPathExpressionException {
@@ -118,22 +125,31 @@ public class XmlConfigurationLoader implements FileChangeWatcher.Listener {
         }
     }
     
-    private void parseRemoteConfiguration(final Document d) throws XPathExpressionException, MalformedURLException {
-        final XPathExpression xpe = XPathFactory.newInstance().newXPath().compile("config/remoteConfig");
+    private void parseIncludedConfiguration(final Document d) throws XPathExpressionException, MalformedURLException, URISyntaxException {
+        final XPathExpression xpe = XPathFactory.newInstance().newXPath().compile("config/include");
         final NodeList nl = (NodeList) xpe.evaluate(d, XPathConstants.NODESET);
         
         Vector<XmlNodeHelper> nodes = parseNodelist(nl);
-
+ 
         for (XmlNodeHelper node : nodes) {
-        	String path = node.getAttributeValue("path", "");
-        	 
-        	LOG.warn("Setting up a new monitor for: " + path);
+        	Path path = new Path(node.getAttributeValue("path", ""));
         	
-        	FileChangeWatcher urlWatcher = new FileChangeWatcher(new URL(path), this);
-        	urlWatcher.start();   
-        }  
+        	if (!path.isAbsolute()) {    
+        		LOG.warn("Path is not absolute. Relative paths should not be used: " + path);
+        	} else {
+        		if (DirectoryWatcher.canMonitor(path)) {  
+        			new DirectoryWatcher(path);     
+        		} else if (FileChangeWatcher.isAlreadyMonitoring(path)) {
+        			LOG.info("Already monitoring included configuration file: " + path);        			
+        		} else { 
+            		LOG.info("Loading included configuration file: " + path);
+                  	  
+            		this.load(path, true);
+        		} 
+        	}  
+        }   
     }
-
+ 
     private Vector<XmlNodeHelper> parseNodelist(final NodeList nl) {
         final Vector<XmlNodeHelper> list = new Vector<XmlNodeHelper>();
 
@@ -152,71 +168,54 @@ public class XmlConfigurationLoader implements FileChangeWatcher.Listener {
             linage.clear();
         }
     }
+    
+    private boolean isAuxConfig() {    	  
+    	return !path.getFilename().startsWith("config.");
+    } 
 
-    public void reparse() { 
-        try { 
-            this.val = new XmlConfigurationValidator(this.f, remote);
-            this.val.validate();
+    public synchronized void reparse() { 
+        try {      
+            this.val = new XmlConfigurationValidator(this.path, isAuxConfig());
+            this.val.validate();    
             final Document d = this.val.getDocument();
+  
+            XmlConfigurationLoader.LOG.info("Reparse of configuration of file {}. Schema: {}. Validation status: {}", new Object[] { this.val.getPath(), Util.bool2s(val.isAux(), "AUX", "MAIN"), this.val.isParseClean() });
 
-            XmlConfigurationLoader.LOG.info("Reparse of configuration of file {} Validation status: {}", new Object[] { this.f.getAbsolutePath(), this.val.isParseClean() });
-
-            if (!this.val.isParsed()) {
-                XmlConfigurationLoader.LOG.warn("Configuration file could not be loaded for parser: " + this.val.getFile().getAbsolutePath());
-
+            if (!this.val.isParsed()) { 
+                XmlConfigurationLoader.LOG.warn("Configuration file could not be loaded for parser: " + this.val.getPath());
             } else if (!this.val.isParseClean()) {
-                XmlConfigurationLoader.LOG.warn("Configuration file has parse {} errors. It will NOT be reloaded: {}", new Object[] { this.val.getParseErrors().size(), this.val.getFile().getAbsolutePath() });
+                XmlConfigurationLoader.LOG.warn("Configuration file has parse {} errors. It will NOT be reloaded: {}", new Object[] { this.val.getParseErrors().size(), this.val.getPath() });
 
                 for (final SAXParseException e : this.val.getParseErrors()) {
-                    XmlConfigurationLoader.LOG.warn("Configuration file parse error: {}:{} - {}", new Object[] { this.val.getFile().getName(), e.getLineNumber(), e.getMessage() });
-                }
+                    XmlConfigurationLoader.LOG.warn("Configuration file parse error: {}:{} - {}", new Object[] { this.val.getPath(), e.getLineNumber(), e.getMessage() });
+                } 
             } else {
                 this.buildAndRunConfigurationTransaction("config/command", Configuration.instance.commands, d);
                 this.buildAndRunConfigurationTransaction("config/service", Configuration.instance.services, d);
                 this.buildAndRunConfigurationTransaction("config/peer", Configuration.instance.peers, d);
                 this.parseConfiguration(d); 
-                this.parseRemoteConfiguration(d);
+                this.parseIncludedConfiguration(d);   
             }
         } catch (final Exception e) {
             XmlConfigurationLoader.LOG.error("Could not reparse configuration: " + e.getMessage(), e);
         }
     }
 
-    public void setFile(final File f) {
-        this.f = f;
-    }
-
     public void stopFileWatchers() {
-        for (final FileChangeWatcher fcw : this.listWatchers) {
-            fcw.stop();
-        }
+    	synchronized (this.listWatchers) {
+	        for (final FileChangeWatcher fcw : this.listWatchers) {
+	            fcw.stop();
+	        }
+    	} 
     }
  
 	@Override
-	public void fileChanged(URL url) {
-		LOG.debug("File changed on URL");
-		
-		try {
-			InputStream input = url.openConnection().getInputStream();
-			
-			File f = File.createTempFile("downloadedConfig", ".xml");
-			OutputStream os = new FileOutputStream(f);
-			
-			int n;
-			
-			while ((n = input.read()) != -1) {
-				os.write(n);
-			}
-			
-			os.close();
-			input.close();
-			
-			this.f = f;
-			this.remote  = true;
-			this.reparse();
-			this.f.delete(); 
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public void fileChanged(Path url) {
+		this.path = url; 
+		this.reparse();  
+	}
+	   
+	public Path getUrl() {
+		return path; 
 	}
 }

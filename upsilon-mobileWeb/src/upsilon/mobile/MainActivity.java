@@ -31,8 +31,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.OnNaviga
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 
 		final ActionBar actionBar = getActionBar();
-		actionBar.setTitle("Upsilon Mobile");
-		actionBar.setDisplayShowTitleEnabled(false);
+		actionBar.setTitle(R.string.app_name); 
+		actionBar.setDisplayShowTitleEnabled(true);
 
 		this.web = (WebView) findViewById(R.id.webView1);
 		this.web.getSettings().setAppCacheEnabled(false);
@@ -58,7 +58,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.OnNaviga
 		alertClear.setMessage("Cache Cleared!");
 		alertClear.show();
 
-		refresh();
+		refresh(); 
 	}
 
 	public void refresh() {
@@ -87,15 +87,10 @@ public class MainActivity extends FragmentActivity implements ActionBar.OnNaviga
 		alertAbout.setTitle("About");
 		alertAbout.setMessage("Version: " + version);
 		alertAbout.show();
-
 	}
 
 	@Override
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
-		// Restore the previously serialized current dropdown position.
-		if (savedInstanceState.containsKey(STATE_SELECTED_NAVIGATION_ITEM)) {
-			getActionBar().setSelectedNavigationItem(savedInstanceState.getInt(STATE_SELECTED_NAVIGATION_ITEM));
-		}
 	}
 
 	public void onClickRefresh(MenuItem mnu) {
@@ -104,8 +99,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.OnNaviga
 
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
-		// Serialize the current dropdown position.
-		outState.putInt(STATE_SELECTED_NAVIGATION_ITEM, getActionBar().getSelectedNavigationIndex());
 	}
 
 	@Override
