@@ -26,10 +26,18 @@
   <modules>
     <module>upsilon-jar</module>
     <module>upsilon-doc</module>
-    <module>upsilon-rpm</module>
 	<module>upsilon-tgz</module>
 	<module>upsilon-deb</module>
   </modules> 
+
+  <profiles>
+	<profile>
+		<id>upsilon-rpm</id>
+		<modules>
+			<module>upsilon-rpm</module>
+		</modules>
+	</profile>
+  </profiles>
   
   <build>
     <extensions>
