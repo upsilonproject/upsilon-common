@@ -21,6 +21,7 @@ import upsilon.dataStructures.StructureCommand;
 import upsilon.dataStructures.StructureNode;
 import upsilon.dataStructures.StructureService;
 import upsilon.management.rest.client.RestClient;
+import upsilon.util.SslUtil;
 
 public class HttpServerAndClientTest {
 	private static final Logger LOG = LoggerFactory.getLogger(HttpServerAndClientTest.class);
@@ -38,6 +39,11 @@ public class HttpServerAndClientTest {
 			LOG.debug("Waiting for server to start"); 
 			Thread.sleep(100);
 		}  
+	}
+	
+	@BeforeClass
+	public static void setupSsl() throws Exception {
+		SslUtil.init(); 
 	}
 	
 	private static DaemonRest server;
