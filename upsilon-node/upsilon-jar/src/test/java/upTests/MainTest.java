@@ -1,6 +1,7 @@
 package upTests;
 
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,9 +11,15 @@ import upsilon.Database;
 import upsilon.Main;
 import upsilon.dataStructures.CollectionOfStructures;
 import upsilon.dataStructures.StructurePeer;
+import upsilon.util.SslUtil;
 
 public class MainTest {
 	private static final Logger LOG = LoggerFactory.getLogger(MainTest.class);
+	
+	@BeforeClass 
+	public void setupSsl() throws Exception {
+		SslUtil.init(); 
+	} 
 	
     @Test
     public void testGetters() {
