@@ -17,7 +17,7 @@ public class MainTest {
 	private static final Logger LOG = LoggerFactory.getLogger(MainTest.class);
 	
 	@BeforeClass 
-	public void setupSsl() throws Exception {
+	public static void setupSsl() throws Exception {
 		SslUtil.init(); 
 	} 
 	
