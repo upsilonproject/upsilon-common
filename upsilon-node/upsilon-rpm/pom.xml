@@ -59,21 +59,12 @@
 						</mapping>
 						<mapping>
 							<username>upsilon</username>
-							<directory>/lib/systemd/system/</directory>
+							<directory>/etc/init.d/</directory>
 							<directoryIncluded>false</directoryIncluded>
 							<sources>
 								<source>
-									<location>../upsilon-jar/var/upsilon-debug.service</location>
-								</source>
-							</sources>
-						</mapping>
-						<mapping>
-							<username>upsilon</username>
-							<directory>/lib/systemd/system/</directory>
-							<directoryIncluded>false</directoryIncluded>
-							<sources>
-								<source>
-									<location>../upsilon-jar/var/upsilon.service</location>
+									<location>../upsilon-jar/var/upsilon-rhel-init.sh</location>
+									<destination>upsilon</destination>
 								</source>
 							</sources>
 						</mapping>
@@ -128,7 +119,6 @@ ln -s -f /usr/share/upsilon/upsilon-${releaseVersion}.jar /usr/share/upsilon/ups
 mkdir -p /etc/upsilon
 chown upsilon:upsilon /etc/upsilon
 
-systemctl --system daemon-reload 
 service upsilon start
 ]]></script>
 					</postinstallScriptlet>
