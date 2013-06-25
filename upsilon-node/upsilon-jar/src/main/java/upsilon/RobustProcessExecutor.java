@@ -49,13 +49,28 @@ public class RobustProcessExecutor implements Callable<Integer> {
 	}
 
 	public void destroy() {
+		// On some old JDKs, processes and their streams can be set
+		// to NULL before this method is called, hence the many NULL
+		// checks to do our best to clean up after ourselves, rather
+		// than throwing and leaking file handles.
 		try {
-			this.p.getInputStream().close();
-			this.p.getErrorStream().close();
-			this.p.getOutputStream().close();
+			if (this.p == null) {
+				return;
+			}
+
+			if (this.p.getInputStream() != null) {
+				this.p.getInputStream().close();
+			}
+
+			if (this.p.getErrorStream() != null) {
+				this.p.getErrorStream().close();
+			}
+
+			if (this.p.getOutputStream() != null) {
+				this.p.getOutputStream().close();
+			}
 		} catch (final IOException e) {
-			this.log.error("Could not close a stream associated with a process, this instance of Upsilon will probably leak file handles!");
-			e.printStackTrace();
+			this.log.error("Could not close a stream associated with a process, this instance of Upsilon will probably leak file handles!", e);
 		}
 
 		this.p.destroy();

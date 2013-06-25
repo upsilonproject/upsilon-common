@@ -18,24 +18,26 @@
 # Source function library.
 . /etc/init.d/functions
 
-RETVAL=0
-PID=`ps aux | grep upsilon.jar | grep -v grep | awk '{print $2}'`
+checkpid() {
+	PID=`ps aux | grep upsilon.jar | grep -v grep | awk '{print $2}'`
+	return $PID
+}
 
+RETVAL=0
 prog=upsilon
-exec="/usr/bin/java -Djava.net.preferIPv4Stack=true -jar /usr/share/upsilon/upsilon.jar"
+cmdline="/usr/bin/java -Djava.net.preferIPv4Stack=true -jar /usr/share/upsilon/upsilon.jar"
 
 start() {
 	if [[ -z "$PID" ]]; then
-		echo -n $"Upsilon is starting... "
-		nohup $exec 2>/dev/null 1> /dev/null &
-		RETVAL=$?
+		echo -n "Upsilon is starting... "
+		nohup $cmdline | logger -t upsilon &
 
-		echo
+		checkpid
 
-		if [[ 0 -eq $RETVAL ]]; then
-			echo "OK!";
+		if [[ -z "$PID" ]]; then
+			echo "Failed :(";
 		else
-			echo "Failed :("
+			echo "OK! PID: $PID"
 		fi
 
 		return $RETVAL
@@ -72,6 +74,9 @@ restart() {
         stop
         start
 }
+
+
+checkpid
 
 case "$1" in
   start)
