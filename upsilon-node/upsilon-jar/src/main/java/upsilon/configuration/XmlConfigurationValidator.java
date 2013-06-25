@@ -30,7 +30,7 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.ext.DefaultHandler2;
 import org.xml.sax.helpers.DefaultHandler;
 
-import upsilon.util.Path;
+import upsilon.util.UPath;
 import upsilon.util.ResourceResolver;
 
 public class XmlConfigurationValidator implements ErrorHandler {
@@ -46,7 +46,7 @@ public class XmlConfigurationValidator implements ErrorHandler {
     	CookieManager.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
     }
 
-    public XmlConfigurationValidator(final Path u, boolean isAux) throws Exception {
+    public XmlConfigurationValidator(final UPath u, boolean isAux) throws Exception {
     	this.isAux = isAux; 
     	
         final InputStream xsdSchemaStream = selectSchema();
@@ -119,9 +119,9 @@ public class XmlConfigurationValidator implements ErrorHandler {
     	return isAux; 
     }
 
-	public Path getPath() {
+	public UPath getPath() {
 		return this.path; 
 	}  
 	 
-	private Path path; 
+	private UPath path; 
 }

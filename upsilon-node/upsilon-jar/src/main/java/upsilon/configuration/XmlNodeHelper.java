@@ -15,11 +15,6 @@ public class XmlNodeHelper {
         this.node = node;
     }
     
-    public XmlNodeHelper(final Node node, String source) {
-    	this.node = node;
-    	this.source = source; 
-    }
-    
     public <T> T getAttributeValue(final String key, final T def) {
         return this.getAttributeValueOrParentOrDefault(key, def);
     }

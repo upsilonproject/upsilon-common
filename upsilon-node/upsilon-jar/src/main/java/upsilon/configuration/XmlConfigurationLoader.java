@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.DirectoryStream;
 import java.util.Vector;
 
 import javax.xml.bind.JAXBException;
@@ -23,20 +24,21 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXParseException;
  
 import upsilon.Configuration;
+import upsilon.Main;
 import upsilon.dataStructures.CollectionOfStructures;
-import upsilon.util.Path;
+import upsilon.util.UPath;
 import upsilon.util.Util;
 
-public class XmlConfigurationLoader implements FileChangeWatcher.Listener {
+public class XmlConfigurationLoader implements FileChangeWatcher.Listener, DirectoryWatcher.Listener {
     private static final transient Logger LOG = LoggerFactory.getLogger(XmlConfigurationLoader.class);
-
+ 
     protected XmlConfigurationValidator val;
 
     private final Vector<FileChangeWatcher> listWatchers = new Vector<FileChangeWatcher>();
     
-    private Path path;
+    private UPath path;
     
-    public void setUrl(Path path) {  
+    public void setUrl(UPath path) {  
     	this.path = path;  
     }  
     
@@ -95,11 +97,11 @@ public class XmlConfigurationLoader implements FileChangeWatcher.Listener {
         this.load(this.path, true);
     }
 
-    public FileChangeWatcher load(final Path u) {
+    public FileChangeWatcher load(final UPath u) {
         return this.load(u, true);
     }
 
-    public FileChangeWatcher load(Path path, final boolean watch) {
+    public FileChangeWatcher load(UPath path, final boolean watch) {
     	LOG.info("XMLConfigurationLoader is loading file: " + path);
     	 
     	this.path = path; 
@@ -132,13 +134,13 @@ public class XmlConfigurationLoader implements FileChangeWatcher.Listener {
         Vector<XmlNodeHelper> nodes = parseNodelist(nl);
  
         for (XmlNodeHelper node : nodes) {
-        	Path path = new Path(node.getAttributeValue("path", ""));
+        	UPath path = new UPath(node.getAttributeValue("path", ""));
         	
         	if (!path.isAbsolute()) {    
         		LOG.warn("Path is not absolute. Relative paths should not be used: " + path);
         	} else {
         		if (DirectoryWatcher.canMonitor(path)) {  
-        			new DirectoryWatcher(path);     
+        			new DirectoryWatcher(path, this);     
         		} else if (FileChangeWatcher.isAlreadyMonitoring(path)) {
         			LOG.info("Already monitoring included configuration file: " + path);        			
         		} else { 
@@ -224,12 +226,21 @@ public class XmlConfigurationLoader implements FileChangeWatcher.Listener {
     }
  
 	@Override
-	public void fileChanged(Path url) {
-		this.path = url; 
+	public void fileChanged(UPath url) {
+		this.path = url;  
 		this.reparse();  
 	}
 	   
-	public Path getUrl() {
+	public UPath getUrl() {
 		return path; 
+	}
+
+	@Override
+	public void onNewFile(File f) {  
+		try {
+			Main.instance.getXmlConfigurationLoader().load(new UPath(f), true);
+		} catch (Exception e) { 
+			LOG.warn("Informed of new file in a directory, but the configuration loader encountered an exception: " + e.getMessage());
+		}
 	}
 }

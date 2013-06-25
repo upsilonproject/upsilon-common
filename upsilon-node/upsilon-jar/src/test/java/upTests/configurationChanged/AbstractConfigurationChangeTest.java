@@ -9,17 +9,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
  
 import upsilon.Configuration;
-import upsilon.util.Path;
+import upsilon.util.UPath;
 
 public abstract class AbstractConfigurationChangeTest {
-    protected final Path before;
-    protected final Path after;
+    protected final UPath before;
+    protected final UPath after;
  
     private static final Logger LOG = LoggerFactory.getLogger(AbstractConfigurationChangeTest.class);
  
     public AbstractConfigurationChangeTest(final String folderName) throws Exception {
-        this.before = new Path("src/test/resources/configChanged/" + folderName + "/config.before.xml");
-        this.after = new Path("src/test/resources/configChanged/" + folderName + "/config.after.xml");
+        this.before = new UPath("src/test/resources/configChanged/" + folderName + "/config.before.xml");
+        this.after = new UPath("src/test/resources/configChanged/" + folderName + "/config.after.xml");
 
         AbstractConfigurationChangeTest.LOG.debug("before: [{}] after: [{}]", new Object[] { this.before, this.after });
     }

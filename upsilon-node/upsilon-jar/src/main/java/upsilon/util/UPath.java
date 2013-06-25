@@ -9,35 +9,36 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Path;
 
-public class Path {
+public class UPath {
 	private URL url;
 	
-	public Path(URL url) { 
+	public UPath(URL url) { 
 		this.url = url;
 	} 
 	
-	public Path(String path) throws MalformedURLException {
+	public UPath(String path) throws MalformedURLException {
 		int protoSeparator = path.indexOf(":");
 		 
 		if (protoSeparator == -1) {
 			path = "file://" + path;
-		//} else {
-			//String proto = path.substring(0, protoSeparator);
 		}
-			
- 
 		 
 		this.url = new URL(path); 
 	} 
 	
-	public Path(File f ) throws MalformedURLException { 
+	public UPath(File f ) throws MalformedURLException { 
 		this.url = f.toURI().toURL();
 	} 
 	
-	public Path(File configurationOverridePath, String filename) throws MalformedURLException {
+	public UPath(File configurationOverridePath, String filename) throws MalformedURLException {
 		this.url = new URL(configurationOverridePath.toURI().toURL() + File.separator + filename);
 	}  
+ 
+	public UPath(Path tempDirectory) throws Exception {
+		this(tempDirectory.toFile());
+	} 
 
 	public boolean isLocal() { 
 		if (url.getProtocol().equals("file")) {  

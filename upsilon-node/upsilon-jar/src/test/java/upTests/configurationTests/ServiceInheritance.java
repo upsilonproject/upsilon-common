@@ -14,7 +14,7 @@ import upsilon.configuration.FileChangeWatcher;
 import upsilon.configuration.XmlConfigurationLoader;
 import upsilon.dataStructures.StructureService;
 import upsilon.util.GlobalConstants;
-import upsilon.util.Path;
+import upsilon.util.UPath;
 
 public class ServiceInheritance {
 	@Before
@@ -24,7 +24,7 @@ public class ServiceInheritance {
 
     @Test 
     public void testConfiguration() throws Exception {
-        final Path before = new Path("file://src/test/resources/configChanged/serviceInheritance/config.xml");
+        final UPath before = new UPath("file://src/test/resources/configChanged/serviceInheritance/config.xml");
   
         final XmlConfigurationLoader loader = new XmlConfigurationLoader();
         final FileChangeWatcher fcw = loader.load(before, false);

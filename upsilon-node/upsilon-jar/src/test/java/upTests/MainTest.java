@@ -25,6 +25,11 @@ public class MainTest {
     public void testGetters() {
         Assert.assertNotNull(null, Main.instance.getDaemons());
     }
+    
+    @Test
+    public void testConfigurationOverridePath() { 
+    	Assert.assertNull(Main.getConfigurationOverridePath());
+    }
 
     @Test
     public void testNodeType() throws Exception {

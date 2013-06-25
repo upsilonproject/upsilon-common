@@ -1,10 +1,5 @@
 package upTests.configurationTests;
 
-import java.io.File;
-import java.net.URL;
-
-import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -13,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import upsilon.Configuration;
 import upsilon.configuration.FileChangeWatcher;
 import upsilon.configuration.XmlConfigurationLoader;
-import upsilon.util.Path;
+import upsilon.util.UPath;
 import static org.hamcrest.Matchers.*; 
 import static org.hamcrest.MatcherAssert.*;
  
@@ -25,8 +20,8 @@ public class MultiConfigurationTest {
 	
 	@Test
 	public void testMultiConfiguration() throws Exception {
-		final Path masterFile = new Path("file://src/test/resources/multi/config.xml");
-		final Path slaveFile = new Path("file://src/test/resources/multi/slave.xml"); 
+		final UPath masterFile = new UPath("file://src/test/resources/multi/config.xml");
+		final UPath slaveFile = new UPath("file://src/test/resources/multi/slave.xml"); 
 		final Configuration config = Configuration.instance;   
 		
 		XmlConfigurationLoader loader = new XmlConfigurationLoader();
@@ -51,7 +46,7 @@ public class MultiConfigurationTest {
 		assertThat(config.services.getImmutable(), hasSize(2));
 		assertThat(config.commands.getImmutable(), hasSize(2));
 		     
-		fcwSlave.setWatchedFile(new Path("file://src/test/resources/multi/config.empty.xml"));
+		fcwSlave.setWatchedFile(new UPath("file://src/test/resources/multi/config.empty.xml"));
 		fcwSlave.checkForModification();  
 		 
 		assertThat(config.services.getImmutable(), hasSize(1));

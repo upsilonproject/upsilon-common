@@ -1,22 +1,37 @@
 package upTests;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.GeneralSecurityException;
+import java.security.cert.CertificateParsingException;
+import java.security.cert.X509Certificate;
+
+import javax.security.cert.Certificate;
 
 import junit.framework.Assert;
 
-import org.glassfish.grizzly.http.server.HttpServer;
+import org.apache.commons.httpclient.HttpConnection;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.BeforeClass; 
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.hamcrest.Matchers.*; 
+import static org.hamcrest.MatcherAssert.*;
+
+import com.google.common.io.CharStreams;
+import com.sun.jersey.api.client.Client;
+
 import upsilon.Configuration;
 import upsilon.DaemonRest;
+import upsilon.Main;
 import upsilon.dataStructures.StructureCommand;
 import upsilon.dataStructures.StructureNode;
 import upsilon.dataStructures.StructureService;
@@ -55,8 +70,11 @@ public class HttpServerAndClientTest {
 		
 		StructureNode testingNode = new StructureNode();
 		client.postNode(testingNode);
+		
+		testingNode.setPeerUpdateRequired(false);
+		client.postNode(testingNode); 
 	}
-	 
+	
 	@Test
 	public void testPostUnregisteredService() throws IllegalArgumentException, MalformedURLException, GeneralSecurityException {
 		RestClient client = new RestClient(new URL("http://localhost:7605"));
@@ -93,6 +111,24 @@ public class HttpServerAndClientTest {
 		service.setPeerUpdateRequired(true); 
 		  
 		return service;
+	}
+	
+	@Test 
+	public void testGetIndex() throws Exception{
+		URL u = new URL("http://localhost:7605"); 
+		String content = CharStreams.toString(new InputStreamReader(u.openStream()));
+		
+		assertThat(content, containsString("<h1>"));   
+		assertThat(content, containsString(Main.getVersion()));
+	}   
+	
+	@Test
+	public void testGetInternalStatus() throws IllegalArgumentException, GeneralSecurityException, IOException {
+		URL u = new URL("http://localhost:7605/internalStatus");
+		String content = CharStreams.toString(new InputStreamReader(u.openStream()));  
+		
+		assertThat(content, instanceOf(String.class));
+		assertThat(content, endsWith("</internalStatus>"));  
 	}
 	 
 	@Test

@@ -12,7 +12,7 @@ import upTests.configurationChanged.AbstractConfigurationChangeTest;
 import upsilon.Configuration;
 import upsilon.configuration.FileChangeWatcher;
 import upsilon.configuration.XmlConfigurationLoader;
-import upsilon.util.Path;
+import upsilon.util.UPath;
 
 public class BasicReloadTest extends AbstractConfigurationChangeTest {
     public BasicReloadTest() throws Exception {

@@ -3,30 +3,14 @@ package upsilon;
 import java.io.File;
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
-import java.lang.management.ManagementFactory;
-import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Level;
-import java.util.logging.LogManager;
+import java.util.logging.LogManager; 
 
-import javax.management.InstanceAlreadyExistsException;
-import javax.management.MBeanRegistrationException;
-import javax.management.MBeanServer;
-import javax.management.MalformedObjectNameException;
-import javax.management.NotCompliantMBeanException;
-import javax.management.ObjectName;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
-
-import org.glassfish.grizzly.ssl.SSLUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
-
-import com.sun.jersey.client.urlconnection.HTTPSProperties;
 
 import upsilon.configuration.DirectoryWatcher;
 import upsilon.configuration.FileChangeWatcher;
@@ -34,8 +18,7 @@ import upsilon.configuration.XmlConfigurationLoader;
 import upsilon.dataStructures.CollectionOfStructures;
 import upsilon.dataStructures.StructureNode;
 import upsilon.dataStructures.StructurePeer;
-import upsilon.management.jmx.MainMBeanImpl;
-import upsilon.util.Path;
+import upsilon.util.UPath; 
 import upsilon.util.ResourceResolver;
 import upsilon.util.SslUtil;
 import ch.qos.logback.classic.LoggerContext;
@@ -77,9 +60,9 @@ public class Main implements UncaughtExceptionHandler {
 	public static void main(final String[] args) throws Exception {		
 		if (args.length > 0) {
 			Main.configurationOverridePath = new File(args[0]); 
-			Main.xmlLoader.setUrl(new Path(Main.configurationOverridePath, "config.xml"));
+			Main.xmlLoader.setUrl(new UPath(Main.configurationOverridePath, "config.xml"));
 		} else {
-			Main.xmlLoader.setUrl(new Path("/etc/upsilon/config.xml"));
+			Main.xmlLoader.setUrl(new UPath("/etc/upsilon/config.xml"));
 		}  
 
 		Main.instance.startup();
@@ -139,16 +122,6 @@ public class Main implements UncaughtExceptionHandler {
 		return "non-standard-node";
 	}
 
-	private void setupMbeans() {
-		final MBeanServer srv = ManagementFactory.getPlatformMBeanServer();
-
-		try {
-			srv.registerMBean(new MainMBeanImpl(), new ObjectName("upsilon.mbeansImpl:type=MainMBeanImpl"));
-		} catch (InstanceAlreadyExistsException | MBeanRegistrationException | NotCompliantMBeanException | MalformedObjectNameException e) {
-			Main.LOG.error("Could not register MBean", e);
-		}
-	}
-
 	public void shutdown() {
 		for (final Daemon t : this.daemons) {
 			t.stop();
@@ -183,8 +156,6 @@ public class Main implements UncaughtExceptionHandler {
 		Main.xmlLoader.load();
 
 		if (Main.xmlLoader.getValidator().isParseClean()) {
-			this.setupMbeans();
- 
 			if (Configuration.instance.daemonRestEnabled) {
 				this.startDaemon(new DaemonRest());
 			}

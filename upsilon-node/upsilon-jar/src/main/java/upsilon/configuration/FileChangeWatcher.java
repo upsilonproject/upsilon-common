@@ -9,13 +9,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import upsilon.util.GlobalConstants;
-import upsilon.util.Path;
+import upsilon.util.UPath;
 
 public class FileChangeWatcher {
-	private static final HashMap<Path, FileChangeWatcher> fileChangeRegistry = new HashMap<Path, FileChangeWatcher>(); 
+	private static final HashMap<UPath, FileChangeWatcher> fileChangeRegistry = new HashMap<UPath, FileChangeWatcher>(); 
 	
 	interface Listener {  
-		public void fileChanged(Path url); 
+		public void fileChanged(UPath url); 
 	} 
 
 	private static final transient Logger LOG = LoggerFactory.getLogger(FileChangeWatcher.class);
@@ -23,9 +23,9 @@ public class FileChangeWatcher {
 	private final Listener l;
 	private Thread monitoringThread;
 	private boolean continueMonitoring = true;
-	private Path path;
+	private UPath path;
 	
-	public FileChangeWatcher(final Path path, final Listener l) {
+	public FileChangeWatcher(final UPath path, final Listener l) {
 		this.path = path;
 		this.l = l; 
 		 
@@ -34,7 +34,7 @@ public class FileChangeWatcher {
 		setupMonitoringThread();
 	}
 
-	public static boolean isAlreadyMonitoring(Path path) {
+	public static boolean isAlreadyMonitoring(UPath path) {
 		return fileChangeRegistry.containsKey(path); 
 	}   
  
@@ -58,9 +58,9 @@ public class FileChangeWatcher {
 		}
 	} 
 		
-	private static final HashMap<Path, Long> fileModificationTimes = new HashMap<>();
+	private static final HashMap<UPath, Long> fileModificationTimes = new HashMap<>();
 	 
-	public static long getMtime(Path path) {
+	public static long getMtime(UPath path) {
 		long mtime;
 		
 		if (fileModificationTimes.containsKey(path)) {
@@ -72,7 +72,7 @@ public class FileChangeWatcher {
 		return mtime;
 	}
 	 
-	private static boolean isChanged(Path url) throws IllegalStateException {
+	private static boolean isChanged(UPath url) throws IllegalStateException {
 		long mtime = getMtime(url); 
 		long dbmtime = fileModificationTimes.get(url);
 		
@@ -81,11 +81,11 @@ public class FileChangeWatcher {
 		return mtime > dbmtime;	
 	} 
 	
-	public static void updateMtime(Path url, long newTime) {
+	public static void updateMtime(UPath url, long newTime) {
 		fileModificationTimes.put(url, newTime); 
 	}
  
-	public void setWatchedFile(final Path path) {
+	public void setWatchedFile(final UPath path) {
 		fileModificationTimes.put(this.path, path.getMtime() - 1);
 		fileModificationTimes.put(path, path.getMtime() - 1); 
 		     
