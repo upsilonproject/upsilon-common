@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -44,7 +45,7 @@ public class RobustProcessExecutor implements Callable<Integer> {
 	@Override
 	public Integer call() throws IllegalThreadStateException, InterruptedException {
 		this.p.waitFor();
-		
+
 		return this.p.exitValue();
 	}
 
@@ -78,7 +79,7 @@ public class RobustProcessExecutor implements Callable<Integer> {
 		this.future = null;
 	}
 
-	private void exec() throws IOException { 
+	private void exec() throws IOException {
 		this.log.debug("Executing " + this.service.getIdentifier() + ": " + Arrays.toString(this.executableAndArguments));
 
 		this.p = Runtime.getRuntime().exec(this.executableAndArguments);
@@ -105,7 +106,7 @@ public class RobustProcessExecutor implements Callable<Integer> {
 					final String output = RobustProcessExecutor.this.getOutput();
 
 					if (!output.isEmpty()) {
-						RobustProcessExecutor.this.log.debug("Output {}: " + output, new Object[] { service.getIdentifier() });
+						RobustProcessExecutor.this.log.debug("Output {}: " + output, new Object[] { RobustProcessExecutor.this.service.getIdentifier() });
 					}
 
 					switch (RobustProcessExecutor.this.getReturn()) {
@@ -165,7 +166,7 @@ public class RobustProcessExecutor implements Callable<Integer> {
 	}
 
 	private String outputStreamToString(final InputStream os) {
-		BufferedReader br = new BufferedReader(new InputStreamReader(os));
+		BufferedReader br = new BufferedReader(new InputStreamReader(os, Charset.forName("UTF-8")));
 		final StringBuilder sb = new StringBuilder();
 		String s;
 
