@@ -12,22 +12,10 @@ import upsilon.Main;
 
 public abstract class ResourceResolver {
     public static class ResourceResolverJar extends ResourceResolver {
-
-        @Override
-        public InputStream getFromFilename(final String filename) throws FileNotFoundException {
-            final File f = new File(this.getConfigDir(), filename);
-
-            if (!f.exists()) {
-                throw new FileNotFoundException(filename);
-            }
-
-            return new FileInputStream(f);
-        }
-
         @Override
         public InputStream getInternalFromFilename(final String filename) throws FileNotFoundException {
             final InputStream is = this.getClass().getResourceAsStream("/" + filename);
-
+ 
             return is;
         }
     }
@@ -45,8 +33,6 @@ public abstract class ResourceResolver {
             return this.getOsConfigDir();
         }
     }
-
-    public abstract InputStream getFromFilename(String filename) throws Exception;
 
     public abstract InputStream getInternalFromFilename(String filename) throws Exception;
 

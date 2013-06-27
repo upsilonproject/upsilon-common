@@ -130,6 +130,14 @@ public class HttpServerAndClientTest {
 		assertThat(content, instanceOf(String.class));
 		assertThat(content, endsWith("</internalStatus>"));  
 	}
+	
+	@Test
+	public void testGetCommands() throws IOException {
+		URL u = new URL("http://localhost:7605/commands/list");
+		String content = CharStreams.toString(new InputStreamReader(u.openStream()));  
+		 
+		assertThat(content, instanceOf(String.class));
+	}
 	 
 	@Test
 	public void testGetService() throws IllegalArgumentException, MalformedURLException, GeneralSecurityException {

@@ -1,5 +1,6 @@
 package upTests;
 
+import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.concurrent.ExecutionException;
@@ -19,6 +20,50 @@ import upsilon.dataStructures.StructureService;
 
 public class ProcessExecutorTest {
 	private static final transient Logger LOG = LoggerFactory.getLogger(ProcessExecutorTest.class);
+	
+	@Test 
+	public void testUnicodeInOutput() throws Exception {
+		final StructureCommand cmd = new StructureCommand();
+		cmd.setCommandLine("src/test/resources/executionTestScripts/testMbStrings.py");
+		
+		final StructureService dummyService = new StructureService();
+		dummyService.setIdentifier("Dummy Service"); 
+		dummyService.setCommand(cmd);
+		dummyService.setTimeout(Duration.standardSeconds(3));
+		
+		RobustProcessExecutor rpe = new RobustProcessExecutor(dummyService);
+		rpe.execAsync();
+		 
+		Thread.sleep(1000); // FIXME
+		  
+		Assert.assertEquals("GOOD", dummyService.getKarmaString());
+		
+		String execHostnameOutput = dummyService.getOutput();
+		    
+		Assert.assertEquals("\u5f15\u8d77\u7684\u6216", execHostnameOutput);
+	} 
+	
+	@Test
+	public void testStdError() throws Exception {
+		final StructureCommand cmd = new StructureCommand();
+		cmd.setCommandLine("src/test/resources/executionTestScripts/testStdError.sh");
+		
+		final StructureService dummyService = new StructureService();
+		dummyService.setIdentifier("Dummy Service"); 
+		dummyService.setCommand(cmd);
+		dummyService.setTimeout(Duration.standardSeconds(3));
+		
+		RobustProcessExecutor rpe = new RobustProcessExecutor(dummyService);
+		rpe.execAsync();
+		 
+		Thread.sleep(1000); // FIXME
+		  
+		Assert.assertEquals("GOOD", dummyService.getKarmaString());
+		
+		String execHostnameOutput = dummyService.getOutput();
+		   
+		Assert.assertEquals("STDERROR: This message is on stderr\nThis message is on stdout", execHostnameOutput); 
+	}
 	
 	@Test
 	public void testHostname() throws InterruptedException, ExecutionException, TimeoutException, UnknownHostException {

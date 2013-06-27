@@ -96,10 +96,6 @@ public class XmlNodeHelper {
         return this.node.getFirstChild().getNodeValue();
     }
 
-    public XmlNodeHelper getParent() {
-        return this.parent;
-    }
-
     public boolean hasAttribute(final String string) {
         return this.node.getAttributes().getNamedItem(string) != null;
     }

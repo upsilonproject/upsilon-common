@@ -18,6 +18,9 @@ import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.CharStreams;
+
 import upsilon.dataStructures.ResultKarma;
 import upsilon.dataStructures.StructureService;
 import upsilon.util.GlobalConstants;
@@ -105,9 +108,7 @@ public class RobustProcessExecutor implements Callable<Integer> {
 
 					final String output = RobustProcessExecutor.this.getOutput();
 
-					if (!output.isEmpty()) {
-						RobustProcessExecutor.this.log.debug("Output {}: " + output, new Object[] { RobustProcessExecutor.this.service.getIdentifier() });
-					}
+					RobustProcessExecutor.this.log.debug("Output {}: " + output, new Object[] { RobustProcessExecutor.this.service.getIdentifier() });
 
 					switch (RobustProcessExecutor.this.getReturn()) {
 					case 0:
@@ -138,18 +139,18 @@ public class RobustProcessExecutor implements Callable<Integer> {
 
 		RobustProcessExecutor.executingThreadPool.execute(monitoringThread);
 	}
-
-	private String getOutput() {
+ 
+	private String getOutput() throws IOException {
 		String output = "";
-		final String errorStream = this.outputStreamToString(this.p.getErrorStream());
+		final String errorStream = CharStreams.toString(new InputStreamReader(this.p.getErrorStream(), Charsets.UTF_8));
 
-		if (!errorStream.isEmpty()) {
+		if (!errorStream.isEmpty()) { 
 			output = "STDERROR: " + errorStream;
 		}
-
-		output += this.outputStreamToString(this.p.getInputStream());
-
-		return output;
+ 
+		output += CharStreams.toString(new InputStreamReader(this.p.getInputStream(), Charsets.UTF_8));
+ 
+		return output.trim();
 	}
 
 	private int getReturn() throws InterruptedException, ExecutionException, TimeoutException {
@@ -163,24 +164,5 @@ public class RobustProcessExecutor implements Callable<Integer> {
 		final long timeout = Math.max(this.timeout.getStandardSeconds(), GlobalConstants.DEF_TIMEOUT.getStandardSeconds());
 
 		return this.future.get(timeout, TimeUnit.SECONDS);
-	}
-
-	private String outputStreamToString(final InputStream os) {
-		BufferedReader br = new BufferedReader(new InputStreamReader(os, Charset.forName("UTF-8")));
-		final StringBuilder sb = new StringBuilder();
-		String s;
-
-		try {
-			while ((s = br.readLine()) != null) {
-				sb.append(s + "\n");
-			}
-
-			br.close();
-			br = null;
-		} catch (final IOException e) {
-			e.printStackTrace();
-		}
-
-		return sb.toString().trim();
 	}
 }
