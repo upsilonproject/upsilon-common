@@ -6,7 +6,7 @@
   <version>2.0.0</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <releaseVersion>0.107.0</releaseVersion>
+    <releaseVersion>0.108.0</releaseVersion>
   </properties>
 
   <parent>
