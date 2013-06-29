@@ -1,5 +1,5 @@
 <?xml version = "1.0"?>
-<config comment = "{$comment}">
+<config comment = "{$comment}, modified:{$mtime}">
 {foreach from = $listServices item = itemService}
 	<service id = "{$itemService.identifier}" commandRef = "{$itemService.commandRef}" parent = "{$itemService.parent}" />
 {/foreach}

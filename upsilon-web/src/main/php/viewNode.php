@@ -1,9 +1,9 @@
 <?php
 
 $title = 'View Node';
-require_once 'includes/widgets/header.php';
-require_once 'libAllure/Sanitizer.php';
+require_once 'includes/common.php';
 
+use \libAllure\HtmlLinksCollection;
 use \libAllure\Sanitizer;
 
 if (isset($_REQUEST['identifier'])) {
@@ -20,8 +20,22 @@ $stmt->execute();
 
 $node = $stmt->fetchRow(); 
 
+$links = new HtmlLinksCollection();
+$links->add('deleteNode.php?id=' . $node['id'], 'Delete');
+
+require_once 'includes/widgets/header.php';
+require_once 'libAllure/Sanitizer.php';
+
 $tpl->assign('itemNode', $node);
 $tpl->display('viewNode.tpl');
+
+$sql = 'SELECT s.id, s.identifier, s.lastUpdated, s.output, s.karma FROM services s WHERE s.node = :node';
+$stmt = stmt($sql);
+$stmt->bindValue(':node', $node['identifier']);
+$stmt->execute();
+
+$tpl->assign('listServices', $stmt->fetchAll());
+$tpl->display('listServices.tpl');
 
 require_once 'includes/widgets/footer.php';
 

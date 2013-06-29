@@ -13,6 +13,8 @@ use \libAllure\HtmlLinksCollection;
 
 $links = new HtmlLinksCollection();
 $links->add('createRemoteConfigService.php?id=' . $remoteConfig['id'], 'Create Service');
+$links->add('deleteRemoteConfig.php?id=' . $remoteConfig['id'], 'Delete config ');
+$links->add('updateRemoteConfig.php?id=' . $remoteConfig['id'], 'Update config ');
 
 require_once 'includes/widgets/header.php';
 

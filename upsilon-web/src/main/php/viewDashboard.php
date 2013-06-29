@@ -22,6 +22,7 @@ $stmt = DatabaseFactory::getInstance()->prepare($sql);
 $stmt->execute();
 
 $listInstances = $stmt->fetchAll();
+$hiddenWidgets = array();
 
 foreach ($listInstances as &$itemInstance) {
 	$wi = 'Widget' . $itemInstance['class'];
@@ -29,12 +30,17 @@ foreach ($listInstances as &$itemInstance) {
 
 	$itemInstance['instance'] = new $wi();
 	$itemInstance['instance']->loadArguments($itemInstance['id']);
+	$itemInstance['instance']->init();
+
+	if (!$itemInstance['instance']->isShown()) {
+		$hiddenWidgets[] = $itemInstance;
+	}
 }
 
 $tpl->assign('itemDashboard', $itemDashboard);
 $tpl->assign('listInstances', $listInstances);
+$tpl->assign('hiddenWidgets', $hiddenWidgets);
 $tpl->display('dashboard.tpl');
-
 
 require_once 'includes/widgets/footer.php';
 

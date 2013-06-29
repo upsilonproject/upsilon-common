@@ -15,7 +15,7 @@
 			<tr>
 				<td>{$itemRemoteConfig.id}</td>
 				<td><a href = "viewRemoteConfig.php?id={$itemRemoteConfig.id}">{$itemRemoteConfig.identifier}</a></td>
-				<td><a href = "/remoteConfig/?node={$itemRemoteConfig.identifier}">view</a></td>
+				<td><a href = "/remoteConfig/?node={$itemRemoteConfig.identifier}">View</a> <a href = "updateRemoteConfig.php">Touch</a></td>
 			</tr>
 		{/foreach}
 		</tbody>

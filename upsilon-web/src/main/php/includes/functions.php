@@ -357,7 +357,12 @@ function getServices($groupName) {
 	return $listServices;
 }
 
-function enrichServices($listServices, $parseOutput = true, $parseMetadata = true, $invalidateOldServices = true, $parseAcceptableDowntime = true) {
+function castService(&$service) {
+	echo 'yo';
+	var_dump($service['castServiceCritical']);
+}
+
+function enrichServices($listServices, $parseOutput = true, $parseMetadata = true, $invalidateOldServices = true, $parseAcceptableDowntime = true, $castServices = false) {
 	foreach ($listServices as $k => $itemService) {
 		$listServices[$k]['stabilityProbibility'] = 0;
 		$listServices[$k]['executableShort'] = str_replace(array('.pl', '.py', 'check_'), null, basename($listServices[$k]['executable']));
@@ -370,6 +375,7 @@ function enrichServices($listServices, $parseOutput = true, $parseMetadata = tru
 		$parseOutput && parseOutputJson($listServices[$k]);
 		$parseMetadata && parseMetadata($listServices[$k]);
 		$invalidateOldServices && invalidateOldServices($listServices[$k]);
+		$castServices && castService($listServices[$k]);
 
 		$listServices[$k]['output'] = htmlspecialchars($listServices[$k]['output']);
 	}
@@ -482,8 +488,7 @@ function getServiceById($id) {
 		$stmt->execute();
 
 		if ($stmt->numRows() == 0) {
-			global $tpl;
-			$tpl->error('Service not found.');
+			throw new Exception("Service not found");
 		}
 
 		$service = $stmt->fetchRowNotNull();

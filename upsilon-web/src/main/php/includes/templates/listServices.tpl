@@ -1,5 +1,5 @@
 <div class = "box">
-<h4>List services</h4>
+<h4>List services ({$listServices|@count})</h4>
 <table class = "dataTable hover">
 	<thead>
 		<tr>

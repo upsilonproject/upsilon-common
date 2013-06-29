@@ -105,5 +105,10 @@ class Widget {
 		return $this->links;
 	}
 
+	public function init() {}
+
+	public function isShown() {
+		return true;
+	}
 }
 ?>

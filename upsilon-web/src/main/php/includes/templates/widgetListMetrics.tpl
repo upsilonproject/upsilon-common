@@ -11,7 +11,7 @@
 	<h2>{$subresultsTitle|default:'Subresults'}</h2>
 	<ul class = "subresults">
 	{foreach from = $service.listSubresults item = subResult}
-		<li><span class = "metricIndicator {$subResult.karma|strtolower}">&nbsp;</span>{$subResult.name}</li>
+		<li><span class = "metricIndicator {$subResult.karma|strtolower}">&nbsp;</span>{$subResult.name} {if not empty($subResult.comment)}<span class = "subtle">({$subResult.comment})</span>{/if}</li>
 	{/foreach}
 	</ul>
 	{else}

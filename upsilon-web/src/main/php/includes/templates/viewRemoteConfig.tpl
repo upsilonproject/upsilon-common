@@ -13,7 +13,7 @@
 			{foreach from = $services item = service}
 			<tr>
 				<td>{$service.id}</td>
-				<td><a href = "updateRemoteConfigurationService.php?id={$service.id}">{$service.id} {$service.identifier}</a></td>
+				<td><a href = "updateRemoteConfigurationService.php?id={$service.id}">{$service.identifier}</a></td>
 				<td><a href = "deleteRemoteConfigurationService.php?id={$service.id}">Delete</a></td>
 			</tr>
 			{/foreach}
