@@ -4,7 +4,9 @@ import java.io.File;
 
 import junit.framework.Assert;
 
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
  
@@ -22,11 +24,12 @@ public abstract class AbstractConfigurationChangeTest {
         this.after = new UPath("src/test/resources/configChanged/" + folderName + "/config.after.xml");
 
         AbstractConfigurationChangeTest.LOG.debug("before: [{}] after: [{}]", new Object[] { this.before, this.after });
-    }
+    } 
     
-    @Before
-    public void setupConfig() {
-    	Configuration.instance.clear();
+    @BeforeClass
+    @AfterClass
+    public static void setupConfig() {
+    	Configuration.instance.clear(); 
     }
 
     @Before

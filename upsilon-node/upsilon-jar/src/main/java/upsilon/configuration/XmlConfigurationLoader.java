@@ -118,7 +118,7 @@ public class XmlConfigurationLoader implements FileChangeWatcher.Listener, Direc
     	return fcw;
     }
 
-    private void parseConfiguration(final Document d) throws XPathExpressionException {
+    private void parseSystem(final Document d) throws XPathExpressionException {
         final XPathExpression xpe = XPathFactory.newInstance().newXPath().compile("config/system");
         final NodeList nl = (NodeList) xpe.evaluate(d, XPathConstants.NODESET);
 
@@ -181,7 +181,7 @@ public class XmlConfigurationLoader implements FileChangeWatcher.Listener, Direc
             this.val.validate();    
             final Document d = this.val.getDocument();
   
-            XmlConfigurationLoader.LOG.info("Reparse of configuration of file {}. Schema: {}. Validation status: {}", new Object[] { this.val.getPath(), Util.bool2s(val.isAux(), "AUX", "MAIN"), this.val.isParseClean() });
+            XmlConfigurationLoader.LOG.info("Reparse of configuration of file {}. Schema: {}. Validation status: {}", new Object[] { this.val.getPath(), Util.bool2s(val.isAux(), "AUX", "MAIN"), Util.bool2s(this.val.isParseClean(), "VALID", "INVALID") }); 
 
             if (!this.val.isParsed()) { 
                 XmlConfigurationLoader.LOG.warn("Configuration file could not be loaded for parser: " + this.val.getPath());
@@ -192,12 +192,12 @@ public class XmlConfigurationLoader implements FileChangeWatcher.Listener, Direc
                     XmlConfigurationLoader.LOG.warn("Configuration file parse error: {}:{} - {}", new Object[] { this.val.getPath(), e.getLineNumber(), e.getMessage() });
                 } 
             } else {
+                this.parseTrusts(d); 
+                this.parseSystem(d);
+                this.parseIncludedConfiguration(d);
                 this.buildAndRunConfigurationTransaction("config/command", Configuration.instance.commands, d);
                 this.buildAndRunConfigurationTransaction("config/service", Configuration.instance.services, d);
                 this.buildAndRunConfigurationTransaction("config/peer", Configuration.instance.peers, d);
-                this.parseTrusts(d);
-                this.parseConfiguration(d); 
-                this.parseIncludedConfiguration(d);   
             }
         } catch (final Exception e) {
             XmlConfigurationLoader.LOG.error("Could not reparse configuration: " + e.getMessage(), e);

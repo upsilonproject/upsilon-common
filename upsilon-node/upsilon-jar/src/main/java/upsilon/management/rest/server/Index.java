@@ -65,6 +65,11 @@ public class Index {
                 return null;
             }
         }
+        
+        @XmlElement
+        public boolean getCrypto() { 
+        	return Configuration.instance.isCryptoEnabled; 
+        } 
 
         @XmlElement
         public String getPid() {

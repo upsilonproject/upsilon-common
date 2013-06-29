@@ -3,9 +3,12 @@ package upTests;
 import static org.hamcrest.Matchers.*; 
 import static org.hamcrest.MatcherAssert.*;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import upsilon.Configuration;
 import upsilon.Main;
 import upsilon.dataStructures.CollectionOfStructures;
 import upsilon.dataStructures.StructureCommand;
@@ -80,4 +83,10 @@ public class StructureEqualityTest {
     	Assert.assertTrue(srs.isRegistered()); 
     	Assert.assertThat(srs.getArguments(), hasSize(0)); 
     }  
+    
+	@BeforeClass
+	@AfterClass    
+	public static void setupConfig() {
+		Configuration.instance.clear();
+	}
 }

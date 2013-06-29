@@ -60,7 +60,7 @@ public class Configuration {
 		}
 	}
  
-	public void update(final XmlNodeHelper node) {
+	public void update(final XmlNodeHelper node) { 
 		synchronized (this) {
 			if (this.initialFileParsed == false) {
 				this.restPort = node.getAttributeValueOrDefault("restPort", GlobalConstants.DEF_REST_PORT);
@@ -98,7 +98,6 @@ public class Configuration {
 				}
 	
 				this.initialFileParsed = true;
-				
 			}
 		} 
 	}

@@ -1,6 +1,8 @@
 package upTests.configurationTests;
 
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,9 +14,10 @@ import upsilon.util.UPath;
 import static org.hamcrest.Matchers.*; 
 import static org.hamcrest.MatcherAssert.*;
  
-public class MultiConfigurationTest { 
-	@Before
-	public void setupConfig() {
+public class MultiConfigurationTest {  
+	@BeforeClass
+	@AfterClass   
+	public static void setupConfig() {
 		Configuration.instance.clear();
 	}
 	

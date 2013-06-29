@@ -107,7 +107,9 @@ public class StructurePeer extends ConfigStructure {
             this.setHostname(xmlNode.getAttributeValueUnchecked("address"));
             this.setPort(xmlNode.getAttributeValue("port", GlobalConstants.DEF_REST_PORT));
 
-            Configuration.instance.parseTrustFingerprint(xmlNode.getAttributeValueOrDefault("certSha1Fingerprint", ""));
+            if (xmlNode.hasAttribute("certSha1Fingerprint")) {
+            	Configuration.instance.parseTrustFingerprint(xmlNode.getAttributeValueOrDefault("certSha1Fingerprint", ""));
+            }  
 
             try {
                 this.newClient();
