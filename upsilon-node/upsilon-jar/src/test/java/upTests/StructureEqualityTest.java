@@ -1,11 +1,16 @@
 package upTests;
 
-import org.hamcrest.CoreMatchers;
+import static org.hamcrest.Matchers.*; 
+import static org.hamcrest.MatcherAssert.*;
+
 import org.junit.Assert;
 import org.junit.Test;
 
+import upsilon.Main;
 import upsilon.dataStructures.CollectionOfStructures;
 import upsilon.dataStructures.StructureCommand;
+import upsilon.dataStructures.StructureNode;
+import upsilon.dataStructures.StructureRemoteService;
 import upsilon.dataStructures.StructureService;
 
 public class StructureEqualityTest {
@@ -18,11 +23,11 @@ public class StructureEqualityTest {
 
         c1.setIdentifier("one");
         c2.setIdentifier("two");
-        Assert.assertThat(c1, CoreMatchers.not(c2));
+        Assert.assertThat(c1, not(c2));
 
         c1.setIdentifier("pie");
         c2.setIdentifier("pie");
-        Assert.assertThat(c1, CoreMatchers.equalTo(c2));
+        Assert.assertThat(c1, equalTo(c2));
 
         col.register(c1);
         Assert.assertTrue(col.contains(c2));
@@ -45,16 +50,34 @@ public class StructureEqualityTest {
         s1.setCommand(check_command, "check_pie!foo");
         s2.setIdentifier("two");
         s1.setCommand(check_command, "check_pie!bar");
-        Assert.assertThat(s1, CoreMatchers.not(s2));
+        Assert.assertThat(s1, notNullValue());  
+        Assert.assertThat(s1, not(s2));   
 
         s1.setIdentifier("pie");
         s2.setIdentifier("pie");
-        Assert.assertThat(s1, CoreMatchers.equalTo(s2));
+        Assert.assertThat(s1, equalTo(s2));
 
         s1.setCommand(check_command, "check_pie!foo");
         s2.setCommand(check_command, "check_pie!bar");
-        Assert.assertThat(s1, CoreMatchers.equalTo(s2));
-
-        Assert.assertThat(s1, CoreMatchers.not(new Object()));
+        Assert.assertThat(s1, equalTo(s2));
+ 
+        Assert.assertThat(s1, not(new Object()));
     }
+    
+    @Test 
+    public void testLocalNode() {
+    	StructureNode n = new StructureNode();
+    	n.refresh();
+    	
+    	Assert.assertEquals(Main.getVersion(), n.getInstanceApplicationVersion());
+    	Assert.assertEquals(0, n.getServiceCount());
+    }
+    
+    @Test
+    public void testEssentialSrsAttrs() {
+    	StructureRemoteService srs = new StructureRemoteService();
+    	Assert.assertFalse(srs.isLocal());
+    	Assert.assertTrue(srs.isRegistered()); 
+    	Assert.assertThat(srs.getArguments(), hasSize(0)); 
+    }  
 }

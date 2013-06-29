@@ -1,7 +1,7 @@
 Package: Upsilon
 Section: misc
 Architecture: all
-Depends: openjdk-7-jre
+Depends: openjdk-7-jre-headless
 Description: Upsilon is a distributed, flexible and extensible system monitoring application. 
 Distribution: development
 Version: [[releaseVersion]]

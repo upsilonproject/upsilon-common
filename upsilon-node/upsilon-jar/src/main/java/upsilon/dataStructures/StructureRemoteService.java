@@ -25,7 +25,7 @@ public class StructureRemoteService implements AbstractService {
     private String nodeIdentifier = "???";
 
     @Override
-    public Vector<String> getArguments() {
+    public Vector<String> getArguments() { 
         return new Vector<String>();
     }
 

@@ -44,6 +44,10 @@ public class Database {
     }
 
     public void connect() throws Exception {
+    	if (this.hasValidConnection()) { 
+    		return;
+    	}
+    	
         Class.forName("com.mysql.jdbc.Driver");
         this.conn = DriverManager.getConnection("jdbc:mysql://" + this.hostname + ":" + this.port + "/" + this.dbname, this.username, this.password);
 
@@ -122,18 +126,14 @@ public class Database {
         return null;
     }
 
-    private boolean getValidConnection() {
+    public boolean hasValidConnection() {
         if (this.conn == null) {
             return false;
         }
 
         try {
             if (this.conn.isClosed()) {
-                this.connect();
-
-                if (this.conn.isClosed()) {
-                    return false;
-                }
+            	return false; 
             }
         } catch (final Exception e) {
             this.log.error("SQL Exception while checking connection validity", e);
@@ -147,9 +147,9 @@ public class Database {
     public String toString() {
         return String.format("host: %s, user: %s, port: %d, dbname: %s", this.hostname, this.username, this.port, this.dbname);
     }
-
-    public void update() {
-        if (this.getValidConnection()) {
+ 
+    public boolean update() {
+        if (this.hasValidConnection()) {
             Main.instance.node.refresh();
             this.updateNode(Main.instance.node);
 
@@ -180,9 +180,13 @@ public class Database {
                     it.remove();
                 }
             }
+            
+            return true;
         } else {
             this.log.error("Connection to DB is invalid, cannot update.");
         }
+        
+        return false;
     }
 
     private void updateNode(final StructureNode n) {
@@ -262,7 +266,11 @@ public class Database {
         } catch (final Exception e) {
             this.log.error("Cannot insert service check result: " + e);
         }
-
-        s.setDatabaseUpdateRequired(false);
+ 
+        s.setDatabaseUpdateRequired(false);    
     }
+ 
+	public void disconnect() throws SQLException {
+		this.conn.close();
+	}
 }

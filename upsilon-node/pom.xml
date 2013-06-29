@@ -6,7 +6,7 @@
   <version>2.0.0</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <releaseVersion>0.108.0</releaseVersion>
+    <releaseVersion>0.109.0</releaseVersion>
   </properties>
 
   <parent>
@@ -34,9 +34,9 @@
 	<profile>
 		<id>rpm</id>
 		<modules>
-			<module>upsilon-rpm</module>
+			<module>upsilon-rpm-generic</module>
 			<module>upsilon-rpm-rhel6</module>
-			<module>upsilon-rpm-fedora</module>
+			<module>upsilon-rpm-fedora18</module>
 		</modules>
 	</profile>
   </profiles>

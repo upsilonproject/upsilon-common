@@ -15,5 +15,6 @@ public class DatabaseEqualityTest {
         Assert.assertEquals(d1, d2);
         Assert.assertNotSame(d1, false); 
         Assert.assertNotSame(d1, new Integer(0));
+        Assert.assertNotSame(d1, null);
     }  
 }  

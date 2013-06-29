@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import upsilon.RobustProcessExecutor;
+import upsilon.dataStructures.ResultKarma;
 import upsilon.dataStructures.StructureCommand;
 import upsilon.dataStructures.StructureService;
 
@@ -42,6 +43,13 @@ public class ProcessExecutorTest {
 		    
 		Assert.assertEquals("\u5f15\u8d77\u7684\u6216", execHostnameOutput);
 	} 
+	
+	@Test
+	public void testResultKarma() {
+		Assert.assertEquals(ResultKarma.UNKNOWN, ResultKarma.valueOfOrUnknown("?"));
+		Assert.assertEquals(ResultKarma.GOOD, ResultKarma.valueOfOrUnknown("GOOD"));
+		Assert.assertEquals(ResultKarma.BAD, ResultKarma.valueOfOrUnknown("BAD")); 
+	}
 	
 	@Test
 	public void testStdError() throws Exception {

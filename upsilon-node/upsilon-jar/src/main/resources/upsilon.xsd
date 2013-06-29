@@ -82,8 +82,7 @@
 
 	<xs:complexType name="peer">
 		<xs:attribute name="id" type="identifier" use="required"></xs:attribute>
-		<xs:attribute name="certSha1Fingerprint" use="required"
-			type="sha1fingerprint"></xs:attribute>
+		<xs:attribute name="certSha1Fingerprint" use="optional" type="sha1fingerprint"></xs:attribute>
 		<xs:attribute name="address" type="xs:string" use="required"></xs:attribute>
 		<xs:attribute name="port" type="portType" use="optional"></xs:attribute>
 	</xs:complexType> 
@@ -110,7 +109,7 @@
 		<xs:attribute name = "port" type = "portType" use = "required" />
 	</xs:complexType>
 	<xs:simpleType name="portType">
-		<xs:restriction base="xs:int">
+		<xs:restriction base="xs:int"> 
 			<xs:minExclusive value="1024"></xs:minExclusive>
 			<xs:maxExclusive value="65536"></xs:maxExclusive>
 		</xs:restriction>

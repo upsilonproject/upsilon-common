@@ -80,16 +80,18 @@ public class StructurePeer extends ConfigStructure {
 
             if (Configuration.instance.isCryptoEnabled) {
                 proto = "https";
-            } else {
-                proto = "http";
-            }
+            } else { 
+                proto = "http"; 
+            } 
+               
+            LOG.info("Crypo status on this node is: " + Configuration.instance.isCryptoEnabled + " . All communication with peers will be via: " + proto);
 
             final URL serverUrl = new URL(proto + "://" + this.hostname + ":" + this.port);
             this.restClient = new RestClient(serverUrl);
         }
     }
 
-    public void setHostname(final String hostname) {
+    public void setHostname(final String hostname) { 
         this.hostname = hostname.trim();
     }
 

@@ -26,7 +26,7 @@
 					<copyright>GPLv3</copyright>
 					<distribution>Fedora</distribution>
 					<version>${releaseVersion}</version>
-					<release>el6</release>
+					<release>1.el6</release>
 					<changelogFile>../doc/changelog.txt</changelogFile>
 					<name>upsilon</name>
 					<summary>Upsilon is a distributed, flexible and extensible system monitoring application.</summary>
@@ -98,7 +98,7 @@
 							<directoryIncluded>false</directoryIncluded>
 							<sources>
 								<source>
-									<location>../../var/upsilon.repo</location>
+									<location>../../var/upsilon-rpm-rhel6.repo</location>
 									<destination>upsilon-rpm.repo</destination>
 								</source>
 							</sources>
@@ -144,7 +144,7 @@ service upsilon stop
 						<configuration>
 							<fromDir>target/rpm/upsilon/RPMS/noarch/</fromDir>
 							<includes>*.rpm</includes>
-							<url>${deployUrl}/releases/rpm/</url>
+							<url>${deployUrl}/releases/rpm-rhel6/</url>
 						</configuration>
 					</execution>
 				</executions>

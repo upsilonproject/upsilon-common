@@ -11,10 +11,10 @@
 		<artifactId>upsilon-node</artifactId>
 		<version>2.0.0</version>
 	</parent>
-	<artifactId>upsilon-rpm</artifactId>
+	<artifactId>upsilon-rpm-fedora18</artifactId>
 	<packaging>rpm</packaging>
 	<build>
-		<finalName>upsilon-${releaseVersion}</finalName>
+		<finalName>upsilon-${releaseVersion}-fedora</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -26,13 +26,21 @@
 					<copyright>GPLv3</copyright>
 					<distribution>Fedora</distribution>
 					<version>${releaseVersion}</version>
+					<release>1.fc18</release>
 					<changelogFile>../doc/changelog.txt</changelogFile>
 					<name>upsilon</name>
 					<summary>Upsilon is a distributed, flexible and extensible system monitoring application.</summary>
-					<description>This RPM is intended for all RPM distributions where a more specific package is not available.</description>
+					<description>A distributed, flexible and extensible system monitoring application.</description>
 
 					<requires>
 						<require>java-1.7.0-openjdk</require>
+						<require>logback</require>
+						<require>slf4j</require>
+						<require>jersey</require>
+						<require>jul-to-slf4j-stub</require>
+						<require>joda-time</require>
+						<require>jakarta-commons-httpclient</require>
+						<require>guava</require>
 					</requires>
 
 					<mappings>
@@ -42,7 +50,7 @@
 							<directoryIncluded>false</directoryIncluded>
 							<sources>
 								<source>
-									<location>../upsilon-jar/target/upsilon-${releaseVersion}.jar</location>
+									<location>../upsilon-jar/target/upsilon-${releaseVersion}-nodeps.jar</location>
 									<destination>upsilon-${releaseVersion}.jar</destination>
 								</source>
 							</sources>
@@ -52,19 +60,27 @@
 							<directoryIncluded>false</directoryIncluded>
 							<dependency>
 								<includes>
-									<include>mysql:mysql-connector-java</include>
-									<include>jmock:jmock</include>
+									<!--<include>mysql:mysql-connector-java</include>!-->
 								</includes>
 							</dependency>
 						</mapping>
 						<mapping>
 							<username>upsilon</username>
-							<directory>/etc/init.d/</directory>
+							<directory>/lib/systemd/system/</directory>
 							<directoryIncluded>false</directoryIncluded>
 							<sources>
 								<source>
-									<location>../upsilon-jar/var/upsilon-rhel-init.sh</location>
-									<destination>upsilon</destination>
+									<location>../upsilon-jar/var/upsilon-debug.service</location>
+								</source>
+							</sources>
+						</mapping>
+						<mapping>
+							<username>upsilon</username>
+							<directory>/lib/systemd/system/</directory>
+							<directoryIncluded>false</directoryIncluded>
+							<sources>
+								<source>
+									<location>../upsilon-jar/var/upsilon.service</location>
 								</source>
 							</sources>
 						</mapping>
@@ -97,7 +113,7 @@
 							<directoryIncluded>false</directoryIncluded>
 							<sources>
 								<source>
-									<location>../../var/upsilon.repo</location>
+									<location>../../var/upsilon-rpm-fedora18.repo</location>
 									<destination>upsilon-rpm.repo</destination>
 								</source>
 							</sources>
@@ -119,6 +135,7 @@ ln -s -f /usr/share/upsilon/upsilon-${releaseVersion}.jar /usr/share/upsilon/ups
 mkdir -p /etc/upsilon
 chown upsilon:upsilon /etc/upsilon
 
+systemctl --system daemon-reload 
 service upsilon start
 ]]></script>
 					</postinstallScriptlet>
@@ -143,7 +160,7 @@ service upsilon stop
 						<configuration>
 							<fromDir>target/rpm/upsilon/RPMS/noarch/</fromDir>
 							<includes>*.rpm</includes>
-							<url>${deployUrl}/releases/rpm/</url>
+							<url>${deployUrl}/releases/rpm-fedora18/</url>
 						</configuration>
 					</execution>
 				</executions>

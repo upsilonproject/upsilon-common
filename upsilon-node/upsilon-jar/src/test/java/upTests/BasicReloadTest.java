@@ -4,6 +4,8 @@ import java.io.File;
 
 import junit.framework.Assert;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +22,12 @@ public class BasicReloadTest extends AbstractConfigurationChangeTest {
 	} 
 
 	private static final transient Logger LOG = LoggerFactory.getLogger(BasicReloadTest.class);
+	
+	@BeforeClass
+	@AfterClass 
+	public static void clearConfig() {
+		Configuration.instance.clear();
+	}
 
     @Test
     public void testConfig() throws Exception {

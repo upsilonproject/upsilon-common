@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Vector;
 
+import javax.sql.rowset.spi.SyncResolver;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
@@ -178,8 +179,12 @@ public class CollectionOfStructures<T extends ConfigStructure> implements Iterab
 			CollectionOfStructures.LOG.warn(cat + " Finished");
 
 			this.dumpToLog();
-		}
+		} 
 	}
+	
+	public synchronized void remove(final T item) {
+		this.collection.remove(item);
+	} 
 
 	public synchronized void register(final T item) {
 		boolean added;

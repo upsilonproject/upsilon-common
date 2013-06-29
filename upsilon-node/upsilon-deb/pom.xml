@@ -20,7 +20,7 @@
   						<goal>jdeb</goal>
   					</goals>
   					<configuration>
-						<deb>target/upsilon-${releaseVersion}.deb</deb>
+						<deb>${project.basedir}/target/upsilon-node-${releaseVersion}.deb</deb>
   						<dataSet>
   							<data>
   								<src>../upsilon-jar/target/upsilon-${releaseVersion}.jar</src>
@@ -30,6 +30,30 @@
   									<prefix>/usr/share/upsilon</prefix>
   								</mapper>
   							</data>
+							<data>
+								<src>../upsilon-jar/var/upsilon-debian-init.sh</src>
+								<dst>upsilon</dst>
+								<type>file</type>
+								<mapper>
+									<type>perm</type>
+									<prefix>/etc/init.d/</prefix>
+								    <filemode>775</filemode>
+								</mapper>
+							</data>
+							<data>
+								<src>../upsilon-jar/var/upsilon.syslog.conf</src>
+								<type>file</type>
+								<mapper>
+									<type>perm</type>
+									<prefix>/etc/rsyslog.d</prefix>
+								</mapper>
+							</data>
+							<data>
+								<type>link</type>
+								<linkName>/usr/share/upsilon/upsilon.jar</linkName>
+								<linkTarget>/usr/share/upsilon/upsilon-${releaseVersion}.jar</linkTarget>
+								<symlink>true</symlink>
+							</data>
   						</dataSet>
   					</configuration>
   				</execution>

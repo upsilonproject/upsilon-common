@@ -6,7 +6,9 @@ import java.net.URL;
 import junit.framework.Assert;
 
 import org.joda.time.Duration;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import upsilon.Configuration;
@@ -17,8 +19,9 @@ import upsilon.util.GlobalConstants;
 import upsilon.util.UPath;
 
 public class ServiceInheritance {
-	@Before
-	public void clearConfig() {
+	@BeforeClass
+	@AfterClass 
+	public static void clearConfig() {
 		Configuration.instance.clear();
 	}
 

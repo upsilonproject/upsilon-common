@@ -121,10 +121,18 @@ public class Main implements UncaughtExceptionHandler {
 
 		return "non-standard-node";
 	}
-
+ 
 	public void shutdown() {
 		for (final Daemon t : this.daemons) {
-			t.stop();
+			t.stop();  
+		}
+		
+		if (Database.instance != null) {
+			try {
+				Database.instance.disconnect();
+			} catch (Exception e) {    
+				LOG.error("SQL Error during disconnect: " + e.getMessage());
+			}
 		}
 		
 		DirectoryWatcher.stopAll();
