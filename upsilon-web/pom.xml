@@ -12,7 +12,7 @@
   </parent>
 
   <properties>
-  	<releaseVersion>1.1.0</releaseVersion>
+  	<releaseVersion>1.2.0</releaseVersion>
   </properties>
 
   <packaging>pom</packaging>
@@ -50,6 +50,7 @@
       </extension>
     </extensions> 
     <plugins> 
+	<!--
 <plugin>
      <groupId>com.sandwormz.maven</groupId>
      <artifactId>closure-compiler-maven-plugin</artifactId>
@@ -94,16 +95,7 @@
          </compilations>
      </configuration>
  </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
-        <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
-        </configuration>  
-      </plugin> 
+!-->
   </plugins>  
 
   </build>
