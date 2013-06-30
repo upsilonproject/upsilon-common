@@ -43,7 +43,7 @@
 		</div>
 
 		{if $enableDebug}
-		<a href = "viewDebugInfo.php">Debug</a> | 
+		| <a href = "viewDebugInfo.php">Debug</a>
 		{/if}
 		{/if}
 	</div>
