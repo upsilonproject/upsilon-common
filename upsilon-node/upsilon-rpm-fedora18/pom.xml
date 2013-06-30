@@ -50,9 +50,14 @@
 							<directoryIncluded>false</directoryIncluded>
 							<sources>
 								<source>
-									<location>../upsilon-jar/target/upsilon-${releaseVersion}-nodeps.jar</location>
+									<location>../upsilon-jar/target/upsilon-${releaseVersion}.jar</location>
 									<destination>upsilon-${releaseVersion}.jar</destination>
 								</source>
+								<source>
+									<location>../upsilon-jar/target/upsilon-${releaseVersion}-nodeps.jar</location>
+									<destination>upsilon-${releaseVersion}-nodeps.jar</destination>
+								</source>
+
 							</sources>
 						</mapping>
 						<mapping>
