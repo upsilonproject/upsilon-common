@@ -258,6 +258,8 @@ function setupEnhancedSelectBoxes() {
 }
 
 function setupSortableTables() {
+	return;
+
 	$('table.dataTable').dataTable({
 		'sDom': 'flpitpil',
 		'aaSorting': [[ 1, 'desc ']],

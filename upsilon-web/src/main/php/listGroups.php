@@ -13,7 +13,7 @@ require_once 'includes/widgets/header.php';
 
 use \libAllure\DatabaseFactory;
 
-$sql = 'SELECT g.id, g.name AS title FROM groups g';
+$sql = 'SELECT g.id, g.name AS title, p.id AS parentId, p.name AS parentName FROM groups g LEFT JOIN groups p ON g.parent = p.name';
 $stmt = DatabaseFactory::getInstance()->prepare($sql);
 $stmt->execute();
 

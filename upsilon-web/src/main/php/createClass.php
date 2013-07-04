@@ -20,7 +20,7 @@ class FormCreateClass extends Form {
 	public function getElementParent() {
 		$el = new ElementSelect('class', 'Parent class');
 
-		$sql = 'SELECT c.id, c.title, c.l, c.r FROM classes c ';
+		$sql = 'SELECT c.id, c.title, c.l, c.r FROM classes c ORDER BY c.title ASC';
 		$stmt = DatabaseFactory::getInstance()->prepare($sql);
 		$stmt->execute();
 

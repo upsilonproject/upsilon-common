@@ -344,12 +344,8 @@ table.taskList tr {
 
 div.navigationMenuItems {
 	color: black;
-	padding: .5em;
-	padding-left: 1em;
 	text-align: left;
 	margin-bottom: 1em;
-	border-bottom: 1px solid #3f3f3f;
-	background-color: #dee3e7;
 }
 
 textarea {
@@ -470,57 +466,4 @@ div.loginFormContainer {
 .graph {
 	min-height: 150px;
 }
-
-.menu {
-	display: inline-block;
-}
-
-.menu:first-child {
-	margin: 0 !important;
-}
-
-.menu ul {
-	display: none;
-}
-
-.menu:hover ul {
-	display: block;
-}
-
-ul.submenu li {
-	margin: 0;
-	min-width: 16em;
-	text-align: left;
-}
-
-ul.submenu li a {
-	display: block;
-	padding: .2em;
-	color: blue !important;
-}
-
-ul.submenu li a:hover {
-	background-color: beige;
-	text-decoration: none;
-}
-
-ul.submenu {
-	margin-top: -1px;
-	padding: 0;
-	position: absolute;
-	clear: both;
-	list-style: none;
-	border: 1px solid black;
-	background-color: white;
-	z-index: 99;
-}
-
-h3 + ul.submenu {
-	margin-top: -1em;
-}
-
-div.menu > *:first-child:after {
-	content: ' \25bc';
-}
-
 

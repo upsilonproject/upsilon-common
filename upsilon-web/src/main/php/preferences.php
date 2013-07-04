@@ -27,8 +27,7 @@ class UserPreferences extends Form {
 		$this->addSection('Behavior');
 		$this->addElement(new ElementCheckbox('promptBeforeDeletions', 'Prompet me before deletions?', Session::getUser()->getData('promptBeforeDeletions')));
 		$this->addElement(new ElementNumeric('oldServiceThreshold', 'Old Service Threshold', Session::getUser()->getData('oldServiceThreshold')));
-		$this->addElement(new ElementCheckbox('enableDebug', 'Enable Debug', Session::getUser()->getData('enableDebug')));
-
+		$this->addElement(new ElementCheckbox('enableDebug', 'Enable debug link', Session::getUser()->getData('enableDebug'), 'Simply shows a link to the debug page in the user links menu.'));
 
 		$this->addSection('Password');
 

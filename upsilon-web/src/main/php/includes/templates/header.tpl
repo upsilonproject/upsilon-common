@@ -12,68 +12,41 @@
 	{if $mobile}
 	<link rel = "alternative stylesheet" type = "text/css" href = "resources/stylesheets/mobile.css" title = "mobile" />
 	{else}
-	<link rel = "stylesheet" type = "text/css" href = "resources/stylesheets/main.css" />
-	<link rel = "stylesheet" type = "text/css" href = "//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js" />
+	<link rel = "stylesheet" type = "text/css" href = "http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/black-tie/jquery-ui.css" />
 	<link rel = "stylesheet" type = "text/css" href = "resources/stylesheets/select2.css" />
+	<link rel = "stylesheet" type = "text/css" href = "resources/stylesheets/main.css" />
 	{/if}
 	<link rel = "{if $isNighttime}stylesheet{/if}" type = "text/css" href = "resources/stylesheets/main-nighttime.css" title = "nighttime" />
 
 	<link rel = "shortcut icon" href = "resources/images/icons/logo96pxblackbg.png" title = "Shortcut icon" type = "image/png" />
 
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js" type="text/javascript"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 	<script src="resources/javascript/jquery.cookie.js"></script>
 	<script src="resources/javascript/hud.js"></script>
 
-</head>
+	<link rel="stylesheet" href="resources/dojo/dijit/themes/claro/claro.css" />
 
-<body class = "{if $mobile}mobile{else}full{/if}">
+	<script src="resources/dojo/dojo/dojo.js"></script>
+	</head>
+
+<body class = "{if $mobile}mobile{else}full{/if} claro">
 <div id = "header">
 	{if $drawHeader}
 	<div class = "title">
-		<h1><a href = "index.php">Upsilon</a></h1>
-	</div>
-	{/if}
-
-	{if $drawNavigation}
-	<div class = "userMenuItems">
-		{if $loggedIn}
-		<div class = "menu">
-		Logged in as <strong>{$username}</strong>
-		{include file = "links.tpl" links = $userLinks skipTitle = true}
-		</div>
-
-		{if $enableDebug}
-		| <a href = "viewDebugInfo.php">Debug</a>
-		{/if}
-		{/if}
+		<h1>
+			<a href = "index.php">Upsilon</a>
+			&raquo;
+			<span class = "pageTitle">{$title|default:'Untitled page'}</span>
+		</h1>
 	</div>
 	{/if}
 </div>
 	{if $drawNavigation}
 	<div class = "navigationMenuItems">
-		{if isset($links)}
-			<div class = "menu"><h2 class = "menu">
-				{$title|default:'Untitled page'}</h2>
-				{if isset($links)}
-					{include file = "links.tpl" links = $links skipTitle = true}
-				{/if}
-			</div>
-		{else}
-			<h2>{$title|default:'Untitled page'}</h2>
-		{/if}
-
-		<div style = "display: inline-block; float: right;">
-		{if $loggedIn}
-		<a href = "index.php">Service HUD</a> | 
-		<a href = "viewDashboard.php?id=1">Dashboard</a> | 
-		<a href = "listClasses.php?">Classes</a> | 
-		<a href = "listNodes.php">Nodes</a> | 
-		<a href = "viewTasks.php">Tasks</a> |
-		<a href = "viewList.php">List</a>
-		<a href = "viewList.php?problems">(Problems)</a> |
-		<a href = "viewRoom.php?id=1">Rooms</a> |
-		<a href = "listGroups.php">Groups</a> | 
-		<a href = "listUsers.php">Users</a> 
+		<div>
+		{if $generalLinks->hasLinks()}
+			{include file = "links.tpl" links = $generalLinks skipTitle = true}
 		{/if}
 		</div>
 	</div>

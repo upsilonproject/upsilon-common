@@ -1,5 +1,16 @@
 <?php
 
 require_once 'includes/widgets/header.php';
+?>
+<div data-dojo-type = "dijit/Menu">
+	Hello.
+	<div data-dojo-type = "dijit/MenuItem">foo</div>
+</div>
 
-var_dump(getEvents());
+
+
+<?php
+
+require_once 'includes/widgets/footer.php';
+
+?>

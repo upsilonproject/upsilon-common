@@ -40,7 +40,6 @@
 			</ul>
 		{/if}
 			<br />
-			<a href = "addGroupMembership.php?serviceId={$itemService.id}">Add</a>
 		</p>
 
 		<p><strong>Node:</strong> <a href = "viewNode.php?identifier={$itemService.node}">{$itemService.node}</a></p>
@@ -48,20 +47,10 @@
 	</div>
 
 	<div style = "margin-right: 2em; float: right; vertica-align: top">
-		<h3>Actions</h3>
-		<p><a href = "deleteService.php?identifier={$itemService.identifier}">Delete Service</a></p>
-
-		<h3>Metadata</h3>
 		{if not empty($metadata.room)}
-			<p>View service in <a href = "viewRoom.php?id={$metadata.room}">room</a></a>
+		<h3>Room (Location)</h3>
+		<p>View service in <a href = "viewRoom.php?id={$metadata.room}">room</a></a>
 		{/if}
-		<p>
-		{if empty($metadata)}
-			No metadata
-		{/if}
-		</p>
-
-		<p><a href = "updateServiceMetadata.php?id={$itemService.id}">Update service metadata</a></p>
 	</div>
 
 	<div style = "clear: both;"></div>

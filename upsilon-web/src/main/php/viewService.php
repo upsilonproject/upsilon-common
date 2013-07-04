@@ -2,9 +2,6 @@
 
 require_once 'includes/common.php';
 
-$title = 'View Service';
-require_once 'includes/widgets/header.php';
-
 use \libAllure\DatabaseFactory;
 use \libAllure\Sanitizer;
 
@@ -12,6 +9,15 @@ $id = Sanitizer::getInstance()->filterUint('id');
 $service = getServiceById($id);
 
 $tpl->assign('itemService', $service);
+
+$links = linksCollection(); 
+$links->add('updateServiceMetadata.php?id=' . $service['id'], 'Update metadata');
+$links->add('addGroupMembership.php?serviceId=' . $service['id'], 'Add to Group');
+$links->add('deleteService.php?id=' . $service['id'], 'Delete');
+
+$title = 'View Service';
+require_once 'includes/widgets/header.php';
+
 
 $sql = 'SELECT m.id, m.`group`, g.id AS groupId, g.name AS groupName FROM group_memberships m INNER JOIN groups g ON m.group = g.name WHERE m.service = :service';
 $stmt = DatabaseFactory::getInstance()->prepare($sql);

@@ -1,13 +1,3 @@
-{if isset($singleGroup)} 
-<a href = "updateGroup.php?id={$itemGroup.id}">Update</a>
-
-<a href = "createGroup.php">Create</a>
-
-<a href = "listGroups.php">List</a>
-
-<a href = "deleteGroup.php?id={$itemGroup.id}">Delete</a>
-{/if}
-
 {if !empty($itemGroup.listServices) || !empty($itemGroup.listSubgroups)}
 
 <div class = "metricGroup block" {if $hidden}style = "display: none"{/if}>

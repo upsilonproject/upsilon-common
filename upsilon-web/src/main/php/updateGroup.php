@@ -25,7 +25,7 @@ class FormUpdateGroup extends \libAllure\Form {
 	}
 
 	private function getGroupSelectionElement() {
-		$sql = 'SELECT g.* FROM groups g';
+		$sql = 'SELECT g.name FROM groups g ORDER BY g.name ASC';
 		$stmt = DatabaseFactory::getInstance()->prepare($sql);
 		$stmt->execute();
 

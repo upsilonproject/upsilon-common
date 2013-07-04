@@ -3,6 +3,7 @@
 use \libAllure\DatabaseFactory;
 use \libAllure\Session;
 use \libAllure\Sanitizer;
+use \libAllure\HtmlLinksCollection;
 
 function explodeOrEmpty($delimiter = null, $serialString = "") {
 	$serialString = trim($serialString);
@@ -71,6 +72,10 @@ function stmt($sql) {
 
 function san() {
 	return Sanitizer::getInstance();
+}
+
+function linksCollection() {
+	return new HtmlLinksCollection();
 }
 
 function redirect($url) {

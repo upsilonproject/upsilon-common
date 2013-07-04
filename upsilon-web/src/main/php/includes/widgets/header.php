@@ -30,10 +30,6 @@ if (isset($title)) {
 	$tpl->assign('title', 'Untitled page');
 }
 
-if (isset($links)) {
-	$tpl->assign('links', $links);
-}
-
 $tpl->assign('loggedIn', Session::isLoggedIn());
 
 if (!isset($_SERVER['HTTPS'])) {
@@ -48,11 +44,49 @@ $tpl->assign('drawBigClock', isset($_SESSION['drawBigClock']) ? $_SESSION['drawB
 $tpl->assign('datetime', date('D H:i'));
 $tpl->assign('apiClient', isset($_SESSION['apiClient']) ? $_SESSION['apiClient'] : false);
 
-$userLinks = new HtmlLinksCollection();
-$userLinks->add('preferences.php', 'Preferences');
-$userLinks->add('listApiClients.php', 'API Clients');
-$userLinks->add('logout.php', 'Logout');
-$tpl->assign('userLinks', $userLinks);
+$generalLinks = linksCollection();
+
+if (Session::isLoggedIn()) {
+	$generalLinks = linksCollection();
+
+	if (isset($links)) {
+		$generalLinks->add('#', $title . ' Actions');
+		$generalLinks->addChildCollection($title . ' Actions', $links);
+	}
+
+	$generalLinks->add('viewDashboard.php?id=1', 'Dashboard');
+	
+	$generalLinks->add('#', 'Services');
+
+	$generalLinksServices = linksCollection();
+	$generalLinksServices->add('viewServiceHud.php', 'Service HUD');
+	$generalLinksServices->add('listGroups.php', 'Groups');
+	$generalLinksServices->add('viewList.php', 'List');
+	$generalLinksServices->add('viewList.php?problems', 'List with problems');
+	$generalLinks->addChildCollection('Services', $generalLinksServices);
+
+	$generalLinks->add('listClasses.php', 'Classes');
+	$generalLinks->add('listNodes.php', 'Nodes');
+
+	$generalLinksPlus = linksCollection();
+	$generalLinksPlus->add('viewTasks.php', 'Tasks');
+	$generalLinksPlus->add('viewRoom.php?id=1', 'Rooms');
+	$generalLinksPlus->add('listUsers.php', 'Users');
+
+	$generalLinks->add('#', 'Other');
+	$generalLinks->addChildCollection('Other', $generalLinksPlus);
+
+	$userLinks = linksCollection();
+	$userLinks->add('preferences.php', 'Preferences');
+	$userLinks->add('listApiClients.php', 'API Clients');
+	$userLinks->addIf(Session::getUser()->getData('enableDebug'), 'debug.php', 'Debug');
+	$userLinks->add('logout.php', 'Logout');
+
+	$generalLinks->add('#', 'User');
+	$generalLinks->addChildCollection('User', $userLinks);
+}
+
+$tpl->assign('generalLinks', $generalLinks);
 
 $tpl->display('header.tpl');
 
