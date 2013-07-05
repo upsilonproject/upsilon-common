@@ -547,5 +547,20 @@ function getTasks() {
 	return $tasks;
 }
 
+function outputJson($content) {
+	header('Content-Type: application/json');
+	echo json_encode($content);
+	exit;
+}
+
+function isApiPage() {
+	return strpos($_SERVER['PHP_SELF'], 'json');
+}
+
+function denyApiAccess() {
+	header('HTTP/1.0 403 Forbidden');
+	outputJson("API Access Forbidden. Did you authenticate?");
+}
+
 
 ?>

@@ -1,7 +1,6 @@
 <?php
 
 set_include_path(get_include_path() . PATH_SEPARATOR . '../');
-
 require_once 'includes/common.php';
 
 use \libAllure\DatabaseFactory;
@@ -12,6 +11,6 @@ $stmt = DatabaseFactory::getInstance()->prepare($sql);
 $stmt->bindValue(':roomId', Sanitizer::getInstance()->filterUint('id'));
 $stmt->execute();
 
-echo json_encode($stmt->fetchAll());
+outputJson($stmt->fetchAll());
 
 ?>

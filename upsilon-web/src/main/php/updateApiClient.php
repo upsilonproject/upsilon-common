@@ -20,7 +20,7 @@ class FormUpdateApiClient extends Form {
 		$this->addElementReadOnly('ID', $id, 'id');
 		$this->addElementReadOnly('User ID', $apiClient['user']);
 
-		$this->addElement(new ElementInput('identifier', 'Identifier', $apiClient['identifier'], 'The identifier string used to connect.'));
+		$this->addElement(new ElementInput('identifier', 'Identifier', $apiClient['identifier'], 'The identifier string used to authenticate, can be thought of as an API key. Keep your identifier secret and change it if leaked.'));
 
 		$this->addSection('Security');
 		$this->addElement(new ElementCheckbox('anonymousLogin', 'Anonymous Login', $apiClient['anonymousLogin']));
