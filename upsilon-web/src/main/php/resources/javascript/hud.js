@@ -286,3 +286,19 @@ function serviceIconChanged() {
 		$('span#serviceIconPreview').html('<img src = "' + icon + '" alt = "serviceIcon" />');
 	}
 }
+
+function menuButtonClick(address) {
+	// Hide your eyes. This will be temporary.
+	if (address.contains(".php")) {
+		window.location = address;
+	} else {
+		eval(address);
+	}
+}
+
+function requestRescanWidgets() {
+	var proBar = new dijit.ProgressBar();
+	proBar.placeAt("body");
+
+	proBar.set("value", 50);
+}

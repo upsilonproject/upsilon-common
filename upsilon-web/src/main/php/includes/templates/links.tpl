@@ -19,9 +19,9 @@
 			</div>
 		{else}
 			{if not empty($sub)}
-			<div data-dojo-type = "dijit/MenuItem" data-dojo-props = "onClick: function() {literal}{{/literal} window.location = '{$link.url}' {literal}}{/literal}" >
+			<div data-dojo-type = "dijit/MenuItem" data-dojo-props = "onClick: function() {literal}{{/literal} menuButtonClick('{$link.url}'){literal}}{/literal}" >
 			{else}
-			<div data-dojo-type = "dijit/MenuBarItem" data-dojo-props = "onClick: function() {literal}{{/literal} window.location = '{$link.url}' {literal}}{/literal}" >
+			<div data-dojo-type = "dijit/MenuBarItem" data-dojo-props = "onClick: function() {literal}{{/literal} menuButtonClick('{$link.url}'){literal}}{/literal}" >
 			{/if}
 				<span>{$link.title}</span>
 			</div>

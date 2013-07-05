@@ -11,8 +11,7 @@ $itemDashboard = array(
 
 $links = new HtmlLinksCollection('Dashboard &nabla;');
 $links->add('createWidgetInstance.php?dashboard=' . $itemDashboard['id'], 'Create Widget Instance');
-
-$tpl->assign('links', $links);
+$links->add('requestRescanWidgets()', 'RefreshWidgets');
 
 $title = 'Dashboard';
 require_once 'includes/widgets/header.php';

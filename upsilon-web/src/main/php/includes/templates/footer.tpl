@@ -16,8 +16,6 @@
 	<script src="resources/javascript/jquery.masonry.min.js"></script>
 	<script src="resources/javascript/jquery.flot.js"></script>
 	<script src="resources/javascript/jquery.flot.time.min.js"></script>
-	<script src="resources/javascript/jquery.svg.js"></script>
-	<script src="resources/javascript/jquery.jsplmb.js"></script>
 	<script src="resources/javascript/jquery.select2.min.js"></script>
 
 <script type = "text/javascript">
@@ -32,6 +30,8 @@ require([
 	"dijit/MenuSeparator",
 	"dijit/DropDownMenu",
 	"dojo/parser",
+	"dojo/_base/window",
+	"dijit/ProgressBar",
 	"dojo/domReady!", 
 ]);
 	</script>

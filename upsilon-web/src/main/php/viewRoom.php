@@ -11,6 +11,8 @@ $stmt = DatabaseFactory::getInstance()->prepare($sql);
 $stmt->bindValue(':id', Sanitizer::getInstance()->filterUint('id'));
 $stmt->execute();
 
+$tpl->display('listRooms.tpl');
+
 foreach ($stmt->fetchAll() as $room) {
 	$tpl->assign('itemRoom', $room);
 	$tpl->assign('svgContent', file_get_contents('resources/images/rooms/' . $room['filename']));

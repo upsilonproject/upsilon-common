@@ -32,22 +32,3 @@
 	</tbody>
 </table>
 </div>
-
-{*
-<div class = "box">
-<h4>Node graph</h4>
-<div class = "nodeVisualization" style = "text-align: center">
-{foreach from = $listNodes item = itemNode}
-	<div id = "node{$itemNode.id}" class = "node {$itemNode.karma|strtolower}" id = "{$itemNode.identifier}"><a href = "viewNode.php?id={$itemNode.id}">{$itemNode.identifier}</a></div>
-{/foreach}
-</div>
-<script type = "text/javascript">
-{literal}
-jsPlumb.setRenderMode(jsPlumb.CANVAS);
-{/literal}
-{foreach from = "$listPeers" item = "itemPeer"}
-	jsPlumb.connect({literal}{{/literal}source:"node{$itemPeer.child}", target:"node{$itemPeer.parent}"{literal}}{/literal});
-{/foreach}
-</script>
-</div>
-*}
