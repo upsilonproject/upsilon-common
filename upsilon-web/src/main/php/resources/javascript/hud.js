@@ -98,24 +98,8 @@ function fetchServiceMetricResultGraph(metric, id, graphIndex) {
 }
 
 
-function animatePreRelayout() {
-	$('div.metricGroup').fadeOut(0, function() {
-		$('#loadingAnimation').fadeIn();
-	});
-}
-
-function animatePostRelayout() {
-	$('#loadingAnimation').fadeOut(400, function() {
-		$('div.metricGroup').fadeIn();
-	});
-}
-
-function layoutBoxes(animate) {
-	animate && animatePreRelayout();
-
+function layoutBoxes() {
 	new Masonry('div.blockContainer', {itemSelector: 'div.block', columnWidth: 200, isFitWidth: true });
-
-	animate && animatePostRelayout();
 }
 
 function cookieOrDefault(cookieName, defaultValue) {

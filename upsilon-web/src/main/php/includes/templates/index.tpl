@@ -4,11 +4,4 @@
 </div>
 {/if}	
 
-<div id = "loadingAnimation">
-{if not $mobile}
-		<h3>LOADING</h3>
-		<p>If this message does not go away, your browser does not support javascript.</p>
-{/if}
-</div>
-
 <div id = "metricGroupContainer" class = "blockContainer" />
