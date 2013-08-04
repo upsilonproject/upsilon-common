@@ -1,34 +1,22 @@
 package upTests;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.GeneralSecurityException;
-import java.security.cert.CertificateParsingException;
-import java.security.cert.X509Certificate;
-
-import javax.security.cert.Certificate;
-
 import junit.framework.Assert;
 
-import org.apache.commons.httpclient.HttpConnection;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass; 
 import org.junit.Test;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.LoggerFactory; 
 
 import static org.hamcrest.Matchers.*; 
 import static org.hamcrest.MatcherAssert.*;
 
 import com.google.common.io.CharStreams;
-import com.sun.jersey.api.client.Client;
-
 import upsilon.Configuration;
 import upsilon.DaemonRest;
 import upsilon.Main;

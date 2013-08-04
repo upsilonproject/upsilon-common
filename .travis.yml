@@ -1,1 +1,5 @@
 language: java
+before_script:
+        - mysql -e 'create database upsilon;'
+        - echo "USE mysql;\nUPDATE user SET password=PASSWORD(''), user = 'upsilon'  WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u upsilon
+

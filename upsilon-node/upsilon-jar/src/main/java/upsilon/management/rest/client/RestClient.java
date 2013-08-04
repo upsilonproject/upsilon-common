@@ -1,27 +1,14 @@
 package upsilon.management.rest.client;
 
-import java.math.BigInteger;
 import java.net.URL;
 import java.security.GeneralSecurityException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
-import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import upsilon.Configuration;
-import upsilon.Main;
+import upsilon.Main; 
 import upsilon.dataStructures.StructureNode;
 import upsilon.dataStructures.StructureRemoteService;
 import upsilon.dataStructures.StructureService;

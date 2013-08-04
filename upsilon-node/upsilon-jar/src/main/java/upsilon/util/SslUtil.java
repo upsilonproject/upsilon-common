@@ -15,9 +15,8 @@ import javax.net.ssl.X509TrustManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+  
 import upsilon.Configuration;
-import upsilon.management.rest.client.RestClient;
 
 public class SslUtil {
 	private static SSLContext context;

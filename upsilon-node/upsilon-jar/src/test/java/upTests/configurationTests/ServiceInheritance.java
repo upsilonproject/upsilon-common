@@ -1,16 +1,12 @@
 package upTests.configurationTests;
 
-import java.io.File;
-import java.net.URL;
-
 import junit.framework.Assert;
 
 import org.joda.time.Duration;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
+ 
 import upsilon.Configuration;
 import upsilon.configuration.FileChangeWatcher;
 import upsilon.configuration.XmlConfigurationLoader;
