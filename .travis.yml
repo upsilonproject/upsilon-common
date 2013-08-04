@@ -1,4 +1,5 @@
 language: java
 script:
+        - mysql -e 'create database upsilon;'
         - mysql upsilon < var/schema.sql
 
