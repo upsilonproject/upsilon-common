@@ -340,7 +340,7 @@ function getFailedDowntimeRule(array $downtime) {
 }
 
 function getServicesBad() {
-	$sql = 'SELECT s.id, s.identifier, s.karma, s.goodCount, s.output, s.description, s.executable, s.estimatedNextCheck, s.lastUpdated, m.alias, m.acceptableDowntime FROM services s LEFT JOIN service_metadata m ON s.identifier = m.service WHERE s.karma != "good"';
+	$sql = 'SELECT s.id, s.identifier, s.karma, s.goodCount, s.output, s.description, s.executable, s.estimatedNextCheck, s.lastUpdated, m.alias, m.acceptableDowntime FROM services s LEFT JOIN service_metadata m ON s.identifier = m.service WHERE s.karma != "good" AND m.criticalCast != "good" ';
 	$stmt = DatabaseFactory::getInstance()->prepare($sql);
 	$stmt->execute();
 

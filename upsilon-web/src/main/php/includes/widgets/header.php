@@ -79,7 +79,7 @@ if (Session::isLoggedIn()) {
 	$userLinks = linksCollection();
 	$userLinks->add('preferences.php', 'Preferences');
 	$userLinks->add('listApiClients.php', 'API Clients');
-	$userLinks->addIf(Session::getUser()->getData('enableDebug'), 'debug.php', 'Debug');
+	$userLinks->addIf(Session::getUser()->getData('enableDebug'), 'viewDebugInfo.php', 'Debug');
 	$userLinks->add('logout.php', 'Logout');
 
 	$generalLinks->add('#', 'User');

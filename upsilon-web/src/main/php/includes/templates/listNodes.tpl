@@ -6,7 +6,7 @@
 
 <div class = "box">
 	<h3>Nodes</h3>
-<table class = "hover dataTable">
+<table class = "hover dataTable" data-dojo-type="dojox.grid.DataGrid">
 	<thead>
 		<tr>
 			<th>id</th>
@@ -31,4 +31,7 @@
 		{/foreach}
 	</tbody>
 </table>
+<script>
+require(["dojox/grid/DataGrid"]);
+</script>
 </div>

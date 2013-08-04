@@ -16,5 +16,6 @@ pm = window.plotMarkings[{/literal}{$instanceGraphIndex}{literal}] = [];
 
 	{foreach from = $yAxisMarkings item = marking}
 pm.push({$marking})
+
 	{/foreach}
 	</script>
