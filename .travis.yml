@@ -1,4 +1,4 @@
 language: java
 script:
-        - mysql -u upsilon upsilon < var/schema.sql
+        - mysql upsilon < var/schema.sql
 
