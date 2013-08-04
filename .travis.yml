@@ -1,5 +1,4 @@
 language: java
 before_script:
         - mysql -e 'create database upsilon;'
-        - mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'upsilon'@'localhost';\nFLUSH PRIVILEGES;\n"
 

@@ -1,0 +1,5 @@
+test:
+        adaptor: mysql2
+        database: upsilon
+        username: upsilon
+        encoding: utf8
