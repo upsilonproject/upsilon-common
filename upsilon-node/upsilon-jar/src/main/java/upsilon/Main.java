@@ -161,21 +161,26 @@ public class Main implements UncaughtExceptionHandler {
 		Main.LOG.debug("CP: " + System.getProperty("java.class.path"));
 		Main.LOG.trace("OS: " + System.getProperty("os.name"));
 
-		Main.xmlLoader.load();
-
-		if (Main.xmlLoader.getValidator().isParseClean()) {
-			if (Configuration.instance.daemonRestEnabled) {
-				this.startDaemon(new DaemonRest());
-			}
+		try {
+			Main.xmlLoader.load();
 			
-			this.startDaemon(new DaemonScheduler());
-
-			Main.LOG.debug("Best guess at node type: " + this.guessNodeType());
-		} else {
+			if (!Main.xmlLoader.getValidator().isParseClean()) {
+				throw new IllegalStateException("Parse is unclean.");
+			}
+		} catch (IllegalStateException e) {
 			Main.xmlLoader.stopFileWatchers();
 
 			Main.LOG.error("Could not parse the initial configuration file. Upsilon cannot ever have a good configuration if it does not start off with a good configuration. Exiting.");
+			return;
+		}  
+		  
+		if (Configuration.instance.daemonRestEnabled) {
+			this.startDaemon(new DaemonRest());
 		}
+		
+		this.startDaemon(new DaemonScheduler());
+
+		Main.LOG.debug("Best guess at node type: " + this.guessNodeType());
 	}
 
 	@Override
