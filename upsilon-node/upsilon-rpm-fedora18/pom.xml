@@ -14,7 +14,7 @@
 	<artifactId>upsilon-rpm-fedora18</artifactId>
 	<packaging>rpm</packaging>
 	<build>
-		<finalName>upsilon-${releaseVersion}-fedora</finalName>
+		<finalName>upsilon-node-${releaseVersion}-fedora</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -28,7 +28,7 @@
 					<version>${releaseVersion}</version>
 					<release>1.fc18</release>
 					<changelogFile>../doc/changelog.txt</changelogFile>
-					<name>upsilon</name>
+					<name>upsilon-node</name>
 					<summary>Upsilon is a distributed, flexible and extensible system monitoring application.</summary>
 					<description>A distributed, flexible and extensible system monitoring application.</description>
 

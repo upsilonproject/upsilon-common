@@ -14,7 +14,7 @@
 	<artifactId>upsilon-rpm-rhel6</artifactId>
 	<packaging>rpm</packaging>
 	<build>
-		<finalName>upsilon-${releaseVersion}</finalName>
+		<finalName>upsilon-node-${releaseVersion}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -28,7 +28,7 @@
 					<version>${releaseVersion}</version>
 					<release>1.el6</release>
 					<changelogFile>../doc/changelog.txt</changelogFile>
-					<name>upsilon</name>
+					<name>upsilon-node</name>
 					<summary>Upsilon is a distributed, flexible and extensible system monitoring application.</summary>
 					<description>This RPM is intended for all RPM distributions where a more specific package is not available.</description>
 
