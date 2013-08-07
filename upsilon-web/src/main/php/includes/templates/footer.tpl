@@ -20,7 +20,6 @@
 setupSortableTables();
 setupEnhancedSelectBoxes();
 setupCollapseableForms();
-layoutBoxes();
 
 {literal}
 require(["dojo/parser"], function(parser) {

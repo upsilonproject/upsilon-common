@@ -340,7 +340,7 @@ function getFailedDowntimeRule(array $downtime) {
 }
 
 function getServicesBad() {
-	$sql = 'SELECT s.id, s.identifier, s.karma, s.goodCount, s.output, s.description, s.executable, s.estimatedNextCheck, s.lastUpdated, m.alias, m.acceptableDowntime FROM services s LEFT JOIN service_metadata m ON s.identifier = m.service WHERE s.karma != "good" AND m.criticalCast != "good" ';
+	$sql = 'SELECT s.id, s.identifier, s.karma, s.goodCount, s.output, s.description, s.executable, s.estimatedNextCheck, s.lastUpdated, m.alias, IF(m.acceptableDowntimeSla IS NULL, m.acceptableDowntime, sla.content) AS acceptableDowntime FROM services s LEFT JOIN service_metadata m ON s.identifier = m.service LEFT JOIN acceptable_downtime_sla sla ON m.acceptableDowntimeSla = sla.id WHERE s.karma != "good" AND m.criticalCast != "good" ';
 	$stmt = DatabaseFactory::getInstance()->prepare($sql);
 	$stmt->execute();
 
@@ -351,7 +351,7 @@ function getServicesBad() {
 }
 
 function getServices($groupName) {
-	$sqlSubservices = 'SELECT DISTINCT m.id membershipId, md.actions AS metaActions, md.icon, md.alias, md.acceptableDowntime, s.id, s.lastUpdated, s.description, s.commandLine, s.output, s.karma, s.secondsRemaining, s.executable, s.goodCount, s.node, s.estimatedNextCheck FROM group_memberships m RIGHT JOIN services s ON m.service = s.identifier LEFT JOIN groups g ON m.`group` = g.name LEFT JOIN service_metadata md ON md.service = s.identifier WHERE g.name = :groupName ORDER BY s.identifier';
+	$sqlSubservices = 'SELECT DISTINCT m.id membershipId, md.actions AS metaActions, md.icon, md.alias, IF(md.acceptableDowntimeSla IS NULL, md.acceptableDowntime, sla.content) AS acceptableDowntime, s.id, s.lastUpdated, s.description, s.commandLine, s.output, s.karma, s.secondsRemaining, s.executable, s.goodCount, s.node, s.estimatedNextCheck FROM group_memberships m RIGHT JOIN services s ON m.service = s.identifier LEFT JOIN groups g ON m.`group` = g.name LEFT JOIN service_metadata md ON md.service = s.identifier LEFT JOIN acceptableDowntimeSla sla ON md.acceptableDowntimeSla = sla.id WHERE g.name = :groupName ORDER BY s.identifier';
 	$stmt = DatabaseFactory::getInstance()->prepare($sqlSubservices);
 	$stmt->bindValue(':groupName', $groupName);
 	$stmt->execute();

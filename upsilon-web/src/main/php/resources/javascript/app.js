@@ -2,7 +2,16 @@ function onLoad() {
 	updatePermissions();
 	setupToolbar();
 	setupWindowMenu();
+	createDashboardWidget();
 }
+
+function createDashboardWidget() {
+require([
+	"dojo/dom-construct"
+], function(domConstruct) {
+	var node = domConstruct.create("div", {style: { backgroundColor: "red" }}, win.body());
+	console.log(node);
+});}
 
 function main() {
 	require([
@@ -38,18 +47,21 @@ function setupToolbar() {
 	], function(MenuBar, MenuBarItem) {
 		var menubar = new MenuBar({});
 
-		var btnOne = new MenuBarItem({label: "foo", onClick: mniFooClicked });
-
-		menubar.addChild(btnOne);
+		//var mniDashboard = new MenuBarItem({label: "Dashboard", onClick: mniDashboardClicked });
+		//menubar.addChild(mniDashboard);
+		menubar.addChild(new MenuBarItem({label: "Dashboard", onClick: mniDashboardClicked }));
+		menubar.addChild(new MenuBarItem({label: "Services", onClick: mniServicesClicked }));
 
 		menubar.placeAt("wrapper");
 		menubar.startup();
 	});
 }
 
-function mniFooClicked() {
-	window.alert("foo");
+function mniDashboardClicked() {
+	window.alert("db");
 }
+
+function mniServicesClicked() {}
 
 function setupWindowMenu() {
 	require([

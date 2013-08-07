@@ -69,6 +69,7 @@ class FormUpdateMetadata extends Form {
 		$this->addElement(new ElementHtml('desc', 'Desc', '<p>Sometimes, you need to change the the result of a service check to display differently to the actual check result.</p>'));
 		$this->addElement($this->getCastElement('critical', $this->metadata['criticalCast']));
 		$this->addElement($this->getCastElement('good', $this->metadata['goodCast']));
+		$this->addElement($this->getElementSelectSla($this->metadata['acceptableDowntimeSla']));
 		$this->addElement(new ElementTextbox('acceptableDowntime', 'Acceptable downtime', $this->metadata['acceptableDowntime']));
 
 		$this->addSection('Physical');
@@ -81,6 +82,25 @@ class FormUpdateMetadata extends Form {
 
 		$this->addScript('serviceIconChanged()');
 		$this->addDefaultButtons();
+	}
+
+	private function getElementSelectSla($existing) {
+		$el = new ElementSelect('acceptableDowntimeSla', 'Acceptable Downtime SLA');
+		$el->addOption('(none)', null);
+
+		$sql = 'SELECT s.id, s.title FROM acceptable_downtime_sla s';
+		$stmt = DatabaseFactory::getInstance()->prepare($sql);
+		$stmt->execute();
+
+		$listSla = $stmt->fetchAll();
+
+		foreach ($listSla as $sla) {
+			$el->addOption($sla['title'], $sla['id']);
+		}
+
+		$el->setValue($existing);
+
+		return $el;
 	}
 
 	private function getElementRoom($room) {
@@ -152,7 +172,7 @@ class FormUpdateMetadata extends Form {
 	}
 
 	public function process() {
-		$sql = 'UPDATE service_metadata SET actions = :actions, alias = :alias, metrics = :metrics, defaultMetric = :defaultMetric, icon = :icon, hasTasks = :hasTasks, hasEvents = :hasEvents, room = :room, roomPositionX = :roomPositionX, roomPositionY = :roomPositionY, criticalCast = :criticalCast, goodCast = :goodCast, acceptableDowntime = :acceptableDowntime  WHERE service = :identifier';
+		$sql = 'UPDATE service_metadata SET actions = :actions, alias = :alias, metrics = :metrics, defaultMetric = :defaultMetric, icon = :icon, hasTasks = :hasTasks, hasEvents = :hasEvents, room = :room, roomPositionX = :roomPositionX, roomPositionY = :roomPositionY, criticalCast = :criticalCast, goodCast = :goodCast, acceptableDowntime = :acceptableDowntime, acceptableDowntimeSla = :acceptableDowntimeSla  WHERE service = :identifier';
 		$stmt = DatabaseFactory::getInstance()->prepare($sql);
 		$stmt->bindValue(':actions', $this->getElementValue('actions'));
 		$stmt->bindValue(':alias', $this->getElementValue('alias'));
@@ -167,6 +187,7 @@ class FormUpdateMetadata extends Form {
 		$stmt->bindValue(':roomPositionY', $this->getElementValue('roomPositionY'));
 		$stmt->bindValue(':criticalCast', $this->getElementValue('criticalCast'));
 		$stmt->bindValue(':goodCast', $this->getElementValue('goodCast'));
+		$stmt->bindValue(':acceptableDowntimeSla', $this->getElementValue('acceptableDowntimeSla'));
 		$stmt->bindValue(':acceptableDowntime', $this->getElementValue('acceptableDowntime'));
 		$stmt->execute();
 
