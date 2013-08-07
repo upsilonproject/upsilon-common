@@ -31,7 +31,4 @@
 		{/foreach}
 	</tbody>
 </table>
-<script>
-require(["dojox/grid/DataGrid"]);
-</script>
 </div>
