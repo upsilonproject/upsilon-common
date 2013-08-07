@@ -2,7 +2,6 @@
 
 $title = 'Update service metadata';
 require_once 'includes/common.php';
-require_once 'includes/widgets/header.php';
 require_once 'libAllure/FormHandler.php';
 
 use \libAllure\DatabaseFactory;
@@ -82,6 +81,10 @@ class FormUpdateMetadata extends Form {
 
 		$this->addScript('serviceIconChanged()');
 		$this->addDefaultButtons();
+	}
+
+	public function validateExtended() {
+		validateAcceptableDowntime($this->getElement('acceptableDowntime'));
 	}
 
 	private function getElementSelectSla($existing) {

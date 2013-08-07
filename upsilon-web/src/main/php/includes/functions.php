@@ -351,7 +351,7 @@ function getServicesBad() {
 }
 
 function getServices($groupName) {
-	$sqlSubservices = 'SELECT DISTINCT m.id membershipId, md.actions AS metaActions, md.icon, md.alias, IF(md.acceptableDowntimeSla IS NULL, md.acceptableDowntime, sla.content) AS acceptableDowntime, s.id, s.lastUpdated, s.description, s.commandLine, s.output, s.karma, s.secondsRemaining, s.executable, s.goodCount, s.node, s.estimatedNextCheck FROM group_memberships m RIGHT JOIN services s ON m.service = s.identifier LEFT JOIN groups g ON m.`group` = g.name LEFT JOIN service_metadata md ON md.service = s.identifier LEFT JOIN acceptableDowntimeSla sla ON md.acceptableDowntimeSla = sla.id WHERE g.name = :groupName ORDER BY s.identifier';
+	$sqlSubservices = 'SELECT DISTINCT m.id membershipId, md.actions AS metaActions, md.icon, md.alias, IF(md.acceptableDowntimeSla IS NULL, md.acceptableDowntime, sla.content) AS acceptableDowntime, s.id, s.lastUpdated, s.description, s.commandLine, s.output, s.karma, s.secondsRemaining, s.executable, s.goodCount, s.node, s.estimatedNextCheck FROM group_memberships m RIGHT JOIN services s ON m.service = s.identifier LEFT JOIN groups g ON m.`group` = g.name LEFT JOIN service_metadata md ON md.service = s.identifier LEFT JOIN acceptable_downtime_sla sla ON md.acceptableDowntimeSla = sla.id WHERE g.name = :groupName ORDER BY s.identifier';
 	$stmt = DatabaseFactory::getInstance()->prepare($sqlSubservices);
 	$stmt->bindValue(':groupName', $groupName);
 	$stmt->execute();
@@ -562,5 +562,52 @@ function denyApiAccess() {
 	outputJson("API Access Forbidden. Did you authenticate?");
 }
 
+function validateAcceptableDowntime($el) {
+	$content = $el->getValue();
+	$content = trim($content);
+
+	if (empty($content)) {
+		return;
+	}
+
+	$line = 0;
+	foreach (explode("\n", $content) as $rule) {
+		$line++;
+
+		$literals = explode(' ', trim($rule));
+
+		if (count($literals) != 3) {
+			$el->setValidationError('Line ' . $line . ': 3 literals expected (field, operator, value). Found: ' . count($literals));
+			return;
+		}
+
+		$field = $literals[0];
+		$operator = $literals[1];
+		$value = $literals[2];
+
+		switch ($operator) {
+			case '==':
+			case '!':
+			case '>':
+			case '<':
+			case '>=':
+			case '<=':
+				break;
+			default:
+				$el->setValidationError('Line ' . $line . ': Unknown operator: ' . $operator);
+				return;
+		}
+
+
+		switch ($field) {
+			case 'hour':
+			case 'day':
+				break;
+			default:
+				$el->setValidationError('Line ' . $line . ': Unknown operator: ' . $field);
+				return;
+		}
+	}
+}
 
 ?>

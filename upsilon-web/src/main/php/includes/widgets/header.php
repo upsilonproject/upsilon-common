@@ -63,6 +63,7 @@ if (Session::isLoggedIn()) {
 	$generalLinksServices->add('listGroups.php', 'Groups');
 	$generalLinksServices->add('viewList.php', 'List');
 	$generalLinksServices->add('viewList.php?problems', 'List with problems');
+	$generalLinksServices->add('listSlas.php', 'SLAs');
 	$generalLinks->addChildCollection('Services', $generalLinksServices);
 
 	$generalLinks->add('listClasses.php', 'Classes');
