@@ -311,6 +311,9 @@ function getFailedDowntimeRule(array $downtime) {
 				case 'hour':
 					$lval = intval(date('G'));
 					break;
+				case 'week':
+					$lval = intval(date('W'));
+					break;
 				default:
 					continue;
 			}
@@ -602,6 +605,7 @@ function validateAcceptableDowntime($el) {
 		switch ($field) {
 			case 'hour':
 			case 'day':
+			case 'week':
 				break;
 			default:
 				$el->setValidationError('Line ' . $line . ': Unknown operator: ' . $field);

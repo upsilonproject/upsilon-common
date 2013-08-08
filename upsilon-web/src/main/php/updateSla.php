@@ -17,7 +17,7 @@ class FormUpdateSla extends Form {
 		$stmt->execute();
 		$sla = $stmt->fetchRow();
 
-		$this->addElement(new ElementTextbox('content', 'Content', $sla['content']));
+		$this->addElement(new ElementTextbox('content', 'Content', $sla['content'], 'Current Week:' . date('W')));
 
 		$this->addDefaultButtons();
 	}
