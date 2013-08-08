@@ -159,6 +159,10 @@ class Sanitizer {
 	}
 
 	public function escapeStringForClean($content) {
+		if ($content == null) {
+			return null;
+		}
+
 		if (is_string($content)) {
 			$content = stripslashes($content);
 		}

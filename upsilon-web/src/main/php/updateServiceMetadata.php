@@ -126,7 +126,7 @@ class FormUpdateMetadata extends Form {
 	private function getCastElement($title, $value) {
 		$el = new ElementSelect($title . 'Cast', 'Cast when ' . $title);
 
-		$el->addOption('No casting');
+		$el->addOption('(no casting)', '');
 		$el->addOption('Warning', 'WARNING');
 		$el->addOption('Critical', 'CRITICAL');
 		$el->addOption('Good', 'GOOD');
