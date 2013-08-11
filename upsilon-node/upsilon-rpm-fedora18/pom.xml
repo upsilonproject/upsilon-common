@@ -151,25 +151,6 @@ service upsilon stop
 					</preremoveScriptlet>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>wagon-maven-plugin</artifactId>
-				<version>1.0-beta-4</version>
-				<executions>
-					<execution>
-						<id>upload-rpm</id>
-						<phase>deploy</phase>
-						<goals>
-							<goal>upload</goal>
-						</goals>
-						<configuration>
-							<fromDir>target/rpm/upsilon/RPMS/noarch/</fromDir>
-							<includes>*.rpm</includes>
-							<url>${deployUrl}/releases/rpm-fedora18/</url>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 
 		<pluginManagement>

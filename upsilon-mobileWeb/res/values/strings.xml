@@ -8,5 +8,6 @@
     <string name="app_launcher_name">Upsilon</string>
     <string name="action_clear_cache">Clear Cache</string>
     <string name="icon_refresh">ic_menu_refresh.png</string>
+    <string name="text_setUrl">Set URL</string>
 
 </resources>

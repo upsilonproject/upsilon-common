@@ -2,6 +2,8 @@ package upsilon.mobile;
 
 import android.app.ActionBar;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.net.http.SslError;
 import android.os.Bundle;
@@ -13,19 +15,18 @@ import android.webkit.SslErrorHandler;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.EditText;
 import android.widget.TextView;
 
 public class MainActivity extends FragmentActivity implements ActionBar.OnNavigationListener {
-
-	/**
-	 * The serialization (saved instance state) Bundle key representing the
-	 * current dropdown position.
-	 */
-	private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
-
+	protected SharedPreferences getPrefs() {
+		return getSharedPreferences("upsilon", 0);
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		setContentView(R.layout.activity_main);
 
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
@@ -33,7 +34,13 @@ public class MainActivity extends FragmentActivity implements ActionBar.OnNaviga
 		final ActionBar actionBar = getActionBar();
 		actionBar.setTitle(R.string.app_name); 
 		actionBar.setDisplayShowTitleEnabled(true);
-
+		
+		this.url = getPrefs().getString("url", "");
+		 
+		if (url.isEmpty()) {    
+			promptForUrl("URL");
+		}
+		
 		this.web = (WebView) findViewById(R.id.webView1);
 		this.web.getSettings().setAppCacheEnabled(false);
 		this.web.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
@@ -47,7 +54,39 @@ public class MainActivity extends FragmentActivity implements ActionBar.OnNaviga
 
 		refresh();
 	}
-
+	 
+	private void promptForUrl(String q) {
+		final EditText input = new EditText(this);
+		input.setMaxLines(1); 
+		input.setText(getPrefs().getString("url", ""));
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("upsilon-web URL?"); 
+		builder.setView(input);  
+		
+		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				String res = input.getText().toString();
+				urlChanged(res);
+			}
+		});  
+		
+		builder.show();  
+	}
+	
+	private String url; 
+	 
+	private void urlChanged(String url) {
+		this.url = url; 
+		
+		SharedPreferences.Editor editor = getPrefs().edit();
+		editor.putString("url", url);
+		editor.commit();  
+		 
+		alert("", "URL set!\n\nPlease click the refresh button. ");
+	}
+  
 	private WebView web;
 
 	public void onClearCache(MenuItem mniClear) {
@@ -64,9 +103,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.OnNaviga
 	public void refresh() {
 		setStatusText("Waiting...");
 
-		web.loadUrl("https://upsilon.teratan.net/login.php?login=mobile");
-		// HttpReq req = new HttpReq(this);
-		// req.execute();
+		web.loadUrl(this.url);
 	}
 
 	@Override
@@ -82,10 +119,18 @@ public class MainActivity extends FragmentActivity implements ActionBar.OnNaviga
 		} catch (Exception e) {
 			version = "???";
 		}
-
+ 
+		alert("About", "Version: " + version);
+	}
+	 
+	public void onMniSetUrlClicked(MenuItem mni) {
+		promptForUrl("Set URL");
+	}
+	 
+	private void alert(String title, String content) {
 		AlertDialog alertAbout = new AlertDialog.Builder(this).create();
-		alertAbout.setTitle("About");
-		alertAbout.setMessage("Version: " + version);
+		alertAbout.setTitle(title);
+		alertAbout.setMessage(content);
 		alertAbout.show();
 	}
 

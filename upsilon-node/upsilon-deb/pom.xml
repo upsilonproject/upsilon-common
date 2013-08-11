@@ -59,25 +59,6 @@
   				</execution>
   			</executions>
   		</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>wagon-maven-plugin</artifactId>
-				<version>1.0-beta-4</version>
-				<executions>
-					<execution>
-						<id>upload-deb</id>
-						<phase>deploy</phase>
-						<goals>
-							<goal>upload</goal>
-						</goals>
-						<configuration>
-							<fromDir>target/</fromDir>
-							<includes>*.deb</includes>
-							<url>${deployUrl}/releases/deb/</url>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 
   	</plugins>
   </build>

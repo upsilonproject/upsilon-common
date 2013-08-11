@@ -44,7 +44,7 @@ public class HttpReq extends AsyncTask<String, String, String> {
 			@Override
 			public X509Certificate[] getAcceptedIssuers() {
 				return null;
-			}
+			} 
 
 		} };
 
