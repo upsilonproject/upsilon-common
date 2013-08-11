@@ -45,7 +45,15 @@
 								<type>file</type>
 								<mapper>
 									<type>perm</type>
-									<prefix>/etc/rsyslog.d</prefix>
+									<prefix>/etc/rsyslog.d/</prefix>
+								</mapper>
+							</data>
+							<data>
+								<src>../upsilon-jar/var/upsilon.logrotate</src>
+								<type>file</type>
+								<mapper>
+									<type>perm</type>
+									<prefix>/etc/logrotate.d/</prefix>
 								</mapper>
 							</data>
 							<data>
