@@ -1,6 +1,19 @@
-<ul class = "metricList">
-{foreach from = $problemServices item = itemService}
-	<li><span Class = "metricIndicator {$itemService.karma|strtolower}">{$itemService.goodCount}</span>
-	<div class = ""<span class = "metricTitle">{$itemService.identifier}</span></li>
-{/foreach}
-</ul>
+<script type = "text/javascript">
+{literal}
+function renderServiceList(data) {
+	alert("yay, services!");
+}
+
+function failedServiceList(data) {
+	alert("aww, no services today");
+}
+
+$.ajax({
+	url: '/json/getServices',
+	success: renderServiceList,
+	failure: failedServiceList,
+	dataType: 'json',
+});
+{/literal}
+</script>
+

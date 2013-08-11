@@ -311,6 +311,9 @@ function getFailedDowntimeRule(array $downtime) {
 				case 'hour':
 					$lval = intval(date('G'));
 					break;
+				case 'week':
+					$lval = intval(date('W'));
+					break;
 				default:
 					continue;
 			}
@@ -340,7 +343,7 @@ function getFailedDowntimeRule(array $downtime) {
 }
 
 function getServicesBad() {
-	$sql = 'SELECT s.id, s.identifier, s.karma, s.goodCount, s.output, s.description, s.executable, s.estimatedNextCheck, s.lastUpdated, m.alias, m.acceptableDowntime FROM services s LEFT JOIN service_metadata m ON s.identifier = m.service WHERE s.karma != "good"';
+	$sql = 'SELECT s.id, s.identifier, IF(m.criticalCast IS NULL OR s.karma != "GOOD", s.karma, m.criticalCast) AS karma, s.goodCount, s.output, s.description, s.executable, s.estimatedNextCheck, s.lastUpdated, m.alias, IF(m.acceptableDowntimeSla IS NULL, m.acceptableDowntime, sla.content) AS acceptableDowntime FROM services s LEFT JOIN service_metadata m ON s.identifier = m.service LEFT JOIN acceptable_downtime_sla sla ON m.acceptableDowntimeSla = sla.id WHERE s.karma != "GOOD"   ';
 	$stmt = DatabaseFactory::getInstance()->prepare($sql);
 	$stmt->execute();
 
@@ -351,7 +354,7 @@ function getServicesBad() {
 }
 
 function getServices($groupName) {
-	$sqlSubservices = 'SELECT DISTINCT m.id membershipId, md.actions AS metaActions, md.icon, md.alias, md.acceptableDowntime, s.id, s.lastUpdated, s.description, s.commandLine, s.output, s.karma, s.secondsRemaining, s.executable, s.goodCount, s.node, s.estimatedNextCheck FROM group_memberships m RIGHT JOIN services s ON m.service = s.identifier LEFT JOIN groups g ON m.`group` = g.name LEFT JOIN service_metadata md ON md.service = s.identifier WHERE g.name = :groupName ORDER BY s.identifier';
+	$sqlSubservices = 'SELECT DISTINCT m.id membershipId, md.actions AS metaActions, md.icon, md.alias, IF(md.acceptableDowntimeSla IS NULL, md.acceptableDowntime, sla.content) AS acceptableDowntime, s.id, s.lastUpdated, s.description, s.commandLine, s.output, s.karma, s.secondsRemaining, s.executable, s.goodCount, s.node, s.estimatedNextCheck FROM group_memberships m RIGHT JOIN services s ON m.service = s.identifier LEFT JOIN groups g ON m.`group` = g.name LEFT JOIN service_metadata md ON md.service = s.identifier LEFT JOIN acceptable_downtime_sla sla ON md.acceptableDowntimeSla = sla.id WHERE g.name = :groupName ORDER BY s.identifier';
 	$stmt = DatabaseFactory::getInstance()->prepare($sqlSubservices);
 	$stmt->bindValue(':groupName', $groupName);
 	$stmt->execute();
@@ -547,5 +550,68 @@ function getTasks() {
 	return $tasks;
 }
 
+function outputJson($content) {
+	header('Content-Type: application/json');
+	echo json_encode($content);
+	exit;
+}
+
+function isApiPage() {
+	return strpos($_SERVER['PHP_SELF'], 'json');
+}
+
+function denyApiAccess() {
+	header('HTTP/1.0 403 Forbidden');
+	outputJson("API Access Forbidden. Did you authenticate?");
+}
+
+function validateAcceptableDowntime($el) {
+	$content = $el->getValue();
+	$content = trim($content);
+
+	if (empty($content)) {
+		return;
+	}
+
+	$line = 0;
+	foreach (explode("\n", $content) as $rule) {
+		$line++;
+
+		$literals = explode(' ', trim($rule));
+
+		if (count($literals) != 3) {
+			$el->setValidationError('Line ' . $line . ': 3 literals expected (field, operator, value). Found: ' . count($literals));
+			return;
+		}
+
+		$field = $literals[0];
+		$operator = $literals[1];
+		$value = $literals[2];
+
+		switch ($operator) {
+			case '==':
+			case '!':
+			case '>':
+			case '<':
+			case '>=':
+			case '<=':
+				break;
+			default:
+				$el->setValidationError('Line ' . $line . ': Unknown operator: ' . $operator);
+				return;
+		}
+
+
+		switch ($field) {
+			case 'hour':
+			case 'day':
+			case 'week':
+				break;
+			default:
+				$el->setValidationError('Line ' . $line . ': Unknown operator: ' . $field);
+				return;
+		}
+	}
+}
 
 ?>

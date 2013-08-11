@@ -31,6 +31,10 @@ tr:nth-child(even) {
 	background-color: lightgreen !important;
 }
 
+.skipped {
+	background-color: cyan !important;
+}
+
 .warning {
 	background-color: orange !important;
 }

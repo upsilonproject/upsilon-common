@@ -140,11 +140,29 @@ class Sanitizer {
 		return (string) $this->getInput($name);
 	}
 
+	public function filterStringEnum($name, array $options, $default = null) {
+		try {
+			$value = $this->filterString($name);
+
+			if (in_array($value, $options)) {
+				return $value; 
+			} else {
+				return $default;
+			}
+		} catch (Exception $e) {
+			return $default;
+		}
+	}
+
 	public function filterFilepath() {
 
 	}
 
 	public function escapeStringForClean($content) {
+		if ($content == null) {
+			return null;
+		}
+
 		if (is_string($content)) {
 			$content = stripslashes($content);
 		}

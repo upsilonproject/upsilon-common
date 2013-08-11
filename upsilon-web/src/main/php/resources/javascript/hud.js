@@ -26,46 +26,54 @@ function rawPlot(plot, ctx) {
     }
 }
 
+function labelDateAxis(date) {
+	require(["dojo/date/locale", "dojo/query"
+	], function(locale, query) {
+		locale.format
+	});
+	var d = new Date(date * 1000);
+
+	return d.getDay() + " " + d.getMonth();
+}
+
 function updateGraph(results) {
-	$('#graphService' + results.graphIndex).empty();
+	require([
+		"dojox/charting/Chart",
+		"dojo/date/stamp",
+		"dojox/charting/plot2d/Lines",
+		"dojox/charting/axis2d/Default"
+	], function(Chart, stamp) {
+		$('#graphService' + results.graphIndex).empty();
 
-	options = {
-		points: { show: true}, 
-		lines: { show: true}, 
+		/*
 		xaxis: {mode: "time", timeformat: "%a\n %H:%M"},
-		hooks: { draw: [rawPlot] },
-		grid: { backgroundColor: {colors: ["#cecece", '#cecece'] }, markings: [] }
-	};
+		{colors: ["#cecece", '#cecece'] }
+		*/
 
-	$(window.plotMarkings[results.graphIndex]).each(function(index, item) {
-		options.grid.markings.push({
-			"yaxis": { from: item, to: item},
-			"color": "red"
+		var c = new Chart("graphService" + results.graphIndex);
+		c.addPlot("default", {
+			type: "Lines",
+			markers: true
 		});
+
+		c.addAxis("x", {vertical: false });
+		c.addAxis("y", {vertical: true});
+
+		$(results.services).each(function(index, service) {
+			axisData = []
+
+			$(service.metrics).each(function(index, result) {
+				axisData.push({y: result.value, x: result.date})
+			});
+
+			c.addSeries("service " + service.serviceId, axisData);
+		});
+
+		c.render();
+
+
+		window.plots[results.graphIndex] = c;
 	});
-
-	axisData = []
-
-	$(results.services).each(function(index, service) {
-		valuesArray = [];
-
-		$(service.metrics).each(function(index, result) {
-			valuesArray.push([result.date*1000, result.value, result.karma])
-		});
-
-		axisData.push({ 
-			"color": getAxisColor($(axisData).size()),
-			"data": valuesArray
-		});
-	});
-
-	var plot = $.plot(
-		$("#graphService" + results.graphIndex),
-		axisData,
-		options
-	);  
-
-	window.plots[results.graphIndex] = plot;
 }
 
 function getAxisColor(index) {
@@ -90,40 +98,20 @@ function fetchServiceMetricResultGraph(metric, id, graphIndex) {
 }
 
 
-function animatePreRelayout() {
-	$('div.metricGroup').fadeOut(0, function() {
-		$('#loadingAnimation').fadeIn();
-	});
-}
-
-function animatePostRelayout() {
-	$('#loadingAnimation').fadeOut(400, function() {
-		$('div.metricGroup').fadeIn();
-	});
-}
-
-function layoutBoxes(animate) {
-	animate && animatePreRelayout();
-
-	$(function(){
-	  $('div.blockContainer').masonry({
-	    itemSelector : 'div.block',
-	    columnWidth : 20,
-		isFitWidth: true,
-	  });
-	});
-
-	animate && animatePostRelayout();
+function layoutBoxes() {
+	new Masonry('div.blockContainer', {itemSelector: 'div.block', columnWidth: 200, isFitWidth: true });
 }
 
 function cookieOrDefault(cookieName, defaultValue) {
-	var cookieValue = $.cookie(cookieName);
+	require(["dojo/cookie"], function(cookie) {
+		cookieValue = cookie(cookieName)
 
-	if (cookieValue == null) {
-		return defaultValue;
-	} else {
-		return cookieValue;
-	}
+		if (cookieValue == null) {
+			return defaultValue;
+		} else {
+			return cookieValue;
+		}
+	});	
 }
 
 window.shortcutToggleNighttime = 78;
@@ -245,17 +233,18 @@ function setupCollapseableForms() {
 		sectionTitle.after(list);
 
 	});
-
-	$('form').accordion({
-		header: 'p.collapseable',
-		collapsible: true,
-		active: false,
-	});
 }
 
 function setupEnhancedSelectBoxes() {
-	$('select').select2({width:'element', allowClear: 'true'});
+	require(["dojo/query", "dijit/form/Select", "dojo/_base/array"], function(query, Select, array) {
+		var selects = query("select");
+
+		array.forEach(selects, function(entry, index) {
+	//		new Select({}, entry);
+		});
+	});
 }
+
 
 function setupSortableTables() {
 	return;

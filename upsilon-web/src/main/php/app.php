@@ -1,6 +1,19 @@
-<?php
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Upsilon</title>
 
-require_once 'includes/common.php';
+	<link rel = "shortcut icon" href = "resources/images/icons/logo96pxblackbg.png" title = "Shortcut icon" type = "image/png" />
+	<link rel = "stylesheet" type = "text/css" href = "resources/stylesheets/main.css" />
+	<link rel = "stylesheet" type = "text/css" href="resources/dojo/dijit/themes/claro/claro.css" />
 
-?>
-<script type = "text/javascript" src = "resources/javascript/app.js">main();</script>
+	<script src="resources/dojo/dojo/dojo.js"></script>
+</head>
+
+<body class = "claro">
+	<script type = "text/javascript" src = "resources/javascript/app.js"></script>
+	<script type = "text/javascript">main();</script>
+
+	<div id = "wrapper" />
+</body>
+</html>

@@ -87,7 +87,10 @@ class Widget {
 		case 'service':
 			return $this->getFormElementService(false);
 		default:
-			return new ElementInput($optionName, ucwords($optionName), null);
+			$input = new ElementInput($optionName, ucwords($optionName), null);
+			$input->setMinMaxLengths(0, 128);
+
+			return $input;
 		}
 		
 	}

@@ -11,31 +11,10 @@
 		<strong>DB Queries:</strong> {$queryCount}
 	{/if}
 	</p>
+	<p>
+		<a href = "http://upsilon-project.co.uk">Upsilon Project</a>
+	</p>
 </div>
-
-	<script src="resources/javascript/jquery.masonry.min.js"></script>
-	<script src="resources/javascript/jquery.flot.js"></script>
-	<script src="resources/javascript/jquery.flot.time.min.js"></script>
-	<script src="resources/javascript/jquery.select2.min.js"></script>
-
-<script type = "text/javascript">
-require([
-	"dojo/dom", 
-	"dijit/form/Button",
-	"dijit/Menu",
-	"dijit/MenuBar",
-	"dijit/PopupMenuBarItem",
-	"dijit/MenuItem", 
-	"dijit/PopupMenuItem", 
-	"dijit/MenuSeparator",
-	"dijit/DropDownMenu",
-	"dojo/parser",
-	"dojo/_base/window",
-	"dijit/ProgressBar",
-	"dojo/domReady!", 
-]);
-	</script>
-	<script src="resources/javascript/jquery.dataTables.min.js"></script>
 
 <script type = "text/javascript">
 setupSortableTables();
@@ -43,15 +22,11 @@ setupEnhancedSelectBoxes();
 setupCollapseableForms();
 
 {literal}
-$(document).ready(function() {
-	dojo.parser.parse();	
+require(["dojo/parser"], function(parser) {
+	parser.parse();	
 });
 {/literal}
 </script>
-
-
-
-
 
 </body>
 </html>

@@ -32,9 +32,11 @@ function dbquery($sql) {
 
 function metric($title, $value) {
 	if (is_bool($value)) {
-		$value = 'True';
-	} else {
-		$value = 'False';
+		if ($value) {
+			$value = 'True';
+		} else {
+			$value = 'False';
+		}
 	}
 
 	echo '<p><strong>' . $title . '</strong>: ' . $value . '</p>';

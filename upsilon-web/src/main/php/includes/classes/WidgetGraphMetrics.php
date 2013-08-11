@@ -50,9 +50,14 @@ class WidgetGraphMetrics extends Widget {
 	}
 
 	public function addLinks() {
+		$servicesMenu = linksCollection();
+
 		foreach ($this->getArgumentValue('service[]') as $service) {
-			$this->links->add('viewService.php?id=' . $service, 'Service ' . $service);
+			$servicesMenu->add('viewService.php?id=' . $service, 'Service ' . $service);
 		}
+
+		$this->links->add(null, 'Services');
+		$this->links->addChildCollection('Services', $servicesMenu);
 	}
 }
 

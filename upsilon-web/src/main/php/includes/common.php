@@ -8,7 +8,7 @@ bindtextdomain('messages', 'includes/locale/nocache');
 bindtextdomain('messages', 'includes/locale/');
 textdomain('messages');
 
-set_include_path('includes/libraries/' . PATH_SEPARATOR . get_include_path());
+set_include_path(dirname(__FILE__) . '/libraries/' . PATH_SEPARATOR . get_include_path());
 
 require_once 'includes/functions.php';
 
@@ -46,8 +46,12 @@ if ((@include 'includes/config.php') !== false) {
 
 	Session::start();
 
-	if (!Session::isLoggedIn()) {
-		require_once 'login.php';
+	if (!defined('ANONYMOUS_PAGE') && !Session::isLoggedIn()) {
+		if (isApiPage()) {
+			denyApiAccess();
+		} else {
+			require_once 'login.php';
+		}
 	}
 } else if (!defined('INSTALLATION_IN_PROGRESS')) {
 	redirect('installer.php', 'No config file found. Assuming installation.');
