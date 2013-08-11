@@ -4,4 +4,6 @@ jdk:
 before_script:
         - mysql -e 'create database upsilon;'
         - mysql upsilon < var/schema.sql
-
+branches:
+        only:
+                - master
