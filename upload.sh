@@ -1,6 +1,6 @@
 basepath="/public_html/releases"
 
-VERSION_NODE=0.114.0
+VERSION_NODE=0.115.0
 
 srcs=()
 files+=("upsilon-mobileWeb/bin/upsilon-mobileWeb.apk apk/");

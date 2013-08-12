@@ -141,6 +141,8 @@ mkdir -p /etc/upsilon
 chown upsilon:upsilon /etc/upsilon
 
 systemctl --system daemon-reload 
+
+service rsyslog restart
 service upsilon start
 ]]></script>
 					</postinstallScriptlet>
