@@ -2,8 +2,7 @@
 	missingok
 	notifempty
 	rotate 4
-	weekly
 	compress
-	hourly
+	daily
 	create 0600 root root
 }
