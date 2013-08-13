@@ -216,16 +216,17 @@ function parseOutputJson(&$service) {
 
 				// name
 				if (isset($result['name'])) {
+					$service['listSubresults'][$key]['name'] = san()->escapeStringForHtml($result['name']);
 					continue;
 				}	
 
 				if (isset($result['subject'])) {
-					$service['listSubresults'][$key]['name'] = $result['subject'];
+					$service['listSubresults'][$key]['name'] = san()->escapeStringForHtml($result['subject']);
 					continue;
 				}
 
 				if (isset($result['title'])) {
-					$service['listSubresults'][$key]['name'] = $result['title'];
+					$service['listSubresults'][$key]['name'] = san()->escapeStringForHtml($result['title']);
 				}
 
 			}
