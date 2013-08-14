@@ -50,7 +50,7 @@ public class XmlConfigurationLoader implements FileChangeWatcher.Listener, Direc
     
 	private void buildAndRunConfigurationTransaction(final String xpath, final CollectionOfStructures<?> col, final Document d) throws XPathExpressionException, JAXBException {
 		String sourceTag = getSourcetag();  
-		  
+		   
         final CollectionAlterationTransaction<?> cat = col.newTransaction(sourceTag); 
 
         final XPathExpression xpe = XPathFactory.newInstance().newXPath().compile(xpath);
@@ -63,7 +63,7 @@ public class XmlConfigurationLoader implements FileChangeWatcher.Listener, Direc
             node.setSource(sourceTag);
             
             cat.considerFromConfig(node);
-        }
+        }  
 
         cat.print(); 
         col.processTransaction(cat);
