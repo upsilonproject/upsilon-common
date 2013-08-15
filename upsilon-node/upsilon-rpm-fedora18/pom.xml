@@ -34,6 +34,7 @@
 
 					<requires>
 						<require>java-1.7.0-openjdk</require>
+<!--
 						<require>logback</require>
 						<require>slf4j</require>
 						<require>jersey</require>
@@ -41,8 +42,8 @@
 						<require>joda-time</require>
 						<require>jakarta-commons-httpclient</require>
 						<require>guava</require>
+!-->
 					</requires>
-
 					<mappings>
 						<mapping>
 							<username>upsilon</username>

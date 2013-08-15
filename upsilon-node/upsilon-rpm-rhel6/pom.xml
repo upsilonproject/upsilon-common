@@ -14,7 +14,7 @@
 	<artifactId>upsilon-rpm-rhel6</artifactId>
 	<packaging>rpm</packaging>
 	<build>
-		<finalName>upsilon-node-${releaseVersion}</finalName>
+		<finalName>upsilon-node-${releaseVersion}-rhel6</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>

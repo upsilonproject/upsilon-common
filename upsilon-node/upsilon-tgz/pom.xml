@@ -21,7 +21,7 @@
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
 					<descriptor>src/assembly/tgz.xml</descriptor>
-					<finalName>upsilon-${releaseVersion}</finalName>
+					<finalName>upsilon-node-${releaseVersion}</finalName>
 					<appendAssemblyId>false</appendAssemblyId>
 				</configuration>
 				<executions>
