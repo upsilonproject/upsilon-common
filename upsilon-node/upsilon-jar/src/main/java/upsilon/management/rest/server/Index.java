@@ -12,6 +12,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Vector;
 
@@ -29,6 +30,8 @@ import upsilon.Configuration;
 import upsilon.Daemon;
 import upsilon.Database;
 import upsilon.Main;
+import upsilon.configuration.XmlConfigurationLoader;
+import upsilon.configuration.XmlConfigurationLoader.ConfigStatus;
 import upsilon.util.ResourceResolver;
 
 import com.sun.jersey.core.util.Base64;
@@ -80,6 +83,12 @@ public class Index {
         public Date getStartTime() {
             return new Date(ManagementFactory.getRuntimeMXBean().getStartTime());
         }
+        
+        @XmlElement(name = "configStatuses")
+        @XmlElementWrapper
+        public Vector<ConfigStatus> getConfigStatus() { 
+        	return Main.instance.getXmlConfigurationLoader().getStatuses();
+        }  
 
         @XmlElement(name = "thread")
         @XmlElementWrapper
@@ -100,7 +109,7 @@ public class Index {
             return ManagementFactory.getRuntimeMXBean().getVmName() + " " + ManagementFactory.getRuntimeMXBean().getVmVersion();
         }
     }
-
+    
     @Path("/sslCert")
     @GET
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
@@ -125,7 +134,7 @@ public class Index {
 
         return null;
     }
-
+    
     @Path("/internalStatus")
     @GET
     @Produces(MediaType.APPLICATION_XML)

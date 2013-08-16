@@ -1,4 +1,4 @@
-Package: Upsilon
+Package: upsilon-node
 Section: misc
 Architecture: all
 Depends: openjdk-7-jre-headless

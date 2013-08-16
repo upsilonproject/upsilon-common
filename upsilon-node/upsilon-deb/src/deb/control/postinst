@@ -1,0 +1,2 @@
+echo "Restarting syslog"
+/etc/init.d/rsyslog restart

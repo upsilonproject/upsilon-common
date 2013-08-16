@@ -11,7 +11,7 @@
 		<artifactId>upsilon-node</artifactId>
 		<version>2.0.0</version>
 	</parent>
-	<artifactId>upsilon-rpm</artifactId>
+	<artifactId>upsilon-rpm-generic</artifactId>
 	<packaging>rpm</packaging>
 	<build>
 		<finalName>upsilon-node-${releaseVersion}</finalName>
@@ -30,7 +30,7 @@
 					<changelogFile>../doc/changelog.txt</changelogFile>
 					<name>upsilon-node</name>
 					<summary>Upsilon is a distributed, flexible and extensible system monitoring application.</summary>
-					<description>This RPM is intended for all RPM distributions where a more specific package is not available.</description>
+					<description>A distributed, flexible and extensible system monitoring application.</description>
 
 					<requires>
 						<require>java-1.7.0-openjdk</require>
@@ -120,6 +120,9 @@ ln -s -f /usr/share/upsilon/upsilon-${releaseVersion}.jar /usr/share/upsilon/ups
 mkdir -p /etc/upsilon
 chown upsilon:upsilon /etc/upsilon
 
+systemctl --system daemon-reload 
+
+service rsyslog restart
 service upsilon start
 ]]></script>
 					</postinstallScriptlet>

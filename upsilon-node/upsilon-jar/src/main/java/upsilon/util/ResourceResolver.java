@@ -17,7 +17,7 @@ public abstract class ResourceResolver {
             final InputStream is = this.getClass().getResourceAsStream("/" + filename);
  
             return is;
-        }
+        } 
     }
 
     private transient static final Logger LOG = LoggerFactory.getLogger(ResourceResolver.class);

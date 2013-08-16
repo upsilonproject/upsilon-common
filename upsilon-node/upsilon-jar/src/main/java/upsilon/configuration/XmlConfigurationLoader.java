@@ -9,9 +9,13 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.DirectoryStream;
+import java.util.HashMap;
 import java.util.Vector;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
@@ -22,7 +26,7 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXParseException;
- 
+
 import upsilon.Configuration;
 import upsilon.Main;
 import upsilon.dataStructures.CollectionOfStructures;
@@ -31,13 +35,67 @@ import upsilon.util.Util;
 
 public class XmlConfigurationLoader implements FileChangeWatcher.Listener, DirectoryWatcher.Listener {
     private static final transient Logger LOG = LoggerFactory.getLogger(XmlConfigurationLoader.class);
+    
+	@XmlElement
+	public static Vector<ConfigStatus> configFileStatuses = new Vector<ConfigStatus>();	
+     
+    @XmlRootElement(name="config")
+    public static class ConfigStatus {
+    	private UPath path;
+    	
+    	@XmlElement
+    	public String getPath() {
+    		return path.toString();
+    	}
+    	
+    	@XmlElement
+    	public boolean isParsed = false;
+    	
+    	@XmlElement
+    	public boolean isParseClean = false;
+    	
+    	@XmlElement
+    	public boolean isAux = false;
+    	
+    	@XmlElementWrapper(name="parseErrors")
+    	@XmlElement(name="error")
+    	private Vector<String> stringParseErrors = new Vector<String>();
+
+		public void setParseErrors(Vector<SAXParseException> parseErrors) {
+			for (SAXParseException e : parseErrors) {
+				stringParseErrors.add("Line: " + e.getLineNumber() + " Message: " + e.getMessage());
+			}
+		}  
+		
+		public void clearParseErrors() {
+			stringParseErrors.clear(); 
+		} 
+    }
+    
+    private ConfigStatus getConfigStatus(UPath path) {
+    	for (ConfigStatus cs : configFileStatuses) {
+    		if (cs.path == path) {
+    			return cs;
+    		}
+    	}
+    	  
+		ConfigStatus newStatus = new ConfigStatus();
+		newStatus.path = path; 
+		configFileStatuses.add(newStatus);
+		 
+		return newStatus;
+    }
  
     protected XmlConfigurationValidator val;
 
     private final Vector<FileChangeWatcher> listWatchers = new Vector<FileChangeWatcher>();
     
     private UPath path;
-    
+      
+    public Vector<ConfigStatus> getStatuses() {
+    	return configFileStatuses; 
+    }
+     
     public void setUrl(UPath path) {  
     	this.path = path;  
     }  
@@ -50,7 +108,7 @@ public class XmlConfigurationLoader implements FileChangeWatcher.Listener, Direc
     
 	private void buildAndRunConfigurationTransaction(final String xpath, final CollectionOfStructures<?> col, final Document d) throws XPathExpressionException, JAXBException {
 		String sourceTag = getSourcetag();  
-		  
+		   
         final CollectionAlterationTransaction<?> cat = col.newTransaction(sourceTag); 
 
         final XPathExpression xpe = XPathFactory.newInstance().newXPath().compile(xpath);
@@ -62,8 +120,8 @@ public class XmlConfigurationLoader implements FileChangeWatcher.Listener, Direc
             XmlConfigurationLoader.LOG.trace("Node found. xpath: " + xpath + ". name: " + node.getNodeName());
             node.setSource(sourceTag);
             
-            cat.considerFromConfig(node);
-        }
+            cat.considerFromConfig(node);  
+        }  
 
         cat.print(); 
         col.processTransaction(cat);
@@ -149,7 +207,7 @@ public class XmlConfigurationLoader implements FileChangeWatcher.Listener, Direc
             		this.load(path, true);
         		} 
         	}  
-        }   
+        }    
     }
  
     private Vector<XmlNodeHelper> parseNodelist(final NodeList nl) {
@@ -174,24 +232,31 @@ public class XmlConfigurationLoader implements FileChangeWatcher.Listener, Direc
     private boolean isAuxConfig() {    	  
     	return !path.getFilename().startsWith("config.");
     } 
-
-    public synchronized void reparse() { 
+    
+    public synchronized void reparse() {
+        ConfigStatus configStatus = getConfigStatus(this.path);
+        
         try {      
             this.val = new XmlConfigurationValidator(this.path, isAuxConfig());
             this.val.validate();    
             final Document d = this.val.getDocument();
   
-            XmlConfigurationLoader.LOG.info("Reparse of configuration of file {}. Schema: {}. Validation status: {}", new Object[] { this.val.getPath(), Util.bool2s(val.isAux(), "AUX", "MAIN"), Util.bool2s(this.val.isParseClean(), "VALID", "INVALID") }); 
-
+            XmlConfigurationLoader.LOG.info("Reparse of configuration of file {}. Schema: {}. Validation status: {}", new Object[] { this.val.getPath(), Util.bool2s(val.isAux(), "AUX", "MAIN"), Util.bool2s(this.val.isParseClean(), "VALID", "INVALID") });
+            configStatus.isAux = val.isAux();
+            configStatus.isParsed = val.isParsed();
+            configStatus.isParseClean = val.isParseClean();
+            configStatus.clearParseErrors();
+  
             if (!this.val.isParsed()) { 
                 XmlConfigurationLoader.LOG.warn("Configuration file could not be loaded for parser: " + this.val.getPath());
             } else if (!this.val.isParseClean()) {
                 XmlConfigurationLoader.LOG.warn("Configuration file has parse {} errors. It will NOT be reloaded: {}", new Object[] { this.val.getParseErrors().size(), this.val.getPath() });
+                configStatus.setParseErrors(val.getParseErrors()); 
 
                 for (final SAXParseException e : this.val.getParseErrors()) {
                     XmlConfigurationLoader.LOG.warn("Configuration file parse error: {}:{} - {}", new Object[] { this.val.getPath(), e.getLineNumber(), e.getMessage() });
                 } 
-            } else {
+            } else {  
                 this.parseTrusts(d); 
                 this.parseSystem(d);
                 this.parseIncludedConfiguration(d);
@@ -228,6 +293,10 @@ public class XmlConfigurationLoader implements FileChangeWatcher.Listener, Direc
 	@Override
 	public void fileChanged(UPath url) {
 		this.path = url;  
+		
+		ConfigStatus configStatus = getConfigStatus(this.path);
+		configStatus.isParseClean = false;
+		
 		this.reparse();  
 	}
 	   

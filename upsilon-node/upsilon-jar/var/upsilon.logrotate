@@ -1,9 +1,8 @@
 /var/log/upsilon.log {
 	missingok
 	notifempty
-	rotate 4
-	weekly
+	rotate 7
 	compress
-	hourly
+	daily
 	create 0600 root root
 }

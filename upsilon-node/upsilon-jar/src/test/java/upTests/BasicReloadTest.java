@@ -31,8 +31,6 @@ public class BasicReloadTest extends AbstractConfigurationChangeTest {
 
     @Test
     public void testConfig() throws Exception {
-        BasicReloadTest.LOG.debug("Reloading config");
-
         final XmlConfigurationLoader loader = new XmlConfigurationLoader();
         final FileChangeWatcher fcw = loader.load(before, false);
  
@@ -42,7 +40,7 @@ public class BasicReloadTest extends AbstractConfigurationChangeTest {
         Assert.assertTrue(Configuration.instance.services.containsId("mindstormPing"));
         Assert.assertEquals(Configuration.instance.services.size(), 2);
     
-        fcw.setWatchedFile(after); 
+        fcw.setWatchedFile(after);  
         fcw.checkForModification();
  
         Assert.assertTrue(Configuration.instance.services.containsId("baseService"));
