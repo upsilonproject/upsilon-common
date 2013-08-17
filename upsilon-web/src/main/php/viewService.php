@@ -13,7 +13,7 @@ $tpl->assign('itemService', $service);
 $links = linksCollection(); 
 $links->add('updateServiceMetadata.php?id=' . $service['id'], 'Update metadata');
 $links->add('addGroupMembership.php?serviceId=' . $service['id'], 'Add to Group');
-$links->add('deleteService.php?id=' . $service['id'], 'Delete');
+$links->add('deleteService.php?identifier=' . $service['identifier'], 'Delete');
 
 $title = 'View Service';
 require_once 'includes/widgets/header.php';

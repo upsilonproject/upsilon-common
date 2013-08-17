@@ -175,8 +175,7 @@ class Sanitizer {
 	}
 
 	public function escapeStringForHtml($content) {
-		$content = strip_tags($content);
-		$content = htmlentities($content);
+		$content = htmlspecialchars($content);
 
 		return $content;
 	}

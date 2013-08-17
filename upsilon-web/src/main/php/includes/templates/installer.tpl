@@ -29,7 +29,7 @@ This is the upsilon-web installer, it checks the system for any obvious errors a
 </thead>
 
 <tbody>
-{foreach from = "$installationTests" key = "testName" item = "testResult"}
+{foreach from = $installationTests key = "testName" item = "testResult"}
 <tr>
 <td>{$testName}</td>
 {if $testResult}

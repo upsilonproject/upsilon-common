@@ -11,7 +11,7 @@
 	</thead>
 
 	<tbody>
-{foreach from = "$listServices" item = "itemService"}
+{foreach from = $listServices item = itemService}
 	<tr>
 		<td>
 			<a href = "viewService.php?id={$itemService.id}">{$itemService.identifier}</a>
