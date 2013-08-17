@@ -154,7 +154,7 @@ class ErrorHandler {
 		$this->clearOutputBuffers();
 
 		if (!ini_get('display_errors') == '1') {
-			$fe = new SimpleFatalError('A serious error has occoured, which cannot be sent via the web browser due to the webserver security configuration.');
+			$fe = new SimpleFatalError('A serious error has occoured, which cannot be sent via the web browser due to the webserver security configuration. If you are the administrator of this site, try setting "display_errors=On" in php.ini.');
 			$this->renderSfe($fe);
 			return;
 		}
