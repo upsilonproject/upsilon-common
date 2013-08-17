@@ -57,8 +57,44 @@ function setupToolbar() {
 	});
 }
 
+function loadGetServices(services) {
+	console.log(services);
+}
+
+function errorGetServices(err) {
+	window.alert("err get services" + err);
+}
+
 function mniDashboardClicked() {
-	window.alert("db");
+	reqLogin();
+	console.log("yo");
+	//reqGetServices();
+}
+
+function reqLogin() {
+	var req = {
+		url: "/authenticate",
+		handleAs: "json",
+		load: function(res) {
+			console.log("authenticated");
+		},
+		error: function(err) {
+			console.log("cannot auth");
+		}
+	}
+
+	dojo.xhrGet(req);
+}
+
+function reqGetServices() {
+	var req = {
+		url: "/json/getServices",
+		handleAs: "json",
+		load: "loadGetServices",
+		error: "errorGetServices"
+	}
+
+	dojo.xhrGet(req);
 }
 
 function mniServicesClicked() {}
