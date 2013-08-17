@@ -19,6 +19,8 @@
 
 namespace libAllure;
 
+class_exists('PDO') or trigger_error('PDO is not installed!');
+
 class Database extends \PDO {
 	const FM_ORDER = \PDO::FETCH_NUM;
 	const FM_ASSOC = \PDO::FETCH_ASSOC;
