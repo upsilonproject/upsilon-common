@@ -231,7 +231,8 @@ function loadDashboard(dashboard) {
 			}   
 			
 			var cp = registry.byId("widget" + widget.id);
-			window["renderWidget" + widget.class](widget, cp);
+			var renderFunction = "renderWidget" + widget.class;
+			window[renderFunction](widget, cp);
 		});
 
 	});
