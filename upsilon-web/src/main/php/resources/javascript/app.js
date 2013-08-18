@@ -171,6 +171,9 @@ function newJsonReq() {
 }
 
 function renderWidgetEvents() {}
+function renderWidgetTasks() {}
+function renderWidgetGraphMetrics() {}
+function renderWidgetListMetrics() {}
 
 function renderWidgetProblemServices(widget, container) {
 	var req = newJsonReq();
@@ -232,6 +235,7 @@ function loadDashboard(dashboard) {
 			
 			var cp = registry.byId("widget" + widget.id);
 			var renderFunction = "renderWidget" + widget.class;
+			console.log(renderFunction);
 			window[renderFunction](widget, cp);
 		});
 
