@@ -3,3 +3,4 @@ target/
 .settings/
 .checkstyle
 var/*.png
+**/config.php
