@@ -217,7 +217,7 @@ function loadDashboard(dashboard) {
 	    "dijit/registry"
     ], function(Container, ContentPane, registry){
 		if (!registry.byId("dashboardWidgetContainer")) {
-			var container = new Container({id: "dashboardWidgetContainer"});
+			var container = new Container({id: "dashboardWidgetContainer", class: "blockContainer"});
 			container.placeAt("wrapper"); 
 		}
 		 
@@ -227,7 +227,7 @@ function loadDashboard(dashboard) {
 			if (!registry.byId("widget" + widget.id)) {
 				var widgetContent = new ContentPane({
 					id: "widget" + widget.id,
-					style: "border: 1px solid black; width: 320px;"
+					class: "block",
 				});   
 				widgetContent.set("content", "title:" + widget.class);
 				container.addChild(widgetContent);
