@@ -146,7 +146,7 @@ function reqLogin() {
 		handleAs: "json",
 		query: {
 			username: "administrator",
-			password: "password",
+			password: window.prompt("Password?"),
 		},
 		load: function(res) {
 			console.log("authenticated");
