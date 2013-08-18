@@ -6,7 +6,7 @@ use \libAllure\Session;
 
 outputJson(array(
 	'viewDashboard' => Session::hasPriv('VIEW_DASHBOARD'),
-	'superuser' => Session::hasPriv('SUPERUSER'),
+	'viewServices' => false,
 ));
 
 ?>

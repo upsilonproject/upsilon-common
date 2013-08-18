@@ -81,6 +81,7 @@ $modules = apache_get_modules();
 
 echo '<h2> Apache modules</h2>';
 metric('mod_expires?', in_array('mod_expires', $modules));
+metric('mod_rewrite?', in_array('mod_rewrite', $modules));
 
 require_once 'includes/widgets/footer.php'
 

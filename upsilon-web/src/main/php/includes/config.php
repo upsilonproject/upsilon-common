@@ -7,5 +7,5 @@ define('CFG_DB_USER', 'root');
 define('CFG_DB_PASS', '');
 
 // The following is configuration for advanced users only.
-define('CFG_PASSWORD_SALT', '51a798287c5bf'); // If you change this value, you will break all existing user passwords.  
+define('CFG_PASSWORD_SALT', '521120417419d'); // If you change this value, you will break all existing user passwords.  
 ?>

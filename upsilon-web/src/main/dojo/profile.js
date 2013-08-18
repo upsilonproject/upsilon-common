@@ -26,6 +26,10 @@
 			{
 				name:"dojox",
 				location:"./dojox"
+			},
+			{
+				name:"gridx",
+				location:"./gridx"
 			}
 		],
 
@@ -68,7 +72,8 @@
 					"dijit/form/_FormSelectWidget",
 					"dojox/charting/plot2d/Lines",
 					"dojox/charting/plot2d/Default",
-					"dojox/charting/plot2d/Base",
+					"dojox/charting/plot2d/Base",, 
+					"gridx/Grid",
 				],
 				customBase: true,
 				boot: true

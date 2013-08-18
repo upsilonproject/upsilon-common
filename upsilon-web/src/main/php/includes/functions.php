@@ -5,6 +5,14 @@ use \libAllure\Session;
 use \libAllure\Sanitizer;
 use \libAllure\HtmlLinksCollection;
 
+function isUsingSsl() {
+	if (!isset($_SERVER['HTTPS'])) {
+		$_SERVER['HTTPS'] = 'off';
+	}
+
+	return $_SERVER['HTTPS'] == 'on';
+}
+
 function explodeOrEmpty($delimiter = null, $serialString = "") {
 	$serialString = trim($serialString);
 
@@ -69,9 +77,13 @@ function insertId() {
 function stmt($sql) {
 	return DatabaseFactory::getInstance()->prepare($sql);
 }
-
+ 
 function san() {
 	return Sanitizer::getInstance();
+}
+
+function db() { 
+	return DatabaseFactory::getInstance();
 }
 
 function linksCollection() {
@@ -474,7 +486,7 @@ function handleApiLogin() {
 
 			redirectApiClients();
 		}
-	}
+	}  
 }
 
 function redirectApiClients() {

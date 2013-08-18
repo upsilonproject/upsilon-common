@@ -1,6 +1,9 @@
 <div class = "box">
 	<h2>Groups</h2>
 	
+	{if $listGroups|@count == 0}
+	<p>There are no groups defined at the moment. Create a group by going to "Group Actions" &raquo; "Create Group" on the menu.</p>
+	{else}
 	<table class = "dataTable">
 		<thead>
 			<tr>
@@ -20,4 +23,5 @@
 	{/foreach}
 	</tbody>
 	</table>
+	{/if}
 </div>
