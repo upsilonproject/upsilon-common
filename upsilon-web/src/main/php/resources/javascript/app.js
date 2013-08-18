@@ -240,6 +240,8 @@ function loadDashboard(dashboard) {
 		});
 
 	});
+
+	layoutBoxes();
 }
 
 function reqDashboard() {
