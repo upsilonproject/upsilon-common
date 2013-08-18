@@ -239,9 +239,10 @@ function loadDashboard(dashboard) {
 			window[renderFunction](widget, cp);
 		});
 
+
+		layoutBoxes();
 	});
 
-	layoutBoxes();
 }
 
 function reqDashboard() {
