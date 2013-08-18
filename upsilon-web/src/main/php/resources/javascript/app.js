@@ -67,7 +67,8 @@ function initGridNodes() {
 			store: new Store({data: [{identifier: "foo"}]}),
 			structure: [
 		        {field: "identifier", name: "Identifier"},
-		        {field: "karma", name: "Karma"}
+		        {field: "karma", name: "Karma"},
+			{field: "instanceApplicationVersion", name: "Version"}
 		    ],
 		    modules: [
 		              scroller
