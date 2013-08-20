@@ -47,12 +47,18 @@ class Template extends \Smarty {
 
 		$this->template_dir = $templateDir;
 
-		$this->register_modifier('htmlify', array($this, 'htmlify'));
-		$this->register_function('getContent', 'tplGetContent');
-		$this->register_modifier('externUrl', array($this, 'externUrl'));
-		$this->register_modifier('externUrlOr', array($this, 'externUrlOr'));
-		$this->register_modifier('inflectorQuantify', array('Inflector', 'quantify'));
-		$this->register_modifier('gt', array($this, 'getText'));
+		$this->registerModifier('htmlify', array($this, 'htmlify'));
+		$this->registerModifier('externUrl', array($this, 'externUrl'));
+		$this->registerModifier('externUrlOr', array($this, 'externUrlOr'));
+		$this->registerModifier('gt', array($this, 'getText'));
+	}
+
+	public function registerModifier($content, $callback) {
+		if (method_exists($this, 'registerPlugin')) {
+			$this->registerPlugin('modifier', $content, $callback);
+		} else {
+			parent::register_modifier($content, $callback);
+		}
 	}
 
 	public function addAutoClearVar($var) {
@@ -128,7 +134,11 @@ class Template extends \Smarty {
 	}
 
 	public function registerFunction($alias, $function) {
-		$this->register_function($alias, $function);
+		if (method_exists($this, 'registerPlugin')) {
+			$this->registerPlugin('function', $alias, $function);
+		} else {
+			$this->register_function($alias, $function);
+		}
 	}
 
 	public function assignForm(Form $f, $prefix = null) {
@@ -166,7 +176,7 @@ class Template extends \Smarty {
 		require_once 'includes/widgets/footer.php';
 	}
 
-	public function display($template, $cacheId = null, $compileId = null) {
+	public function display($template = null, $cacheId = null, $compileId = null, $parent = null) {
 		parent::display($template, $cacheId, $compileId);
 
 		foreach ($this->autoClearVars as $varName) {

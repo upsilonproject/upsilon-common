@@ -13,7 +13,7 @@ This is the upsilon-web installer, it checks the system for any obvious errors a
 {if isset($configFile)}
 <h3>Your config.php file</h3>
 <p class = "formValidationError">The installer was unable to automatically save your config file, this is normally because of the webserver security configuration. Specifically, the error is: {$configFailReason}.</p>
-<p>The config file needs to be copied and pasted in to a file (using notepad, or similar), saved as config.php and uploaded to LAN_PARTY_SITE/includes/config.php using SFTP, SCP, FTP or similar.</p>
+<p>The config file needs to be copied and pasted in to a file (using notepad, or similar), saved as config.php and uploaded to includes/config.php using SFTP, SCP, FTP or similar.</p>
 
 <textarea rows = "10" cols = "40" style = "width: 100%;">{$configFile|htmlentities}</textarea>
 {else}
@@ -29,7 +29,7 @@ This is the upsilon-web installer, it checks the system for any obvious errors a
 </thead>
 
 <tbody>
-{foreach from = "$installationTests" key = "testName" item = "testResult"}
+{foreach from = $installationTests key = "testName" item = "testResult"}
 <tr>
 <td>{$testName}</td>
 {if $testResult}

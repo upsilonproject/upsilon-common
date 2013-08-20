@@ -184,6 +184,7 @@ function toggleGroups() {
 	});
 }
 
+/*
 $(document).bind('keydown', function(e) {
 	var keypressNode = $(e.target).context.nodeName;
 
@@ -221,6 +222,7 @@ $(document).bind('keydown', function(e) {
 		default:
 	}
 });
+*/
 
 function setupCollapseableForms() {
 	$('p.collapseable').each(function(index,sectionTitle) {

@@ -38,6 +38,10 @@
 
 <div class = "box">
 <h3>All Instances</h3>
+
+{if $listInstances|@count == 0}
+<p>No class instances.</p>
+{else}
 <table class = "dataTable hover">
 	<thead>
 		<tr>
@@ -59,4 +63,5 @@
 		{/foreach}
 	<tbody>
 </table>
+{/if}
 </div>

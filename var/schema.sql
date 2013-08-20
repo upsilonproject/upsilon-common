@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.5.31, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 5.5.32, for Linux (x86_64)
 --
 -- Host: localhost    Database: upsilon
 -- ------------------------------------------------------
--- Server version	5.5.31
+-- Server version	5.5.32
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -14,6 +14,21 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `acceptable_downtime_sla`
+--
+
+DROP TABLE IF EXISTS `acceptable_downtime_sla`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `acceptable_downtime_sla` (
+  `content` longtext,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `apiClients`
@@ -264,6 +279,7 @@ DROP TABLE IF EXISTS `remote_configs`;
 CREATE TABLE `remote_configs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `identifier` varchar(32) DEFAULT NULL,
+  `mtime` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -323,6 +339,8 @@ CREATE TABLE `service_metadata` (
   `goodCast` varchar(32) DEFAULT NULL,
   `criticalCast` varchar(32) DEFAULT NULL,
   `acceptableDowntime` varchar(2048) DEFAULT NULL,
+  `hasEvents` tinyint(4) NOT NULL DEFAULT '0',
+  `acceptableDowntimeSla` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `service` (`service`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
@@ -414,8 +432,8 @@ CREATE TABLE `users` (
   `password` varchar(64) DEFAULT NULL,
   `group` int(11) DEFAULT NULL,
   `lastLogin` datetime DEFAULT NULL,
-  `daytimeBegin` varchar(32) DEFAULT NULL,
-  `daytimeEnd` varchar(32) DEFAULT NULL,
+  `daytimeBegin` int(11) DEFAULT '0',
+  `daytimeEnd` int(11) DEFAULT '24',
   `metadata` varchar(128) DEFAULT NULL,
   `promptBeforeDeletions` tinyint(4) NOT NULL DEFAULT '1',
   `oldServiceThreshold` int(11) DEFAULT '3600',
@@ -481,4 +499,4 @@ CREATE TABLE `widgets` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-05-30 20:49:11
+-- Dump completed on 2013-08-18 17:44:18

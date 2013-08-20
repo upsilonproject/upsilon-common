@@ -88,7 +88,7 @@
 	</thead>
 
 	<tbody>
-		{foreach from = "$listResults" item = "itemResult"}
+		{foreach from = $listResults item = itemResult}
 		<tr>
 			<td>{$itemResult.checked} &nbsp;&nbsp;<span class = "metricOutput">{$itemResult.relative}</span></td>
 			<td><pre>{$itemResult.output|htmlspecialchars|wordwrap}</pre></td>
