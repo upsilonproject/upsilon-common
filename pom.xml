@@ -6,6 +6,12 @@
   <version>2.0.0</version>
 
   <packaging>pom</packaging>
+
+  <organization>
+	<name>Upsilon Project</name>
+	<url>http://upsilon-project.co.uk</url>
+  </organization>
+
   <modules>
     <module>upsilon-node</module>
     <module>upsilon-web</module>

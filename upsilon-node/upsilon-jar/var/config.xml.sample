@@ -1,0 +1,31 @@
+<!--
+This is an EXAMPLE configuration file. You can use it as a template to create 
+your own /etc/upsilon/config.xml. 
+
+It requires that the check_ping command is installed in order to work. To find
+the package for your system please visit; 
+http://upsilon-project.co.uk/site/index.php/Ping
+
+It is _STRONGLY_ recommended that you at least read the quickstart on the wiki
+to understand what is going on here;
+http://upsilon-project.co.uk/site/index.php/QuickstartNode
+
+You can find more information by looking around on the wiki. These are good
+starting places; 
+
+http://upsilon-project.co.uk/site/index.php/Config.xml
+http://upsilon-project.co.uk/site/index.php/Upsilon-node
+!-->
+<config>
+    <system crypto = "false" />
+
+    <command id = "checkPing" exec = "/usr/lib64/nagios/plugins/check_ping -H $ARG1 -w 75,10% -c 125,10% -p 3" />
+
+    <service id = "pingGoogle" commandRef = "checkPing">
+        <argument>google.com</argument>
+    </service>
+
+    <service id = "pingBbc" commandRef = "checkPing">
+        <argument>bbc.co.uk</argument>
+    </service>
+</config>

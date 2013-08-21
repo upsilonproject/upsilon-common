@@ -26,8 +26,8 @@
 					<copyright>GPLv3</copyright>
 					<distribution>Fedora</distribution>
 					<version>${releaseVersion}</version>
-					<release>generic</release>
-					<changelogFile>../doc/changelog.txt</changelogFile>
+					<release>1.generic</release>
+					<changelogFile>changelog.txt</changelogFile>
 					<name>upsilon-node</name>
 					<summary>Upsilon is a distributed, flexible and extensible system monitoring application</summary>
 					<description>A distributed, flexible and extensible system monitoring application.</description>
@@ -37,6 +37,16 @@
 					</requires>
 
 					<mappings>
+						<mapping>
+							<directory>/usr/share/man/man1/</directory>
+							<directoryIncluded>false</directoryIncluded>
+							<sources>
+								<source>
+									<location>../var/manpage/upsilon-node.1.gz</location>
+								</source>
+							</sources>
+						</mapping>
+
 						<mapping>
 							<username>upsilon</username>
 							<directory>/usr/share/upsilon/</directory>
@@ -62,15 +72,16 @@
 							<username>upsilon</username>
 							<directory>/etc/init.d/</directory>
 							<directoryIncluded>false</directoryIncluded>
+							<filemode>0755</filemode>
 							<sources>
 								<source>
 									<location>../upsilon-jar/var/upsilon-rhel-init.sh</location>
-									<destination>upsilon</destination>
+									<destination>upsilon-node</destination>
 								</source>
 							</sources>
 						</mapping>
 						<mapping>
-							<configuration>true</configuration>
+							<configuration>noreplace</configuration>
 							<username>upsilon</username>
 							<directory>/etc/rsyslog.d/</directory>
 							<directoryIncluded>false</directoryIncluded>
@@ -82,18 +93,20 @@
 						</mapping>
 
 						<mapping>
+							<configuration>noreplace</configuration>
 							<username>upsilon</username>
 							<directory>/etc/logrotate.d/</directory>
 							<directoryIncluded>false</directoryIncluded>
 							<sources>
 								<source>
 									<location>../upsilon-jar/var/upsilon-node.logrotate</location>
-									<destination>upsilon</destination>
+									<destination>upsilon-node</destination>
 								</source>
 							</sources>
 						</mapping>
 
 						<mapping>
+							<configuration>noreplace</configuration>
 							<username>upsilon</username>
 							<directory>/etc/yum.repos.d/</directory>
 							<directoryIncluded>false</directoryIncluded>
@@ -104,7 +117,28 @@
 								</source>
 							</sources>
 						</mapping>
-
+						<mapping>
+							<username>upsilon</username>
+							<directory>/usr/share/upsilon</directory>
+							<sources>
+								<softlinkSource>
+									<destination>upsilon.jar</destination>
+									<location>upsilon-${releaseVersion}.jar</location>
+								</softlinkSource>
+							</sources>
+						</mapping>
+						<mapping>
+							<configuration>noreplace</configuration>
+							<username>upsilon</username>
+							<groupname>upsilon</groupname>
+							<directory>/etc/upsilon</directory>
+							<directoryIncluded>false</directoryIncluded>
+							<sources>
+								<source>
+									<location>../upsilon-jar/var/config.xml.sample</location>
+								</source>
+							</sources>
+						</mapping>
 					</mappings>
 					<preinstallScriptlet>
 						<script><![CDATA[ 
@@ -116,20 +150,15 @@ exit 0
 					</preinstallScriptlet>
 					<postinstallScriptlet>
 						<script><![CDATA[ 
-ln -s -f /usr/share/upsilon/upsilon-${releaseVersion}.jar /usr/share/upsilon/upsilon.jar
-
-mkdir -p /etc/upsilon
-chown upsilon:upsilon /etc/upsilon
-
-systemctl --system daemon-reload 
+chkconfig --add upsilon-node
 
 service rsyslog restart
-service upsilon start
 ]]></script>
 					</postinstallScriptlet>
 					<preremoveScriptlet>
 						<script><![CDATA[ 
-service upsilon stop
+service upsilon-node stop					
+chkconfig --del upsilon-node				
 ]]></script>
 					</preremoveScriptlet>
 				</configuration>
