@@ -17,7 +17,13 @@ http://upsilon-project.co.uk/site/index.php/Config.xml
 http://upsilon-project.co.uk/site/index.php/Upsilon-node
 !-->
 <config>
-    <system crypto = "false" />
+    <system crypto = "false">
+    	<!--
+	Remove this comment if you would like a local database.
+	Good for first time testing of upsilon-node.
+    	<database dbname = "upsilon" username = "upsilon" password = "databasepasswordforsqluser" port = "3306" hostname = "localhost" />
+	!-->
+    </system>
 
     <command id = "checkPing" exec = "/usr/lib64/nagios/plugins/check_ping -H $ARG1 -w 75,10% -c 125,10% -p 3" />
 

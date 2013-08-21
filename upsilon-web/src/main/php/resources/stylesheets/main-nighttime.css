@@ -117,3 +117,8 @@ form {
 div.graph {
 	color: white;
 }
+
+.claro .dijitMenu .dijitMenuItem td {
+	        background-color: white;
+}
+
