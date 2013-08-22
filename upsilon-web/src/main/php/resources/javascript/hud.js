@@ -210,9 +210,6 @@ function(domConstruct, on, query, keys) {
                         toggleEmptyGroups();
 
                         break;
-                default:
-                        console.log(event.keyCode);
-
                 }
         });
 });
