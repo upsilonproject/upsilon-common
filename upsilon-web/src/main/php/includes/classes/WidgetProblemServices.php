@@ -13,8 +13,12 @@ class WidgetProblemServices extends Widget {
 	public function render() {
 		global $tpl;
 		$tpl->assign('listServices', $this->problemServices);
-		$tpl->display('metricList.tpl');
-//		$tpl->display('widgetProblemServices.tpl');
+
+                if (empty($this->problemServices)) {
+                        echo '<p>No services with problems!</p>';
+                } else {
+                        $tpl->display('metricList.tpl');
+                }
 	}
 }
 
