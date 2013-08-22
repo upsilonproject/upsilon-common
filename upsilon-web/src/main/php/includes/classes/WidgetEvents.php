@@ -37,7 +37,7 @@ class WidgetEvents extends Widget {
 		}
 
 		$now = new DateTime();
-		$cutoff = ($now)->add($interval);
+		$cutoff = $now->add($interval);
 
 		$ret = array();
 
