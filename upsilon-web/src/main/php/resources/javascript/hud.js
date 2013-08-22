@@ -188,6 +188,10 @@ window.shortcutToggleGroups = 71;
 require(["dojo/dom-construct", "dojo/on", "dojo/query", "dojo/keys", "dojo/domReady!"],
 function(domConstruct, on, query, keys) {
         query("body").on("keydown", function(event) {
+               if (event.target.localName != "body") {
+                        return;
+                }
+
 		if (event.ctrlKey) {
 			return;
 		}
