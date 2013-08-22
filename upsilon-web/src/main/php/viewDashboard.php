@@ -14,10 +14,10 @@ $links = new HtmlLinksCollection('Dashboard &nabla;');
 $links->add('createWidgetInstance.php?dashboard=' . $itemDashboard['id'], 'Create Widget Instance');
 $links->add('requestRescanWidgets()', 'RefreshWidgets');
 
-$title = 'Dashboard';
-require_once 'includes/widgets/header.php';
-
 $itemDashboard = new Dashboard(1); 
+
+$title = 'Dashboard: ' . $itemDashboard->getTitle();
+require_once 'includes/widgets/header.php';
 
 $tpl->assign('itemDashboard', $itemDashboard);
 $tpl->assign('listInstances', $itemDashboard->getWidgetInstances());

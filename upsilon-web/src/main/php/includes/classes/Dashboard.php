@@ -2,6 +2,13 @@
 
 class Dashboard {
 	public function __construct($id) { 
+                $sql = 'SELECT d.id, d.title FROM dashboard d WHERE d.id = :id ';
+                $stmt = stmt($sql);
+                $stmt->bindValue(':id', $id);
+                $stmt->execute();
+
+                $this->dashboard = $stmt->fetchRow();
+		
 		$sql = 'SELECT wi.id, w.class FROM widget_instances wi LEFT JOIN widgets w ON wi.widget = w.id ';
 		$stmt = stmt($sql); 
 		$stmt->execute();
@@ -33,5 +40,9 @@ class Dashboard {
 	public function getHiddenWidgetInstances() {
 		return $this->hiddenWidgetInstances;
 	}
+
+        public function getTitle() {
+                return $this->dashboard['title'];
+        }
 } 
 ?>
