@@ -4,6 +4,7 @@ require_once 'Widget.php';
 
 class WidgetEvents extends Widget {
 	public function __construct() {
+		$this->arguments['title'] = '';
 		$this->arguments['dateFormat'] = '';
 		$this->arguments['eventLimit'] = '';
 		$this->arguments['eventCutoff'] = '';
