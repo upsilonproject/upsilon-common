@@ -1,24 +1,26 @@
-img.accessories_text_editor { background-image: url('sprites.png'); background-position: 0px -0px; background-repeat: no-repeat;}
-img.apache { background-image: url('sprites.png'); background-position: 0px -16px; background-repeat: no-repeat;}
-img.astrid { background-image: url('sprites.png'); background-position: 0px -32px; background-repeat: no-repeat;}
-img.bestPractical { background-image: url('sprites.png'); background-position: 0px -48px; background-repeat: no-repeat;}
-img.cpu { background-image: url('sprites.png'); background-position: 0px -64px; background-repeat: no-repeat;}
-img.domain { background-image: url('sprites.png'); background-position: 0px -80px; background-repeat: no-repeat;}
-img.drive-removable-media { background-image: url('sprites.png'); background-position: 0px -96px; background-repeat: no-repeat;}
-img.finance { background-image: url('sprites.png'); background-position: 0px -112px; background-repeat: no-repeat;}
-img.gmail { background-image: url('sprites.png'); background-position: 0px -128px; background-repeat: no-repeat;}
-img.google-code-icon { background-image: url('sprites.png'); background-position: 0px -144px; background-repeat: no-repeat;}
-img.google-reader { background-image: url('sprites.png'); background-position: 0px -160px; background-repeat: no-repeat;}
-img.jenkins { background-image: url('sprites.png'); background-position: 0px -176px; background-repeat: no-repeat;}
-img.json { background-image: url('sprites.png'); background-position: 0px -192px; background-repeat: no-repeat;}
-img.konsole { background-image: url('sprites.png'); background-position: 0px -208px; background-repeat: no-repeat;}
-img.mountedFs { background-image: url('sprites.png'); background-position: 0px -224px; background-repeat: no-repeat;}
-img.mysql_icon { background-image: url('sprites.png'); background-position: 0px -240px; background-repeat: no-repeat;}
-img.network { background-image: url('sprites.png'); background-position: 0px -256px; background-repeat: no-repeat;}
-img.PingPlus { background-image: url('sprites.png'); background-position: 0px -272px; background-repeat: no-repeat;}
-img.red-hat { background-image: url('sprites.png'); background-position: 0px -288px; background-repeat: no-repeat;}
-img.rtm { background-image: url('sprites.png'); background-position: 0px -304px; background-repeat: no-repeat;}
-img.sensor { background-image: url('sprites.png'); background-position: 0px -320px; background-repeat: no-repeat;}
-img.software_update_available { background-image: url('sprites.png'); background-position: 0px -336px; background-repeat: no-repeat;}
-img.svn { background-image: url('sprites.png'); background-position: 0px -352px; background-repeat: no-repeat;}
-img.westlan { background-image: url('sprites.png'); background-position: 0px -368px; background-repeat: no-repeat;}
+.serviceIcon { display: inline-block; min-width: 16px; min-height: 16px; background-image: url('sprites.png'); background-repeat: no-repeat } 
+span.00defaultIcon { background-position: 0px -0px; }
+span.accessories_text_editor { background-position: 0px -16px; }
+span.apache { background-position: 0px -32px; }
+span.astrid { background-position: 0px -48px; }
+span.bestPractical { background-position: 0px -64px; }
+span.cpu { background-position: 0px -80px; }
+span.domain { background-position: 0px -96px; }
+span.drive-removable-media { background-position: 0px -112px; }
+span.finance { background-position: 0px -128px; }
+span.gmail { background-position: 0px -144px; }
+span.google-code-icon { background-position: 0px -160px; }
+span.google-reader { background-position: 0px -176px; }
+span.jenkins { background-position: 0px -192px; }
+span.json { background-position: 0px -208px; }
+span.konsole { background-position: 0px -224px; }
+span.mountedFs { background-position: 0px -240px; }
+span.mysql_icon { background-position: 0px -256px; }
+span.network { background-position: 0px -272px; }
+span.PingPlus { background-position: 0px -288px; }
+span.red-hat { background-position: 0px -304px; }
+span.rtm { background-position: 0px -320px; }
+span.sensor { background-position: 0px -336px; }
+span.software_update_available { background-position: 0px -352px; }
+span.svn { background-position: 0px -368px; }
+span.westlan { background-position: 0px -384px; }
