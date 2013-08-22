@@ -2,7 +2,7 @@
 
 class Dashboard {
 	public function __construct($id) { 
-                $sql = 'SELECT d.id, d.title FROM dashboard d WHERE d.id = :id ';
+                $sql = 'SELECT d.id, d.title, d.servicesGrouped FROM dashboard d WHERE d.id = :id ';
                 $stmt = stmt($sql);
                 $stmt->bindValue(':id', $id);
                 $stmt->execute();
@@ -44,5 +44,9 @@ class Dashboard {
         public function getTitle() {
                 return $this->dashboard['title'];
         }
+
+        public function isServicesGrouped() {
+                return $this->dashboard['servicesGrouped'];
+	}
 } 
 ?>
