@@ -114,6 +114,7 @@ ul.metricList > li:last-child {
 .metricDetail {
 	font-size: x-small;
 	float: right;
+	vertical-align: top;
 }
 
 .old {
