@@ -9,8 +9,7 @@
 
 		{foreach from = $listServices item = "itemService"}
 				<li>
-
-					<div style = "display: inline-block; text-align: center;">
+					<div class = "metricIndicatorContainer">
 					<span class = "metricIndicator {$itemService.karma|strtolower}">
 						{if !$mobile && !empty($itemService.icon)}
 							<img src = "resources/images/serviceIcons/{$itemService.icon}" alt = "serviceIcon" style = "padding-top: 4px" /><br />
@@ -47,7 +46,6 @@
 						{/foreach}
 						</ul>
 					{/if}
-					</div>
 
 					{if isset($itemService.isOverdue) && !$mobile}
 					{if $itemService.isOverdue}
@@ -57,6 +55,7 @@
 					{/if}
 					{/if}
 
+					</div>
 				</li>
 		{/foreach}
 	</ul>
