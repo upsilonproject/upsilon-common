@@ -114,9 +114,6 @@ function cookieOrDefault(cookieName, defaultValue) {
 	});	
 }
 
-window.shortcutToggleNighttime = 78;
-window.shortcutToggleEmptyGroups = 77;
-window.shortcutToggleGroups = 71;
 
 window.nighttime = cookieOrDefault("nighttime", false);
 window.showGoodGroups = cookieOrDefault("groups", false);
@@ -184,45 +181,47 @@ function toggleGroups() {
 	});
 }
 
-/*
-$(document).bind('keydown', function(e) {
-	var keypressNode = $(e.target).context.nodeName;
+window.shortcutToggleNighttime = 78;
+window.shortcutToggleEmptyGroups = 77;
+window.shortcutToggleGroups = 71;
 
-	if (keypressNode != "BODY") {
-		return;
-	}
+require(["dojo/dom-construct", "dojo/on", "dojo/query", "dojo/keys", "dojo/domReady!"],
+function(domConstruct, on, query, keys) {
+        query("body").on("keydown", function(event) {
+               if (event.target.localName != "body") {
+                        return;
+                }
 
-	// Dont interfere with browser shortcuts
-	if (e.ctrlKey) {
-		return;
-	}
+		if (event.ctrlKey) {
+			return;
+		}
 
-	switch(e.which) {
-		case window.shortcutToggleNighttime:
-			e.preventDefault();
+                switch (event.keyCode) {
+                case window.shortcutToggleNighttime:
+                        event.preventDefault();
+                        toggleNightVision();
+                        break;
+                case window.shortcutToggleGroups:
+                        event.preventDefault();
 
-			toggleNightVision();	
-			break;
-		case window.shortcutToggleGroups:
-			e.preventDefault();
+                        window.showGoodGroups = !window.showGoodGroups;
 
-			window.showGoodGroups = !window.showGoodGroups;
+                        toggleGroups();
+                        layoutBoxes(false);
 
-			toggleGroups();
-			layoutBoxes(false);
-			
-			break;
-		case window.shortcutToggleEmptyGroups:
-			e.preventDefault();
+                        break;
+                case window.shortcutToggleEmptyGroups:
+                        event.preventDefault();
 
-			window.shortcutToggleEmptyGroups = !window.shortcutToggleEmptyGroups;
+                        window.shortcutToggleEmptyGroups = !window.shortcutToggleEmptyGroups;
 
-			toggleEmptyGroups();
-			break;
-		default:
-	}
+                        toggleEmptyGroups();
+
+                        break;
+                }
+        });
 });
-*/
+
 
 function setupCollapseableForms() {
 	$('p.collapseable').each(function(index,sectionTitle) {

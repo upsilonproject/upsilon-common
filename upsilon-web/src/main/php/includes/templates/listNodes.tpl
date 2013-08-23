@@ -6,7 +6,7 @@
 
 <div class = "box">
 	<h3>Nodes</h3>
-<table class = "hover dataTable" data-dojo-type="dojox.grid.DataGrid">
+<table class = "hover dataTable">
 	<thead>
 		<tr>
 			<th>id</th>

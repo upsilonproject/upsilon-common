@@ -4,6 +4,7 @@ require_once 'Widget.php';
 
 class WidgetEvents extends Widget {
 	public function __construct() {
+		$this->arguments['title'] = '';
 		$this->arguments['dateFormat'] = '';
 		$this->arguments['eventLimit'] = '';
 		$this->arguments['eventCutoff'] = '';
@@ -35,7 +36,8 @@ class WidgetEvents extends Widget {
 			$limit = intval($limit);
 		}
 
-		$cutoff = (new DateTime())->add($interval);
+		$now = new DateTime();
+		$cutoff = $now->add($interval);
 
 		$ret = array();
 

@@ -4,3 +4,4 @@ target/
 .checkstyle
 var/*.png
 **/config.php
+**/*.swp

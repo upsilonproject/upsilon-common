@@ -49,7 +49,7 @@
 								</mapper>
 							</data>
 							<data>
-								<src>../upsilon-jar/var/upsilon.logrotate</src>
+								<src>../upsilon-jar/var/upsilon-node.logrotate</src>
 								<type>file</type>
 								<mapper>
 									<type>perm</type>

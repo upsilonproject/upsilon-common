@@ -30,7 +30,11 @@
 {literal}
 $(document).ready(function() {
 	layoutBoxes();
+	{/literal}
+	{if $itemDashboard->isServicesGrouped()}
 	toggleGroups();
+	{/if}
+	{literal}
 });
 {/literal}
 </script>

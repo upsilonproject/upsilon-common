@@ -1,0 +1,26 @@
+.serviceIcon { display: inline-block; min-width: 16px; min-height: 16px; background-image: url('sprites.png'); background-repeat: no-repeat } 
+span.00defaultIcon { background-position: 0px -0px; }
+span.accessories_text_editor { background-position: 0px -16px; }
+span.apache { background-position: 0px -32px; }
+span.astrid { background-position: 0px -48px; }
+span.bestPractical { background-position: 0px -64px; }
+span.cpu { background-position: 0px -80px; }
+span.domain { background-position: 0px -96px; }
+span.drive-removable-media { background-position: 0px -112px; }
+span.finance { background-position: 0px -128px; }
+span.gmail { background-position: 0px -144px; }
+span.google-code-icon { background-position: 0px -160px; }
+span.google-reader { background-position: 0px -176px; }
+span.jenkins { background-position: 0px -192px; }
+span.json { background-position: 0px -208px; }
+span.konsole { background-position: 0px -224px; }
+span.mountedFs { background-position: 0px -240px; }
+span.mysql_icon { background-position: 0px -256px; }
+span.network { background-position: 0px -272px; }
+span.PingPlus { background-position: 0px -288px; }
+span.red-hat { background-position: 0px -304px; }
+span.rtm { background-position: 0px -320px; }
+span.sensor { background-position: 0px -336px; }
+span.software_update_available { background-position: 0px -352px; }
+span.svn { background-position: 0px -368px; }
+span.westlan { background-position: 0px -384px; }

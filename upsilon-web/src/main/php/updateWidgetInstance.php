@@ -16,8 +16,9 @@ class FormUpdateWidgetInstance extends Form {
 
 		$id = Sanitizer::getInstance()->filterUint('id');
 
-		$this->addElement(new ElementHidden('id', 'ID', $id));
 		$this->getWidgetInstance($id);
+		$this->addElementReadOnly('Widget Class', get_class($this->widgetInstance));
+		$this->addElement(new ElementHidden('id', 'ID', $id));
 
 		$this->addElementsWidgetOptions($this->widgetInstance);
 

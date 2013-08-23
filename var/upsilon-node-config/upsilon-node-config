@@ -1,0 +1,104 @@
+#!/bin/python
+
+from dialog import *
+from xml.dom.minidom import parse
+from xml.parsers.expat import ExpatError
+from sys import exit
+
+def error(message = None):
+	print message
+	sys.exit(1)
+
+def mainMenu():
+	result = dialog.menu("", choices = [["addService", "Add Services"], ["removeService", "Remove service"], ["quit", ""]], title = "upsilon-config Main Menu")
+	result = result[1]
+
+	{
+		"addService": addService,
+		"removeService": removeService,
+		"quit": lambda: sys.exit(0),
+		"": lambda: sys.exit(0)
+	}[result]()
+
+
+def prompt(question, minLength = 4, maxLength = 64):
+	while True:
+		txt = dialog.inputbox(question)
+		txt = txt[1]
+
+		if len(txt) == 0:
+			raise RuntimeError("Dialog cancelled");
+
+		if (len(txt) < minLength):
+			dialog.msgbox("Your input must be longer than " + str(minLength))
+			continue;
+
+		if (len(txt) > maxLength):
+			dialog.msgbox("Your input must be shorter than " + str(maxLength))
+			continue;
+
+		return txt;
+
+def checkConfig():
+	clearEmptyNodes(dom.childNodes[0])
+
+def clearEmptyNodes(node):
+	for child in node.childNodes:
+		if child.nodeType == node.TEXT_NODE:
+			child.data = child.data.strip()
+
+	node.normalize()
+
+def save():
+	configFile.truncate()
+	configFile.seek(0)
+	configFile.write(dom.toprettyxml())
+
+def getServices():
+	return (el for el in root.childNodes if el.localName == "service")
+		
+def removeService():
+	choices = list()
+
+	for index, service in enumerate(getServices()):
+		choices.append([ str(index), service.attributes["name"].value ])
+
+	serviceIndex = dialog.menu("Which service?", choices = choices)
+
+	dialog.msgbox("You want to remove " + str(serviceIndex))
+
+def addService():
+	try: 
+		serviceIdentifier = prompt("Service identifier?")
+	except RuntimeError:
+		return
+
+	elService = dom.createElement("service")
+	elService.attributes["name"] = serviceIdentifier
+	
+	root = dom.childNodes[0]
+	root.appendChild(elService)
+
+	dialog.msgbox("Service added: " + serviceIdentifier)
+
+	save();
+
+#===============================================================================
+configFile = open("config.xml", 'r+')
+
+try:
+	dom = parse(configFile);
+	root = dom.childNodes[0]
+
+	checkConfig()
+except ExpatError as e:
+	error("Config is not valid XML: " + str(e))
+
+
+dialog = Dialog()
+
+while True:
+	mainMenu();
+
+configFile.close()
+

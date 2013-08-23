@@ -43,93 +43,20 @@
         </pluginRepositories>
   <build>
     <plugins> 
-	<!--
-<plugin>
-     <groupId>com.sandwormz.maven</groupId>
-     <artifactId>closure-compiler-maven-plugin</artifactId>
-     <version>0.0.2</version>
-     <executions>
-         <execution>
-             <goals>
-                 <goal>compile</goal>
-             </goals>
-         </execution>
-     </executions>
-     <configuration>
-         <compilations>
-             <compilation>
-                 <compilationLevel>WHITESPACE_ONLY</compilationLevel>
-                 <compilerOptions>
-                    <prettyPrint>true</prettyPrint>
-                    <lineBreak>true</lineBreak>
-                    <runtimeTypeCheck>true</runtimeTypeCheck>
-                 </compilerOptions>
-                 <externFiles></externFiles>
-                 <sourceFiles>
-                     <param>${basedir}/src/main/web/js/_header.js</param>
-                     <param>${basedir}/src/main/web/js/asserts.js</param>
-                     <param>${basedir}/src/main/web/js/logger.js</param>
-                 </sourceFiles>
-                 <outputFile>${basedir}/src/main/web/devtools-all.js</outputFile>
-             </compilation>
-             <compilation>
-                 <compilationLevel>ADVANCED_OPTIMIZATIONS</compilationLevel>
-                 <compilerOptions>
-                     <prettyPrint>true</prettyPrint>
-                 </compilerOptions>
-                 <externFiles></externFiles>
-                 <sourceFiles>
-                     <param>${basedir}/src/main/web/js/_header.js</param>
-                     <param>${basedir}/src/main/web/js/asserts.js</param>
-                     <param>${basedir}/src/main/web/js/logger.js</param>
-                 </sourceFiles>
-                 <outputFile>${project.build.outputDirectory}/static/js/devtools.js</outputFile>
-             </compilation>
-         </compilations>
-     </configuration>
- </plugin>
-!-->
-  </plugins>  
-
-  </build>
-<profiles>
- <profile>
-    <id>js-minimize</id>
-    <build>
-      <plugins>
-        <!-- Closure Compiler configuration -->
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
           <version>1.2</version>
+	  <inherited>false</inherited>
           <configuration>
-            <executable>java</executable>
+            <executable>./buildDojo.sh</executable>
             <workingDirectory>${project.dir}</workingDirectory>
             <arguments>
-              <argument>-classpath</argument>
-              <classpath>
-                <dependency>args4j:args4j</dependency>
-                <dependency>com.google.guava:guava</dependency>
-                <dependency>com.google.javascript:closure-compiler</dependency>
-              </classpath>
-              <argument>com.google.javascript.jscomp.CommandLineRunner</argument>
-              <argument>--compilation_level</argument>
-              <argument>SIMPLE_OPTIMIZATIONS</argument>
-
-              <argument>--js</argument>
-              <argument>src/main/php/resources/javascript/jquery.flot.js</argument>
-
-              <argument>--js</argument>
-              <argument>src/main/php/resources/javascript/jquery.jsplmb.js</argument>
-
-              <argument>--js_output_file</argument>
-              <argument>output.js</argument>
-              <argument>--use_only_custom_externs</argument>
             </arguments>
           </configuration>
           <executions>
             <execution>
-              <phase>compile</phase>
+              <phase>validate</phase>
               <goals>
                 <goal>exec</goal>
               </goals>
@@ -138,7 +65,4 @@
         </plugin>
       </plugins>
     </build>
-  </profile>
-</profiles>
-
 </project>
