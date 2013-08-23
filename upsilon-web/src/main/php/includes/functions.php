@@ -168,7 +168,7 @@ function getRelativeTimeSeconds($diff, $short = false) {
 }
 
 function getNodes() {
-	$sql = 'SELECT n.id, n.identifier, n.lastUpdated, n.serviceCount, n.serviceType AS nodeType, n.instanceApplicationVersion FROM nodes n';
+	$sql = 'SELECT n.id, n.identifier, n.serviceType, n.lastUpdated, n.serviceCount, n.serviceType AS nodeType, n.instanceApplicationVersion FROM nodes n';
 	$stmt = DatabaseFactory::getInstance()->prepare($sql);
 	$stmt->execute();
 
