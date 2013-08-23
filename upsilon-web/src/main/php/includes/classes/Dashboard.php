@@ -42,7 +42,11 @@ class Dashboard {
 	}
 
         public function getTitle() {
-                return $this->dashboard['title'];
+		if (empty($this->dashboard['title'])) {
+			return 'Untitled';
+		} else {
+			return $this->dashboard['title'];
+		} 
         }
 
         public function isServicesGrouped() {
