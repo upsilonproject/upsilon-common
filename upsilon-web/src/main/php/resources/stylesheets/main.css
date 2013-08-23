@@ -101,9 +101,14 @@ ul.metricList > li:last-child {
 	border: 1px dashed black;
 }
 
+.metricIndicatorContainer {
+	display: inline-block;
+}
+
 .metricText {
 	display: inline-block;	
 	vertical-align: top;
+	width: 85%;
 }
 
 .metricDetail {
