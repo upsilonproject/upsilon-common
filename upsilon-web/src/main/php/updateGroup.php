@@ -23,7 +23,7 @@ class FormUpdateGroup extends \libAllure\Form {
 
 		$this->addDefaultButtons();
 	}
-
+	
 	private function getGroupSelectionElement() {
 		$sql = 'SELECT g.name FROM groups g ORDER BY g.name ASC';
 		$stmt = DatabaseFactory::getInstance()->prepare($sql);
