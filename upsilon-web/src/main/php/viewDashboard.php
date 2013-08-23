@@ -6,15 +6,15 @@ require_once 'includes/classes/Dashboard.php';
 use \libAllure\HtmlLinksCollection;
 use \libAllure\DatabaseFactory;
 
-$itemDashboard = array(
-	'id' => 1
-);
+$id = san()->filterUint('id');
 
 $links = new HtmlLinksCollection('Dashboard &nabla;');
-$links->add('createWidgetInstance.php?dashboard=' . $itemDashboard['id'], 'Create Widget Instance');
+$links->add('createWidgetInstance.php?dashboard=' . $id, 'Create Widget Instance');
 $links->add('requestRescanWidgets()', 'RefreshWidgets');
+$links->add('updateDashboard.php?id=' . $id, 'Update');
+$links->add('createDashboard.php', 'Create new dashboard');
 
-$itemDashboard = new Dashboard(1); 
+$itemDashboard = new Dashboard($id); 
 
 $title = 'Dashboard: ' . $itemDashboard->getTitle();
 require_once 'includes/widgets/header.php';

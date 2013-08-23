@@ -49,7 +49,7 @@ if (Session::isLoggedIn()) {
 		$generalLinks->addChildCollection($title . ' Actions', $links);
 	}
 
-	$generalLinks->add('viewDashboard.php?id=1', 'Dashboard');
+	$generalLinks->add('listDashboards.php', 'Dashboards');
 	
 	$generalLinks->add('#', 'Services');
 

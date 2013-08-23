@@ -11,7 +11,7 @@
 				<li>
 					<div class = "metricIndicatorContainer">
 					<span class = "metricIndicator {$itemService.karma|strtolower}">
-						{if !$mobile && !empty($itemService.icon)}
+						{if !$mobile && !empty($itemService.icon)} 
 							<img src = "resources/images/serviceIcons/{$itemService.icon}" alt = "serviceIcon" style = "padding-top: 4px" /><br />
 						{/if}
 						{$itemService.goodCount|default:'?'}

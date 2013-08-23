@@ -165,6 +165,10 @@ class FormUpdateMetadata extends Form {
 				continue;
 			}
 
+			if (stripos($itemIcon, '.png') == false) {
+				continue;
+			}
+
 			$el->addOption($itemIcon, $itemIcon);
 		}
 
