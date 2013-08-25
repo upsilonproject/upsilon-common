@@ -23,7 +23,7 @@ function deleteWidgetInstance($id) {
 	return $widgetInstance;
 }
 
-$widgetInstance = getWidget(san()->filterUint('id'));
+$widgetInstance = deleteWidgetInstance(san()->filterUint('id'));
 
 redirect('viewDashboard.php/?id=' . $widgetInstance['dashboard'], 'Redirecting to dashboard');
 
