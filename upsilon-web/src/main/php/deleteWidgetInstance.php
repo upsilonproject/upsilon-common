@@ -3,7 +3,7 @@
 $title = 'Delete widget instance';
 require_once 'includes/common.php';
 
-function getWidgetInstance() {
+function getWidgetInstance($id) {
 	$sql = 'SELECT FROM widget_instances wi WHERE wi.id = :id';
 	$stmt = stmt($sql);
 	$stmt->bindValue(':id', $id);
