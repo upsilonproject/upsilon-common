@@ -9,8 +9,9 @@ class Dashboard {
 
                 $this->dashboard = $stmt->fetchRow();
 		
-		$sql = 'SELECT wi.id, w.class FROM widget_instances wi LEFT JOIN widgets w ON wi.widget = w.id ';
+		$sql = 'SELECT wi.id, w.class FROM widget_instances wi LEFT JOIN widgets w ON wi.widget = w.id WHERE wi.dashboard = :dashboard';
 		$stmt = stmt($sql); 
+		$stmt->bindValue(':dashboard', $id);
 		$stmt->execute();
 		
 		$listInstances = $stmt->fetchAll();
@@ -42,11 +43,19 @@ class Dashboard {
 	}
 
         public function getTitle() {
-                return $this->dashboard['title'];
+		if (empty($this->dashboard['title'])) {
+			return 'Untitled';
+		} else {
+			return $this->dashboard['title'];
+		} 
         }
 
         public function isServicesGrouped() {
                 return $this->dashboard['servicesGrouped'];
+	}
+
+	public function getId() {
+		return $this->dashboard['id'];
 	}
 } 
 ?>

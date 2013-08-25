@@ -8,7 +8,7 @@
 
 	<p>Takes requirements from: 
 	{foreach from = $listMemberClasses item = memberClass}
-		<strong><a href = "listClasses.php?id={$memberClass.id}">{$memberClass.title}</a></strong>
+		<a href = "listClasses.php?id={$memberClass.id}">{$memberClass.title}</a>.
 	{/foreach}
 	</p>
 

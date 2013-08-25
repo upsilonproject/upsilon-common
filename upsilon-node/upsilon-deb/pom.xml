@@ -57,6 +57,14 @@
 								</mapper>
 							</data>
 							<data>
+								<src>../upsilon-jar/var/config.xml.sample</src>
+								<type>file</type>
+								<mapper>
+									<type>perm</type>
+									<prefix>/etc/upsilon/</prefix>
+								</mapper>
+							</data>
+							<data>
 								<type>link</type>
 								<linkName>/usr/share/upsilon/upsilon.jar</linkName>
 								<linkTarget>/usr/share/upsilon/upsilon-${releaseVersion}.jar</linkTarget>

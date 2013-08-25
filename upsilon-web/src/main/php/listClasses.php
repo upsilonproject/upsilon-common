@@ -15,6 +15,8 @@ if (empty($id)) {
 $links = new HtmlLinksCollection();
 $links->add('createClass.php', 'Create Class');
 $links->add('createClassRequirement.php?id=' . $id, 'Create Requirement');
+$links->add('updateClass.php?id=' . $id, 'Update class');
+$links->add('deleteClass.php?id=' . $id, 'Delete class');
 $links->add('createClassInstance.php?', 'Create class instance');
 
 $title = 'Classes';
@@ -80,7 +82,8 @@ $stmt->execute();
 $listClasses = $stmt->fetchAll();
 //print_r($listClasses); exit;
 
-$sql = <<<SQL
+function getClassInstances($id) {
+	$sql = <<<SQL
 SELECT DISTINCT 
 	ci.id AS id,
 	ci.title, 
@@ -106,53 +109,62 @@ LEFT JOIN services s ON
 GROUP BY
 	ci.id
 SQL;
-$stmt = DatabaseFactory::getInstance()->prepare($sql);
-$stmt->execute();
+	$stmt = DatabaseFactory::getInstance()->prepare($sql);
+	$stmt->execute();
 
-$listInstances = $stmt->fetchAll();
+	$listInstances = $stmt->fetchAll();
 
-foreach ($listInstances as $index => $instance) {
-		$row = &$listInstances[$index];
-		$row['assignedKarma'] = 'unknown';
+	foreach ($listInstances as $index => $instance) {
+			$row = &$listInstances[$index];
+			$row['assignedKarma'] = 'unknown';
 
-		if ($row['assignedCount'] == $row['totalCount']) {
-			$row['overallKarma'] = 'good';
-		} else {
-			$row['overallKarma'] = 'bad';
-		}
+			if ($row['assignedCount'] == $row['totalCount']) {
+				$row['overallKarma'] = 'good';
+			} else {
+				$row['overallKarma'] = 'bad';
+			}
 
-		if ($row['goodCount'] == $row['assignedCount']) {
-			$row['assignedKarma'] = 'good';
-		} else {
-			$row['assignedKarma'] = 'bad';
-		}
+			if ($row['goodCount'] == $row['assignedCount']) {
+				$row['assignedKarma'] = 'good';
+			} else {
+				$row['assignedKarma'] = 'bad';
+			}
+	}
+
+	return $listInstances;
 }
 
-$tpl->assign('listInstances', $listInstances);
+$tpl->assign('listInstances', getClassInstances($id));
 
 $tpl->assign('listClasses', $listClasses);
 
-if ($id == 1) {
-	$sql = 'SELECT c.* FROM classes c WHERE l = 0';
-} else {
+function getClass($id) {
 	$sql = 'SELECT c.* FROM classes c WHERE c.id = :id';
+	$stmt = stmt($sql);
+	$stmt->bindValue(':id', $id);
+	$stmt->execute();
+
+	$class = $stmt->fetchRowNotNull();
+
+	return $class;
 }
-$stmt = DatabaseFactory::getInstance()->prepare($sql);
-$stmt->bindValue(':id', $id);
-$stmt->execute();
+
+function getClassRequirements($id) {
+	$sql = 'SELECT r.id, r.title FROM class_service_requirements r WHERE r.class = :id ';
+	$stmt = DatabaseFactory::getInstance()->prepare($sql);
+	$stmt->bindValue(':id', $id);
+	$stmt->execute();
+
+	return $stmt->fetchAll();
+}
 
 try {
-	$tpl->assign('itemClass', $stmt->fetchRowNotNull());
+	$tpl->assign('itemClass', getClass($id));
 } catch (Exception $e) {
 	$tpl->error('Could not find class: ' . $id);
 }
 
-$sql = 'SELECT r.id, r.title FROM class_service_requirements r WHERE r.class = :id ';
-$stmt = DatabaseFactory::getInstance()->prepare($sql);
-$stmt->bindValue(':id', $id);
-$stmt->execute();
-
-$tpl->assign('listRequirements', $stmt->fetchAll());
+$tpl->assign('listRequirements', getClassRequirements($id));
 
 $tpl->display('listClasses.tpl');
 require_once 'includes/widgets/footer.php';

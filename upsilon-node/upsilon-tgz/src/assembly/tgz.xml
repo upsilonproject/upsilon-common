@@ -5,10 +5,18 @@
 	</formats>
 	<fileSets>
 		<fileSet>
+			<directory>../upsilon-jar/var/</directory>
+			<outputDirectory>setup</outputDirectory>
+			<includes>
+				<include>config.xml.sample</include>
+			</includes>
+		</fileSet>
+		<fileSet>
 			<directory>../../var/</directory>
 			<outputDirectory>setup</outputDirectory>
 			<includes>
 				<include>schema.sql</include>
+				<include>initialData.sql</include>
 			</includes>
 		</fileSet>
 		<fileSet>

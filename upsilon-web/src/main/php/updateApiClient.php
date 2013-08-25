@@ -1,7 +1,7 @@
 <?php
 
 $title = 'Update API client';
-require_once 'includes/widgets/header.php';
+require_once 'includes/common.php';
 
 use \libAllure\FormHandler;
 use \libAllure\Form;
@@ -27,7 +27,11 @@ class FormUpdateApiClient extends Form {
 		$elRedirect = $this->addElement(new ElementSelect('redirect', 'Redirect'));
 		$elRedirect->addOption('Nowhere', '');
 		$elRedirect->addOption('HUD', 'hud');
-		$elRedirect->addOption('Dashboard', 'dashboard');
+
+		foreach ($this->getDashboards() as $dashboard) {
+			$elRedirect->addOption('Dashboard:' . $dashboard['id'], 'dashboard:' . $dashboard['id']);
+		}
+
 		$elRedirect->addOption('Mobile (stats only)', 'mobile');
 		$elRedirect->setValue($apiClient['redirect']);
 	
@@ -37,6 +41,14 @@ class FormUpdateApiClient extends Form {
 		$this->addElement(new ElementCheckbox('drawBigClock', 'Draw Big Clock', $apiClient['drawBigClock'], 'Show a big clock during night time.'));
 
 		$this->addDefaultButtons();
+	}
+
+	private function getDashboards() {
+		$sql = 'SELECT d.id FROM dashboard d';
+		$stmt = stmt($sql);
+		$stmt->execute();
+
+		return $stmt->fetchAll();
 	}
 
 	private function getApiClient($id) {

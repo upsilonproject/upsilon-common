@@ -136,6 +136,7 @@ DROP TABLE IF EXISTS `dashboard`;
 CREATE TABLE `dashboard` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(32) DEFAULT NULL,
+  `servicesGrouped` tinyint(4) DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
