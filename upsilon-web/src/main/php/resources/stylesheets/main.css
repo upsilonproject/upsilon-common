@@ -337,6 +337,7 @@ div#header {
 	height: 3em;
 	display: table;
 	width: 100%;
+	padding: 0;
 }
 
 

@@ -38,8 +38,14 @@ class FormUpdateGroup extends \libAllure\Form {
 
 		return $el;
 	}
-
+	
 	public function process() {
+		$sql = 'UPDATE group_memberships SET `group` = :new_title WHERE `group` = :title ';
+		$stmt = stmt($sql);
+		$stmt->bindValue(':title', $this->itemGroup['name']);
+		$stmt->bindValue(':new_title', $this->getElementValue('title'));
+		$stmt->execute();
+		
 		$sql = 'UPDATE groups SET name = :title, parent = :parent WHERE id = :id';
 		$stmt = DatabaseFactory::getInstance()->prepare($sql);
 
