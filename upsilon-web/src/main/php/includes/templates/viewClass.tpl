@@ -1,5 +1,6 @@
-<a href = "createClassInstance.php">Create class instance</a>
-
+{if empty($listClassInstances)}
+	<p>There are 0 instances of this class</p>
+{else}
 {foreach from = $listClassInstances item = itemClassInstance} 
 	<div class = "box">
 	<h4>title ({$itemClassInstance.classTitle})</h4>
@@ -33,3 +34,4 @@
 	</table>
 	</div>
 {/foreach}
+{/if}

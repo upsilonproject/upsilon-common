@@ -1,6 +1,6 @@
 <?php
 
-$title = 'Create widget instance.php';
+$title = 'Create widget instance';
 require_once 'includes/common.php';
 
 use \libAllure\Form;

@@ -6,6 +6,11 @@
 
 <div class = "box">
 	<h3>Nodes</h3>
+
+{if empty($listNodes)}
+	<p>0 nodes in database.</p> 
+	<p>Visit the wiki to understand how to <a href = "http://upsilon-project.co.uk/site/index.php/SetupNodeDatabase">configure your node to write to a database</a>.</p>
+{else}
 <table class = "hover dataTable">
 	<thead>
 		<tr>
@@ -31,4 +36,5 @@
 		{/foreach}
 	</tbody>
 </table>
+{/if}
 </div>

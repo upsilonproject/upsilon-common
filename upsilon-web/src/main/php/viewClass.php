@@ -3,6 +3,9 @@
 require_once 'includes/common.php';
 
 $title = 'View class';
+$links = linksCollection();
+$links->add('createClassInstance.php', 'Create Class Instance');
+
 require_once 'includes/widgets/header.php';
 
 use \libAllure\DatabaseFactory;

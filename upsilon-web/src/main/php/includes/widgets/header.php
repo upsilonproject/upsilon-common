@@ -6,7 +6,7 @@ require_once 'includes/functions.php';
 use \libAllure\Session;
 use \libAllure\HtmlLinksCollection;
 
-global $tpl;
+global $tpl, $title;
 
 $tpl->assign('mobile', isMobile());
 
