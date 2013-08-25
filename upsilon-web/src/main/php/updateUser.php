@@ -2,6 +2,10 @@
 
 require_once 'includes/common.php';
 
+$title = 'Update User';
+$links = linksCollection();
+$links->add('deleteUser.php?id=' . san()->filterUint('id'), 'Delete User');
+
 use \libAllure\ElementInput;
 use \libAllure\Form;
 use \libAllure\FormHandler;

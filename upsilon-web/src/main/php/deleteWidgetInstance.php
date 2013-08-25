@@ -4,7 +4,7 @@ $title = 'Delete widget instance';
 require_once 'includes/common.php';
 
 function getWidgetInstance($id) {
-	$sql = 'SELECT FROM widget_instances wi WHERE wi.id = :id';
+	$sql = 'SELECT wi.dashboard FROM widget_instances wi WHERE wi.id = :id';
 	$stmt = stmt($sql);
 	$stmt->bindValue(':id', $id);
 	$stmt->execute();
@@ -25,6 +25,6 @@ function deleteWidgetInstance($id) {
 
 $widgetInstance = deleteWidgetInstance(san()->filterUint('id'));
 
-redirect('viewDashboard.php/?id=' . $widgetInstance['dashboard'], 'Redirecting to dashboard');
+redirect('viewDashboard.php?id=' . $widgetInstance['dashboard'], 'Redirecting to dashboard');
 
 ?>

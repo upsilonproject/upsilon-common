@@ -44,6 +44,7 @@ $generalLinks = linksCollection();
 if (Session::isLoggedIn()) {
 	$generalLinks = linksCollection();
 
+	global $links, $title;
 	if (isset($links)) {
 		$generalLinks->add('#', $title . ' Actions');
 		$generalLinks->addChildCollection($title . ' Actions', $links);
