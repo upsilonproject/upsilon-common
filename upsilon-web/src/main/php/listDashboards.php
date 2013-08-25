@@ -1,5 +1,6 @@
 <?php
 
+$title = 'Dashboards';
 require_once 'includes/widgets/header.php';
 
 $sql = 'SELECT d.title, d.id FROM dashboard d ';

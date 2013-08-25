@@ -1,16 +1,13 @@
 function onLoad() {
-	reqLogin();
-	setupToolbar();
-	setupWindowMenu();
-	createDashboardWidget();
+	showFormLogin();
 }
 
 function createDashboardWidget() {
 require([
-	"dojo/dom-construct"
-], function(domConstruct) {
+	"dojo/dom-construct", 
+	"dojo/_base/window"
+], function(domConstruct, win) {
 	var node = domConstruct.create("div", {style: { backgroundColor: "red" }}, win.body());
-	console.log(node);
 });}
 
 function main() {
@@ -141,24 +138,32 @@ function mniDashboardClicked() {
 	reqDashboard(1);
 }
 
-function reqLogin() {
-	var req = {
-		url: "json/authenticate",
-		handleAs: "json",
-		query: {
-			username: "administrator",
-			password: window.prompt("Password?"),
-		},
-		load: function(res) {
-			console.log("authenticated");
-			reqUpdatePermissions();
-		},
-		error: function(err) {
-			displayError("Cannot auth"); 
-		}
-	}
+function loadLogin(res) {
+	setupHeader();
+	setupToolbar();
+	setupWindowMenu();
+	createDashboardWidget();
 
-	dojo.xhrGet(req);
+	reqUpdatePermissions();
+}
+
+function showFormLogin() {
+	require([
+		"dijit/layout/ContentPane",
+	], function(container) {
+		reqLogin("administrator", "password");
+	});
+}
+
+function reqLogin(username, password) {
+	var req = newJsonReq();
+	req.url = "json/authenticate";
+	req.content = {
+		username: username,
+		password: password,
+	};
+	req.load = loadLogin;
+	req.get();
 }
 
 function newJsonReq() {
@@ -192,7 +197,6 @@ function renderWidgetProblemServices(widget, container) {
 }
 
 function renderWidgetNodes(widget, container) {
-	console.log(widget, container);  
 	var req = { 
 			url: "json/listNodes",
 			load: function(nodes) {
@@ -217,6 +221,8 @@ function loadDashboard(dashboard) {
 	    "dijit/layout/ContentPane",
 	    "dijit/registry"
     ], function(Container, ContentPane, registry){
+	    	setTitle("Dashboard: " + dashboard.dashboard.title);
+
 		if (!registry.byId("dashboardWidgetContainer")) {
 			var container = new Container({id: "dashboardWidgetContainer", class: "blockContainer"});
 			container.placeAt("wrapper"); 
@@ -240,7 +246,6 @@ function loadDashboard(dashboard) {
 			window[renderFunction](widget, cp);
 		});
 
-
 		layoutBoxes();
 	});
 
@@ -250,7 +255,7 @@ function reqDashboard() {
 	var req = {
 		url: "json/getDashboard",
 		handleAs: "json",
-		query: { id: 1 }, 
+		content: { id: 1 }, 
 		load: loadDashboard,
 		error: displayError
 	}; 
@@ -270,6 +275,29 @@ function reqGetServices() {
 }
 
 function mniServicesClicked() {}
+
+function setTitle(newTitle) {
+	require(["dijit/registry"], function(registry){
+		registry.byId("title").setContent("Upsilon &raquo; " + newTitle);
+	});
+}
+
+function setupHeader() {
+	require([
+		"dijit/layout/ContentPane",
+	], function (ContentPane) {
+		header = new ContentPane({
+			id: "header",
+			content: new ContentPane({
+				class: 'pageTitle title',
+				content: 'Upsilon',
+				id: 'title',
+			})
+		});
+
+		header.placeAt("wrapper");
+	});
+}
 
 function setupWindowMenu() {
 	require([
