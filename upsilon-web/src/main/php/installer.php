@@ -1,5 +1,6 @@
 <?php
 
+define('ANONYMOUS_PAGE', true);
 define('INSTALLATION_IN_PROGRESS', true);
 $title = 'Installer';
 
