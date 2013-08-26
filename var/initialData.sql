@@ -7,3 +7,4 @@ INSERT INTO widgets (`class`) VALUES ('Tasks');
 INSERT INTO widgets (`class`) VALUES ('Events');
 INSERT INTO widgets (`class`) VALUES ('ServicesFromGroup');
 INSERT INTO classes (`title`, `l`, `r`) VALUES ('Root class', 0, 1);
+INSERT INTO dashboard (`title`) VALUES ('First Dashboard');

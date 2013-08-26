@@ -198,18 +198,20 @@ function renderWidgetProblemServices(widget, container) {
 
 function renderWidgetNodes(widget, container) {
 	var req = { 
-			url: "json/listNodes",
-			load: function(nodes) {
-				nodeList = "";
-				
-				dojo.forEach(nodes, function(node) { 
-					nodeList += '<span class = "metricIndictator ' + node.karma.toLowerCase() + '">' + node.karma + '</span> ' + node.identifier + "<br />"; 
-				});
-				
-				container.set("content", nodeList);
-			},
-			error: displayError,
-			handleAs: "json"
+		url: "json/listNodes",
+		load: function(nodes) {
+			nodeList = "<h2>Nodes</h2><ul class = 'metricList'>";
+			
+			dojo.forEach(nodes, function(node) { 
+				nodeList += '<li><div class = "metricIndicatorContainer"><span class = "metricIndicator ' + node.karma.toLowerCase() + '">' + node.karma + '</span></div> ' + node.identifier + "</li>"; 
+			});
+
+			nodeList += "</ul>";
+			
+			container.set("content", nodeList);
+		},
+		error: displayError,
+		handleAs: "json"
 	}
 	
 	dojo.xhrGet(req);

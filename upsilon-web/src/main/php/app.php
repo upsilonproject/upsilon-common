@@ -4,9 +4,9 @@
 	<title>Upsilon</title>
 
 	<link rel = "shortcut icon" href = "resources/images/icons/logo96pxblackbg.png" title = "Shortcut icon" type = "image/png" />
+	<link rel = "stylesheet" type = "text/css" href="resources/dojo/dijit/themes/claro/claro.css" />
 	<link rel = "stylesheet" type = "text/css" href = "resources/stylesheets/main.css" />
 	<link rel = "stylesheet" type = "text/css" href = "resources/stylesheets/app.css" />
-	<link rel = "stylesheet" type = "text/css" href="resources/dojo/dijit/themes/claro/claro.css" />
 	<link rel = "stylesheet" type = "text/css" href="resources/dojo/gridx/resources/claro/Gridx.css" /> 
 
 </head>

@@ -3,3 +3,24 @@
 	font-size: 12pt;
 	font-weight: bold;
 }
+
+.claro .dijitDialogTitleBar {
+	background-color: #444;
+	font-weight: bold;
+	border-style: none;
+}
+
+.claro .dijitDialogTitle {
+	color: white;
+}
+
+.gridxSortNode {
+}
+
+.gridxHeaderRowInner table {
+	background-color: #dee3e7;
+}
+
+.claro .gridxRowOdd .gridxRowTable {
+	background-color: #efefef;
+}
