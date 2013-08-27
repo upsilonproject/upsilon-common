@@ -114,6 +114,7 @@ ul.metricList > li:last-child {
 .metricDetail {
 	font-size: x-small;
 	float: right;
+	vertical-align: top;
 }
 
 .old {
@@ -336,6 +337,7 @@ div#header {
 	height: 3em;
 	display: table;
 	width: 100%;
+	padding: 0;
 }
 
 

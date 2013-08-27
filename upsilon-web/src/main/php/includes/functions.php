@@ -168,7 +168,7 @@ function getRelativeTimeSeconds($diff, $short = false) {
 }
 
 function getNodes() {
-	$sql = 'SELECT n.id, n.identifier, n.lastUpdated, n.serviceCount, n.serviceType AS nodeType, n.instanceApplicationVersion FROM nodes n';
+	$sql = 'SELECT n.id, n.identifier, n.serviceType, n.lastUpdated, n.serviceCount, n.serviceType AS nodeType, n.instanceApplicationVersion FROM nodes n';
 	$stmt = DatabaseFactory::getInstance()->prepare($sql);
 	$stmt->execute();
 
@@ -356,7 +356,7 @@ function getFailedDowntimeRule(array $downtime) {
 }
 
 function getServicesBad() {
-	$sql = 'SELECT s.id, s.identifier, IF(m.criticalCast IS NULL OR s.karma != "GOOD", s.karma, m.criticalCast) AS karma, s.goodCount, s.output, s.description, s.executable, s.estimatedNextCheck, s.lastUpdated, m.alias, IF(m.acceptableDowntimeSla IS NULL, m.acceptableDowntime, sla.content) AS acceptableDowntime FROM services s LEFT JOIN service_metadata m ON s.identifier = m.service LEFT JOIN acceptable_downtime_sla sla ON m.acceptableDowntimeSla = sla.id WHERE s.karma != "GOOD"   ';
+	$sql = 'SELECT s.id, s.identifier, m.icon, IF(m.criticalCast IS NULL OR s.karma != "GOOD", s.karma, m.criticalCast) AS karma, s.goodCount, s.output, s.description, s.executable, s.estimatedNextCheck, s.lastUpdated, m.alias, IF(m.acceptableDowntimeSla IS NULL, m.acceptableDowntime, sla.content) AS acceptableDowntime FROM services s LEFT JOIN service_metadata m ON s.identifier = m.service LEFT JOIN acceptable_downtime_sla sla ON m.acceptableDowntimeSla = sla.id WHERE s.karma != "GOOD"   ';
 	$stmt = DatabaseFactory::getInstance()->prepare($sql);
 	$stmt->execute();
 
@@ -491,11 +491,16 @@ function handleApiLogin() {
 
 function redirectApiClients() {
 	if (isset($_SESSION['apiClientRedirect'])) {
+			if (stripos($_SESSION['apiClientRedirect'], 'dashboard') !== false) {
+				$dashboard = explode(':', $_SESSION['apiClientRedirect']);
+	
+				$url = 'viewDashboard.php?id=' . $dashboard[1];
+				redirect($url, 'API Login complete. Redirecting to Dashboard.');
+			}
+
 			switch ($_SESSION['apiClientRedirect']) {
 				case 'mobile':
 					redirect('viewMobileStats.php', 'View Mobile Stats');
-				case 'dashboard':
-					redirect('viewDashboard.php', 'API Login complete. Redirecting to Dashboard.');
 				case 'hud':
 					redirect('viewServiceHud.php', 'API Login complete. Redirecting to Service HUD.');
 				default:

@@ -167,7 +167,7 @@ function toggleGroups() {
 				desc.append($('<div style = "display:inline-block"><span class = "metricIndicator good grouped">~</span></div> <div class = "metricText">All <strong>' + servicesGood.size() + '</strong> services are good.</div>'));
 
 				if (servicesWarning.size() > 0) {
-					desc.append(' <span class = "warning"><strong>' + servicesWarning.size() + '</strong> have a warning</span>.')
+					desc.append(' <br /><span class = "warning"><strong>' + servicesWarning.size() + '</strong> have a warning</span>.')
 				}
 
 				desc.click(toggleSingleGroup)

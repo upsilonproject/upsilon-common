@@ -13,10 +13,16 @@ $stmt->execute();
 
 $tpl->display('listRooms.tpl');
 
-foreach ($stmt->fetchAll() as $room) {
-	$tpl->assign('itemRoom', $room);
-	$tpl->assign('svgContent', file_get_contents('resources/images/rooms/' . $room['filename']));
-	$tpl->display('viewRoom.tpl');
+$rooms = $stmt->fetchAll();
+
+if (empty($rooms)) {
+	$tpl->error('No rooms defined. This feature is very much in testing and requires manual database editing.');
+} else {
+	foreach ($stmt->fetchAll() as $room) {
+		$tpl->assign('itemRoom', $room);
+		$tpl->assign('svgContent', file_get_contents('resources/images/rooms/' . $room['filename']));
+		$tpl->display('viewRoom.tpl');
+	}
 }
 
 require_once 'includes/widgets/footer.php';

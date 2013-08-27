@@ -1,11 +1,12 @@
 
 VERSION_NODE=0.116.0
+VERSION_WEB=1.3.0
 
 basepath="/public_html/"
 
 srcs=()
 files+=("upsilon-mobileWeb/bin/upsilon-mobileWeb.apk releases/apk/");
-files+=("upsilon-web/upsilon-web-tgz/target/upsilon-web-1.2.0.tar.gz releases/upsilon-web-tgz/");
+files+=("upsilon-web/upsilon-web-tgz/target/upsilon-web-${VERSION_WEB}.tar.gz releases/upsilon-web-tgz/");
 files+=("upsilon-node/upsilon-rpm-fedora18/target/rpm/upsilon-node/RPMS/noarch/upsilon-node-${VERSION_NODE}-1.fc18.noarch.rpm releases/rpm-fedora18/");
 files+=("upsilon-node/upsilon-rpm-fedora18/target/rpm/upsilon-node/RPMS/noarch/upsilon-node-${VERSION_NODE}-1.fc18.noarch.rpm repositories/rpm-fedora18/");
 

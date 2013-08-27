@@ -11,7 +11,7 @@
 				<li>
 					<div class = "metricIndicatorContainer">
 					<span class = "metricIndicator {$itemService.karma|strtolower}">
-						{if !$mobile && !empty($itemService.icon)}
+						{if !$mobile && !empty($itemService.icon)} 
 							<img src = "resources/images/serviceIcons/{$itemService.icon}" alt = "serviceIcon" style = "padding-top: 4px" /><br />
 						{/if}
 						{$itemService.goodCount|default:'?'}
@@ -24,6 +24,14 @@
 					</div>
 
 					<div class = "metricText">
+					{if isset($itemService.isOverdue) && !$mobile}
+						{if $itemService.isOverdue}
+							<span class = "metricDetail"><em>overdue by {$itemService.estimatedNextCheckRelative}</em></span>
+						{else}
+							<span class = "metricDetail">{$itemService.estimatedNextCheckRelative}</span>
+						{/if}
+					{/if}
+
 					{if $drawNavigation}<a href = "viewService.php?id={$itemService.id}">{/if}
 						<span class = "metricTitle" title = "{$itemService.description}">{if empty($itemService.alias)}{$itemService.description|default:'nodesc'|truncate:18}{else}{$itemService.alias}{/if}{if empty($itemService.alias) && isset($itemService.executableShort)}cmd:{$itemService.executableShort|default:'nocmd'|truncate:16}{/if}</span>
 					{if $drawNavigation}</a>{/if}
@@ -46,15 +54,7 @@
 						{/foreach}
 						</ul>
 					{/if}
-
-					{if isset($itemService.isOverdue) && !$mobile}
-					{if $itemService.isOverdue}
-					<span class = "metricDetail"><em>overdue by {$itemService.estimatedNextCheckRelative}</em></span>
-					{else}
-					<span class = "metricDetail">{$itemService.estimatedNextCheckRelative}</span>
-					{/if}
-					{/if}
-
+	
 					</div>
 				</li>
 		{/foreach}

@@ -52,4 +52,3 @@ This is the upsilon-web installer, it checks the system for any obvious errors a
 </ul>
 </div>
 
-{include file = "form.tpl"}

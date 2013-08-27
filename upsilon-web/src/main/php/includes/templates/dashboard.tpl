@@ -1,3 +1,8 @@
+{if $tutorialMode}
+<div class = "box tutorialMessage">
+	<p><strong>Dashboards</strong> are useful for grouping up lots of information in to one easy to view place. <strong>Widgets</strong> on dashboards are responsible for showing information.</p>
+</div>
+{/if}
 
 <div class = "blockContainer">
 {if empty($listInstances)}

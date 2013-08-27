@@ -196,7 +196,7 @@ class ErrorHandler {
 							if (is_object($arg)) {
 								echo get_class($arg);
 							} else {
-								echo $arg;
+								echo serialize($arg);
 							}
 
 							if (isset($point['args'][$id + 1])) {

@@ -3,16 +3,28 @@
 $title = 'Delete widget instance';
 require_once 'includes/common.php';
 
-use \libAllure\Sanitizer;
-use \libAllure\DatabaseFactory;
+function getWidgetInstance($id) {
+	$sql = 'SELECT wi.dashboard FROM widget_instances wi WHERE wi.id = :id';
+	$stmt = stmt($sql);
+	$stmt->bindValue(':id', $id);
+	$stmt->execute();
 
-$id = Sanitizer::getInstance()->filterUint('id');
+	return $stmt->fetchRowNotNull();
+}
 
-$sql = 'DELETE FROM widget_instances WHERE id = :id';
-$stmt = DatabaseFactory::getInstance()->prepare($sql);
-$stmt->bindValue(':id', $id);
-$stmt->execute();
+function deleteWidgetInstance($id) {
+	$widgetInstance = getWidgetInstance($id);
 
-redirect('viewDashboard.php', 'Redirected');
+	$sql = 'DELETE FROM widget_instances WHERE id = :id';
+	$stmt = stmt($sql);
+	$stmt->bindValue(':id', $id);
+	$stmt->execute();
+
+	return $widgetInstance;
+}
+
+$widgetInstance = deleteWidgetInstance(san()->filterUint('id'));
+
+redirect('viewDashboard.php?id=' . $widgetInstance['dashboard'], 'Redirecting to dashboard');
 
 ?>
