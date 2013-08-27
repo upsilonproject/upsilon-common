@@ -1,6 +1,12 @@
 <?php
 
+require_once 'includes/common.php';
+
 $title = 'Dashboards';
+
+$links = linksCollection();
+$links->add('createDashboard.php', 'Create new dashboard');
+
 require_once 'includes/widgets/header.php';
 
 $sql = 'SELECT d.title, d.id FROM dashboard d ';

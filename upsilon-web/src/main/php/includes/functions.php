@@ -634,4 +634,64 @@ function validateAcceptableDowntime($el) {
 	}
 }
 
+function deleteServiceByIdentifier($identifier) {
+	$sql = 'DELETE FROM services WHERE identifier = :identifier';
+	$stmt = stmt($sql);
+	$stmt->bindValue(':identifier', $identifier);
+	$stmt->execute();
+
+	$sql = 'DELETE FROM group_memberships WHERE service = :serviceIdentifier';
+	$stmt = stmt($sql);
+	$stmt->bindValue(':serviceIdentifier', $identifier);
+	$stmt->execute();
+
+
+}
+
+
+function getWidgetInstance($id) {
+	$sql = 'SELECT wi.dashboard FROM widget_instances wi WHERE wi.id = :id';
+	$stmt = stmt($sql);
+	$stmt->bindValue(':id', $id);
+	$stmt->execute();
+
+	return $stmt->fetchRowNotNull();
+}
+
+function deleteWidgetInstance($id) {
+	$widgetInstance = getWidgetInstance($id);
+
+	$sql = 'DELETE FROM widget_instances WHERE id = :id';
+	$stmt = stmt($sql);
+	$stmt->bindValue(':id', $id);
+	$stmt->execute();
+
+	return $widgetInstance;
+}
+
+function deleteGroupByName($name) {
+	$sql = 'DELETE FROM group_memberships WHERE `group` = :groupTitle';
+	$stmt = DatabaseFactory::getInstance()->prepare($sql);
+	$stmt->bindValue(':groupTitle', $name);
+	$stmt->execute();
+
+	$sql = 'DELETE FROM groups WHERE name = :groupTitle';
+	$stmt = DatabaseFactory::getInstance()->prepare($sql);
+	$stmt->bindValue(':groupTitle', $name);
+	$stmt->execute();
+}
+
+function deleteDashboardById($id) {
+	$sql = 'DELETE FROM widget_instances WHERE dashboard = :id ';
+	$stmt = stmt($sql);
+	$stmt->bindValue(':id', $id);
+	$stmt->execute();
+
+	$sql = 'DELETE FROM dashboard WHERE id = :id';
+	$stmt = stmt($sql);
+	$stmt->bindValue(':id', $id);
+	$stmt->execute();
+}
+
+
 ?>
