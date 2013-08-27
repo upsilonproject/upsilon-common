@@ -367,7 +367,7 @@ function getServicesBad() {
 }
 
 function getServices($groupName) {
-	$sqlSubservices = 'SELECT DISTINCT m.id membershipId, md.actions AS metaActions, md.icon, md.alias, IF(md.acceptableDowntimeSla IS NULL, md.acceptableDowntime, sla.content) AS acceptableDowntime, s.id, s.lastUpdated, s.description, s.commandLine, s.output, s.karma, s.secondsRemaining, s.executable, s.goodCount, s.node, s.estimatedNextCheck FROM group_memberships m RIGHT JOIN services s ON m.service = s.identifier LEFT JOIN groups g ON m.`group` = g.name LEFT JOIN service_metadata md ON md.service = s.identifier LEFT JOIN acceptable_downtime_sla sla ON md.acceptableDowntimeSla = sla.id WHERE g.name = :groupName ORDER BY s.identifier';
+	$sqlSubservices = 'SELECT DISTINCT m.id membershipId, md.actions AS metaActions, md.icon, md.alias, IF(md.acceptableDowntimeSla IS NULL, md.acceptableDowntime, sla.content) AS acceptableDowntime, s.id, s.lastUpdated, s.description, s.commandLine, s.output, s.karma, s.secondsRemaining, s.executable, s.goodCount, s.node, s.estimatedNextCheck FROM service_group_memberships m RIGHT JOIN services s ON m.service = s.identifier LEFT JOIN service_groups g ON m.`group` = g.title LEFT JOIN service_metadata md ON md.service = s.identifier LEFT JOIN acceptable_downtime_sla sla ON md.acceptableDowntimeSla = sla.id WHERE g.title = :groupName ORDER BY s.identifier';
 	$stmt = DatabaseFactory::getInstance()->prepare($sqlSubservices);
 	$stmt->bindValue(':groupName', $groupName);
 	$stmt->execute();
@@ -419,18 +419,18 @@ function array2dFetchKey($array, $key) {
 
 function enrichGroups($listGroups, $subGroupDepth = 1) {
 	foreach ($listGroups as &$itemGroup) {
-		$itemGroup['listServices'] = getServices($itemGroup['name']);
+		$itemGroup['listServices'] = getServices($itemGroup['title']);
 
 		if ($subGroupDepth > 0) {
-				$sql = 'SELECT g.* FROM groups g WHERE g.parent = :name';
+				$sql = 'SELECT g.* FROM service_groups g WHERE g.parent = :name';
 				$stmt = DatabaseFactory::getInstance()->prepare($sql);
-				$stmt->bindValue(':name', $itemGroup['name']);
+				$stmt->bindValue(':name', $itemGroup['title']);
 				$stmt->execute();
 
 				$itemGroup['listSubgroups'] = array();
 
 				foreach ($stmt->fetchAll() as $itemSubgroup) {
-					$itemSubgroup['listServices'] = getServices($itemSubgroup['name']);
+					$itemSubgroup['listServices'] = getServices($itemSubgroup['title']);
 
 					$itemGroup['listSubgroups'][] = $itemSubgroup;
 				}
@@ -441,7 +441,7 @@ function enrichGroups($listGroups, $subGroupDepth = 1) {
 }
 
 function getGroups() {
-	$sql = 'SELECT g.* FROM groups g WHERE g.parent IS NULL or g.parent = "" ORDER BY g.name';
+	$sql = 'SELECT g.title AS name, g.* FROM service_groups g WHERE g.parent IS NULL or g.parent = "" ORDER BY g.title';
 	$stmt = DatabaseFactory::getInstance()->prepare($sql);
 	$stmt->execute();
 
@@ -452,7 +452,7 @@ function getGroups() {
 }
 
 function getGroup($id) {
-	$sql = 'SELECT g.* FROM groups g WHERE g.id = :id LIMIT 1';
+	$sql = 'SELECT g.* FROM service_groups g WHERE g.id = :id LIMIT 1';
 	$stmt = DatabaseFactory::getInstance()->prepare($sql);
 	$stmt->bindValue(':id', $id);
 	$stmt->execute();
@@ -640,7 +640,7 @@ function deleteServiceByIdentifier($identifier) {
 	$stmt->bindValue(':identifier', $identifier);
 	$stmt->execute();
 
-	$sql = 'DELETE FROM group_memberships WHERE service = :serviceIdentifier';
+	$sql = 'DELETE FROM service_group_memberships WHERE service = :serviceIdentifier';
 	$stmt = stmt($sql);
 	$stmt->bindValue(':serviceIdentifier', $identifier);
 	$stmt->execute();
@@ -670,7 +670,7 @@ function deleteWidgetInstance($id) {
 }
 
 function deleteGroupByName($name) {
-	$sql = 'DELETE FROM group_memberships WHERE `group` = :groupTitle';
+	$sql = 'DELETE FROM service_group_memberships WHERE `group` = :groupTitle';
 	$stmt = DatabaseFactory::getInstance()->prepare($sql);
 	$stmt->bindValue(':groupTitle', $name);
 	$stmt->execute();
@@ -693,5 +693,162 @@ function deleteDashboardById($id) {
 	$stmt->execute();
 }
 
+function getUsergroups() {
+	$sql = 'SELECT g.id, g.title FROM groups g ORDER BY g.title ASC';
+	$stmt = stmt($sql);
+	$stmt->execute();
+
+	return $stmt->fetchAll();
+}
+
+function getUserGroupById($id) {
+	$sql = 'SELECT g.id, g.title FROM groups g WHERE g.id = :id LIMIT 1';
+	$stmt = stmt($sql);
+	$stmt->bindValue(':id', $id);
+	$stmt->execute();
+
+	return $stmt->fetchRowNotNull();
+}
+
+function addUserToGroup($userId, $groupId) {
+	$sql = 'INSERT INTO group_memberships (`user`, `group`) VALUES (:user, :group)';
+	$stmt = stmt($sql);
+	$stmt->bindValue(':user', $userId);
+	$stmt->bindValue(':group', $groupId);
+	$stmt->execute();
+}
+
+function getUsersInGroupById($groupId) {
+	$sql = 'SELECT u.id AS userId, u.username FROM users u LEFT JOIN group_memberships m ON m.user = u.id WHERE m.`group` = :id ';
+	$stmt = stmt($sql);
+	$stmt->bindValue(':id', $groupId);
+	$stmt->execute();
+
+	return $stmt->fetchAll();
+}
+
+function deleteUserGroupMembership($user, $group) {
+	$sql = 'DELETE FROM group_memberships WHERE user = :user AND `group` = :group LIMIT 1';
+	$stmt = stmt($sql);
+	$stmt->bindValue(':user', $user);
+	$stmt->bindValue(':group', $group);
+	$stmt->execute();
+}
+
+function createUsergroup($title) {
+	$sql = 'INSERT INTO groups (`title`) VALUES (:title)';
+	$stmt = stmt($sql);
+	$stmt->bindValue(':title', $title);
+	$stmt->execute();
+
+	return insertId();
+}
+
+function deleteUsergroupById($id) {
+	$sql = 'DELETE FROM groups WHERE id = :id LIMIT 1';	
+	$stmt = stmt($sql);
+	$stmt->bindValue(':id', $id);
+	$stmt->execute();
+}
+
+function getServiceGroups() {
+	$sql = 'SELECT g.id, g.title, p.id AS parentId, p.title AS parentName FROM service_groups g LEFT JOIN service_groups p ON g.parent = p.title';
+	$stmt = DatabaseFactory::getInstance()->prepare($sql);
+	$stmt->execute();
+
+	return $stmt->fetchAll();
+}
+
+function createGroup($title) {
+	$sql = 'INSERT INTO service_groups (title) VALUES (:title)';
+	$stmt = DatabaseFactory::getInstance()->prepare($sql);
+	$stmt->bindValue('title', $title);
+	$stmt->execute();
+
+	return insertId();
+}
+
+function getRooms() {
+	$sql = 'SELECT r.id, r.filename, r.title FROM rooms r';
+	$stmt = DatabaseFactory::getInstance()->prepare($sql);
+	$stmt->bindValue(':id', Sanitizer::getInstance()->filterUint('id'));
+	$stmt->execute();
+}
+
+function getSlaById($id) {
+	$sql = 'SELECT s.content FROM acceptable_downtime_sla s WHERE s.id = :id';
+	$stmt = DatabaseFactory::getInstance()->prepare($sql);
+	$stmt->bindValue(':id', $id);
+	$stmt->execute();
+	$sla = $stmt->fetchRowNotNull();
+
+	return $sla;
+}
+
+function setSlaContent($id, $content) {
+	$sql = 'UPDATE acceptable_downtime_sla SET content = :content WHERE id = :id';
+	$stmt = DatabaseFactory::getInstance()->prepare($sql);
+	$stmt->bindValue(':content', $content);
+	$stmt->bindValue(':id', $id);
+	$stmt->execute();
+}
+
+function getServicesUngrouped() {
+	$sql = 'SELECT s.estimatedNextCheck, s.secondsRemaining, s.description, s.id FROM services s WHERE s.description NOT IN (SELECT s2.description FROM service_group_memberships m INNER JOIN services s2 ON m.service = s2.identifier)';
+	$stmt = DatabaseFactory::getInstance()->prepare($sql);
+	$stmt->execute();
+
+	$listServices = $stmt->fetchAll();
+
+	return $listServices;
+}
+
+function getMembershipsFromServiceIdentifier($identifier) {
+	$sql = 'SELECT m.id, m.`group`, g.id AS groupId, g.title AS groupName FROM service_group_memberships m INNER JOIN service_groups g ON m.group = g.title WHERE m.service = :service';
+	$stmt = DatabaseFactory::getInstance()->prepare($sql);
+	$stmt->bindValue(':service', $identifier);
+	$stmt->execute();
+
+	return $stmt->fetchAll();
+}
+
+function deleteServiceGroupMembershipById($id) {
+	$sql = 'DELETE FROM service_group_memberships WHERE id = :id';
+	$stmt = DatabaseFactory::getInstance()->prepare($sql);
+	$stmt->bindValue(':id', $id);
+	$stmt->execute();
+}
+
+function getServiceGroupMembershipById($id) {
+	$sql = 'SELECT m.*, s.id AS service FROM service_group_memberships m INNER JOIN services s ON m.service = s.identifier WHERE m.id = :id';
+	$stmt = DatabaseFactory::getInstance()->prepare($sql);
+	$stmt->bindValue(':id', $id);
+	$stmt->execute();
+
+	return $stmt->fetchRowNotNull();
+}
+
+function setGroupPermissions($id, array $perms) {
+	$sql = 'DELETE FROM privileges_g WHERE `group` = :id';
+	$stmt = stmt($sql);
+	$stmt->bindValue(':id', $id);
+	$stmt->execute();
+
+	foreach ($perms as $perm) {
+		$sql = 'SELECT p.id FROM permissions p WHERE p.`key` = :key LIMIT 1';
+		$stmt = stmt($sql);
+		$stmt->bindValue(':key', trim($perm));
+		$stmt->execute();
+
+		$permDb = $stmt->fetchRowNotNull();
+	
+		$sql = 'INSERT INTO privileges_g (`permission`, `group`) VALUES (:key, :group)';
+		$stmt = stmt($sql);
+		$stmt->bindValue(':key', $permDb['id']);
+		$stmt->bindValue(':group', $id);
+		$stmt->execute();
+
+	}
+}
 
 ?>

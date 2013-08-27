@@ -18,13 +18,7 @@ $links->add('deleteService.php?identifier=' . $service['identifier'], 'Delete');
 $title = 'View Service';
 require_once 'includes/widgets/header.php';
 
-
-$sql = 'SELECT m.id, m.`group`, g.id AS groupId, g.name AS groupName FROM group_memberships m INNER JOIN groups g ON m.group = g.name WHERE m.service = :service';
-$stmt = DatabaseFactory::getInstance()->prepare($sql);
-$stmt->bindValue(':service', $service['identifier']);
-$stmt->execute();
-
-$tpl->assign('listGroupMemberships', $stmt->fetchAll());
+$tpl->assign('listGroupMemberships', getMembershipsFromServiceIdentifier($service['identifier']));
 
 $sql = 'SELECT m.actions, m.metrics, m.defaultMetric, m.room, m.icon, m.* FROM service_metadata m WHERE m.service = :serviceIdentifier LIMIT 1';
 $stmt = DatabaseFactory::getInstance()->prepare($sql);

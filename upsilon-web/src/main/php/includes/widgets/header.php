@@ -68,6 +68,7 @@ if (Session::isLoggedIn()) {
 	$generalLinksPlus = linksCollection();
 	$generalLinksPlus->add('viewTasks.php', 'Tasks');
 	$generalLinksPlus->add('viewRoom.php?id=1', 'Rooms');
+	$generalLinksPlus->add('listUsergroups.php', 'Usergroups');
 	$generalLinksPlus->add('listUsers.php', 'Users');
 
 	$generalLinks->add('#', 'Other');
