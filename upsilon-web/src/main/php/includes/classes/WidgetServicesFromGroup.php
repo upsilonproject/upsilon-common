@@ -11,13 +11,17 @@ class WidgetServicesFromGroup extends Widget {
 	}
 
 	public function getTitle() {
-		$widgetTitle = $this->getArgumentValue('group');
-		$serviceTitle = $this->getArgumentValue('title');
+		$widgetTitle = $this->getArgumentValue('title');
+		$groupTitle = $this->getArgumentValue('group');
 
-		if (empty($serviceTitle) && empty($widgetTitle)) {
-			return parent::getTitle();
+		if (empty($widgetTitle)) {
+ 			if (empty($groupTitle)) {
+				return parent::getTitle();
+			} else {
+				return 'Group: ' . $groupTitle;
+			}
 		} else {
-			return 'Group: ' . $serviceTitle;
+			return $wigetTitle;
 		}
 	}
 
