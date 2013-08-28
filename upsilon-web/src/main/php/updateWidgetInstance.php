@@ -38,17 +38,17 @@ class FormUpdateWidgetInstance extends Form {
 	}
 
 	private function getWidgetInstance($id) {
-		$sql = 'SELECT wi.*, w.class FROM widget_instances wi LEFT JOIN widgets w ON wi.widget = w.id WHERE wi.id = :id';
+		$sql = 'SELECT wi.*, w.class, wi.dashboard FROM widget_instances wi LEFT JOIN widgets w ON wi.widget = w.id WHERE wi.id = :id';
 		$stmt = DatabaseFactory::getInstance()->prepare($sql);
 		$stmt->bindValue(':id', $id);
 		$stmt->execute();
 
-		$rowWidgetInstance = $stmt->fetchRowNotNull();
+		$this->rowWidgetInstance = $stmt->fetchRowNotNull();
 
-		include_once 'includes/classes/Widget' . $rowWidgetInstance['class'] . '.php';
-		$this->widgetInstance = 'Widget' . $rowWidgetInstance['class'];
+		include_once 'includes/classes/Widget' . $this->rowWidgetInstance['class'] . '.php';
+		$this->widgetInstance = 'Widget' . $this->rowWidgetInstance['class'];
 		$this->widgetInstance = new $this->widgetInstance();
-		$this->widgetInstance->loadArguments($rowWidgetInstance['id']);
+		$this->widgetInstance->loadArguments($this->rowWidgetInstance['id']);
 
 	}
 
@@ -74,7 +74,8 @@ class FormUpdateWidgetInstance extends Form {
 
 
 $fh = new FormHandler('FormUpdateWidgetInstance');
-$fh->setRedirect('viewDashboard.php');
+$fh->constructForm();
+$fh->setRedirect('viewDashboard.php?id=' . $fh->getForm()->rowWidgetInstance['dashboard']);
 $fh->handle();
 
 ?>

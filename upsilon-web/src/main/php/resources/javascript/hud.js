@@ -27,22 +27,20 @@ function rawPlot(plot, ctx) {
 }
 
 function labelDateAxis(date) {
-	require(["dojo/date/locale", "dojo/query"
-	], function(locale, query) {
-		locale.format
-	});
 	var d = new Date(date * 1000);
 
-	return d.getDay() + " " + d.getMonth();
+	return window.stamp.format(d, {formatLength: "short" });
 }
 
 function updateGraph(results) {
 	require([
 		"dojox/charting/Chart",
-		"dojo/date/stamp",
+		"dojo/date/locale",
 		"dojox/charting/plot2d/Lines",
 		"dojox/charting/axis2d/Default"
 	], function(Chart, stamp) {
+		window.stamp = stamp;
+
 		$('#graphService' + results.graphIndex).empty();
 
 		/*
@@ -50,14 +48,14 @@ function updateGraph(results) {
 		{colors: ["#cecece", '#cecece'] }
 		*/
 
-		var c = new Chart("graphService" + results.graphIndex);
+		var c = new Chart("graphService" + results.graphIndex, {title: "Metric: " + results.metric});
 		c.addPlot("default", {
 			type: "Lines",
 			markers: true
 		});
 
-		c.addAxis("x", {vertical: false });
-		c.addAxis("y", {vertical: true});
+		c.addAxis("x", {vertical: false, title: "Time", titleOrientation: "away", labelFunc: labelDateAxis });
+		c.addAxis("y", {vertical: true, title: "Metric", titleOrientation: "axis" });
 
 		$(results.services).each(function(index, service) {
 			axisData = []
