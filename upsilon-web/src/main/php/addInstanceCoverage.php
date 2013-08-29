@@ -1,7 +1,7 @@
 <?php
 
 $title = 'Add instance coverage';
-require_once 'includes/widgets/header.php';
+require_once 'includes/common.php';
 
 use \libAllure\Form;
 use \libAllure\Sanitizer;
@@ -94,7 +94,5 @@ $instId = Sanitizer::getInstance()->filterUint('instance');
 $fh = new FormHandler('FormUpdateInstanceCoverage');
 $fh->setRedirect('viewClassInstance.php?id=' . $instId);
 $fh->handle();
-
-require_once 'includes/widgets/footer.php';
 
 ?>
