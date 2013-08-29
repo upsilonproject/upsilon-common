@@ -2,7 +2,7 @@
 
 <html>
 <head>
-	<title>Upsilon</title>
+	<title>Upsilon &raquo; {$title|default:'Untitled page'}</title>
 
 
 	{if not $mobile}
