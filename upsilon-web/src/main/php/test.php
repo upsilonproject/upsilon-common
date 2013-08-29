@@ -1,15 +1,10 @@
 <?php
 
 require_once 'includes/widgets/header.php';
-?>
-<div data-dojo-type = "dijit/Menu">
-	Hello.
-	<div data-dojo-type = "dijit/MenuItem">foo</div>
-</div>
 
-
-
-<?php
+use \libAllure\Session;
+var_dump(Session::getUser()->getPrivs());
+var_dump(Session::getUser()->getUsergroups());
 
 require_once 'includes/widgets/footer.php';
 

@@ -133,6 +133,7 @@ foreach ($_REQUEST['services'] as $service) {
 header('Content-Type: application/json');
 echo json_encode(array(
 	'graphIndex' => $_REQUEST['graphIndex'],
+	'metric' => $field,
 	'services' => $metrics
 ));
 

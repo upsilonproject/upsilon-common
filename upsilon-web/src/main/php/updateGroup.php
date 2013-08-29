@@ -25,7 +25,7 @@ class FormUpdateGroup extends \libAllure\Form {
 	}
 	
 	private function getGroupSelectionElement() {
-		$sql = 'SELECT g.name FROM groups g ORDER BY g.name ASC';
+		$sql = 'SELECT g.name FROM service_groups g ORDER BY g.name ASC';
 		$stmt = DatabaseFactory::getInstance()->prepare($sql);
 		$stmt->execute();
 
@@ -46,7 +46,7 @@ class FormUpdateGroup extends \libAllure\Form {
 		$stmt->bindValue(':new_title', $this->getElementValue('title'));
 		$stmt->execute();
 		
-		$sql = 'UPDATE groups SET name = :title, parent = :parent WHERE id = :id';
+		$sql = 'UPDATE service_groups SET name = :title, parent = :parent WHERE id = :id';
 		$stmt = DatabaseFactory::getInstance()->prepare($sql);
 
 		$stmt->bindValue(':id', $this->itemGroup['id']);

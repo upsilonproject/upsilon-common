@@ -13,11 +13,7 @@ require_once 'includes/widgets/header.php';
 
 use \libAllure\DatabaseFactory;
 
-$sql = 'SELECT g.id, g.name AS title, p.id AS parentId, p.name AS parentName FROM groups g LEFT JOIN groups p ON g.parent = p.name';
-$stmt = DatabaseFactory::getInstance()->prepare($sql);
-$stmt->execute();
-
-$tpl->assign('listGroups', $stmt->fetchAll());
+$tpl->assign('listGroups', getServiceGroups());
 $tpl->display('listGroups.tpl');
 
 require_once 'includes/widgets/footer.php';

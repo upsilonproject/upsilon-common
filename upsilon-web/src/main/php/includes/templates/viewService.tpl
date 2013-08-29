@@ -66,7 +66,7 @@
 	{if !empty($metadata.metrics)}
 		<strong>Metric:</strong>
 		{foreach from = $metadata.metrics item = metric}
-			<a href = "#graphContainer" onclick = "javascript:fetchServiceMetricResultGraph('{$metric|trim}', {$itemService.id})">{$metric|trim}</a>&nbsp;&nbsp;&nbsp;&nbsp;
+			<a href = "#graphContainer" onclick = "javascript:fetchServiceMetricResultGraph('{$metric|trim}', [{$itemService.id}], 0)">{$metric|trim}</a>&nbsp;&nbsp;&nbsp;&nbsp;
 		{/foreach}
 	{/if}
 	</p>
@@ -76,26 +76,26 @@
 	<h4>Results</h4>
 
 {if $listResults|@count == 0}
-<p>No results stored in the results table.</p>
+	<p>No results stored in the results table.</p>
 {else}
-<table class = "hover dataTable" />
-	<thead>
-		<tr>
-			<th>Timestamp</th>
-			<th>Output</th>
-			<th>Karma</th>
-		</tr>
-	</thead>
+	<table class = "hover dataTable" />
+		<thead>
+			<tr>
+				<th>Timestamp</th>
+				<th>Output</th>
+				<th>Karma</th>
+			</tr>
+		</thead>
 
-	<tbody>
-		{foreach from = $listResults item = itemResult}
-		<tr>
-			<td>{$itemResult.checked} &nbsp;&nbsp;<span class = "metricOutput">{$itemResult.relative}</span></td>
-			<td><pre>{$itemResult.output|htmlspecialchars|wordwrap}</pre></td>
-			<td class = "{$itemResult.karma|strtolower}">{$itemResult.karma}</td>
-		</tr>
-		{/foreach}
-	</tbody>
-</table>
+		<tbody>
+			{foreach from = $listResults item = itemResult}
+			<tr>
+				<td>{$itemResult.checked} &nbsp;&nbsp;<span class = "metricOutput">{$itemResult.relative}</span></td>
+				<td><pre>{$itemResult.output|htmlspecialchars|wordwrap}</pre></td>
+				<td class = "{$itemResult.karma|strtolower}">{$itemResult.karma}</td>
+			</tr>
+			{/foreach}
+		</tbody>
+	</table>
 {/if}
 </div>
