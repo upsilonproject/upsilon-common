@@ -98,7 +98,7 @@ WHERE
    gm.`group` = gp.`group` AND
    gp.`group` = g.id AND
    gp.permission = p.id AND
-   u.id = "$username"
+   u.username = "$username"
 SQL;
 
 		$result = DatabaseFactory::getInstance()->query($sql);

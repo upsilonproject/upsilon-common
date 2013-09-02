@@ -2,9 +2,9 @@
 
 require_once 'includes/common.php';
 
-$sql = 'INSERT INTO dashboard (title) values ("Dasboard")';
-stmt($sql)->execute();;
+$sql = 'INSERT INTO dashboard (title) values ("Dashboard")';
+$stmt = stmt($sql)->execute();
 
-redirect('index.php');
+redirect('viewDashboard.php?id=' . db()->lastInsertId());
 
 ?>

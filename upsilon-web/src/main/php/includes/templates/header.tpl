@@ -2,7 +2,7 @@
 
 <html>
 <head>
-	<title>Upsilon</title>
+	<title>Upsilon &raquo; {$title|default:'Untitled page'}</title>
 
 
 	{if not $mobile}
@@ -16,7 +16,7 @@
 	{/if}
 	<link rel = "{if $isNighttime}stylesheet{/if}" type = "text/css" href = "resources/stylesheets/main-nighttime.css" title = "nighttime" />
 
-	<link rel = "shortcut icon" href = "resources/images/icons/logo96pxblackbg.png" title = "Shortcut icon" type = "image/png" />
+	<link rel = "shortcut icon" href = "resources/images/icons/logo96pxdarkbg.png" title = "Shortcut icon" type = "image/png" />
 
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 

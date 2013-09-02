@@ -1,12 +1,13 @@
 <?php
 
 $title = 'Create class instance';
-require_once 'includes/widgets/header.php';
+require_once 'includes/common.php';
 
 use \libAllure\Form;
 use \libAllure\ElementInput;
 use \libAllure\ElementSelect;
 use \libAllure\DatabaseFactory;
+use \libAllure\FormHandler;
 
 class FormCreateClassInstance extends Form {
 	public function __construct() {
@@ -47,16 +48,9 @@ class FormCreateClassInstance extends Form {
 	}
 }
 
-$f = new FormCreateClassInstance();
+$fh = new FormHandler('FormCreateClassInstance');
+$fh->setRedirect('listClasses.php');
+$fh->handle();
 
-if ($f->validate()) {
-	$f->process();
-
-	redirect('listClasses.php', 'Class created');
-}
-
-$tpl->displayForm($f);
-
-require_once 'includes/widgets/footer.php';
 
 ?>

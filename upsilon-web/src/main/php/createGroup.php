@@ -18,15 +18,12 @@ class FormCreateGroup extends Form {
 	}
 
 	public function process() {
-		$sql = 'INSERT INTO groups (name) VALUES (:title)';
-		$stmt = DatabaseFactory::getInstance()->prepare($sql);
-		$stmt->bindValue('title', $this->getElementValue('title'));
-		$stmt->execute();
+		createGroup($this->getElementValue('title'));
 	}
 }
 
 $fh = new FormHandler('FormCreateGroup');
-$fh->setRedirect('index.php');
+$fh->setRedirect('listGroups.php');
 $fh->handle();
 
 ?>

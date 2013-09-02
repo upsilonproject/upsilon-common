@@ -27,12 +27,12 @@ class FormAddMembership extends Form {
 	private function addElementGroupSelect() {
 		$el = new ElementSelect('group', 'Group');
 		
-		$sql = 'SELECT g.id, g.name FROM groups g';
+		$sql = 'SELECT g.id, g.title FROM service_groups g';
 		$stmt = DatabaseFactory::getInstance()->prepare($sql);
 		$stmt->execute();
 
 		foreach ($stmt->fetchAll() as $group) {
-			$el->addOption($group['name'], $group['name']);
+			$el->addOption($group['title'], $group['title']);
 		}
 
 		$this->addElement($el);
@@ -48,7 +48,7 @@ class FormAddMembership extends Form {
 	}
 
 	public function process() {
-		$sql = 'INSERT INTO group_memberships (`group`, service) VALUES (:group, :service)';
+		$sql = 'INSERT INTO service_group_memberships (`group`, service) VALUES (:group, :service)';
 		$stmt = DatabaseFactory::getInstance()->prepare($sql);
 		$stmt->bindValue(':group', $this->getElementValue('group'));
 		$stmt->bindValue(':service', $this->service['identifier']);

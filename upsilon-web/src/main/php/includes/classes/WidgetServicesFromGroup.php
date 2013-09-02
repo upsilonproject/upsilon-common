@@ -10,6 +10,21 @@ class WidgetServicesFromGroup extends Widget {
 		$this->arguments['group'] = null;
 	}
 
+	public function getTitle() {
+		$widgetTitle = $this->getArgumentValue('title');
+		$groupTitle = $this->getArgumentValue('group');
+
+		if (empty($widgetTitle)) {
+ 			if (empty($groupTitle)) {
+				return parent::getTitle();
+			} else {
+				return 'Group: ' . $groupTitle;
+			}
+		} else {
+			return $wigetTitle;
+		}
+	}
+
 	public function render() {
 		global $tpl;
 

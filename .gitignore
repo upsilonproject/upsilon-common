@@ -5,3 +5,4 @@ target/
 var/*.png
 **/config.php
 **/*.swp
+**/.directory

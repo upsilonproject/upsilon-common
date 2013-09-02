@@ -33,18 +33,10 @@ function loadUpdatePermissions(perms) {
 } 
 
 function reqUpdatePermissions() {
-	var req = {
-		url: "json/sessionPermissions",
-		handleAs: "json",
-		load: function (perms) {
-			loadUpdatePermissions(perms);
-		},
-		error: function (error) {
-			displayError(error);
-		}
-	}; 
-	
-	dojo.xhrGet(req);
+	var req = newJsonReq();
+	req.url = "json/sessionPermissions";
+	req.load = loadUpdatePermissions;
+	req.get();
 }
 
 function displayError(err) {
@@ -100,14 +92,10 @@ function loadListNodes(nodes) {
 }
 
 function mniNodesClicked() {
-	var req = {
-		url: "json/listNodes",
-		handleAs: "json",
-		load: loadListNodes,
-		error: displayError,
-	}
-	
-	dojo.xhrGet(req);
+	var req = newJsonReq();
+	req.url = "json/listNodes",
+	req.load = loadListNodes,
+	req.get();
 }
 
 function setupToolbar() {
@@ -171,6 +159,10 @@ function newJsonReq() {
 		handleAs: "json", 
 		error: displayError,
 		get: function() {
+			if (!this.url.endsWith(".php")) {
+				this.url += ".php";
+			}
+
 			dojo.xhrGet(this); 
 		} 
 	}
@@ -197,9 +189,9 @@ function renderWidgetProblemServices(widget, container) {
 }
 
 function renderWidgetNodes(widget, container) {
-	var req = { 
-		url: "json/listNodes",
-		load: function(nodes) {
+	var req = newJsonReq();
+	req.url = "json/listNodes",
+	req.load = function(nodes) {
 			nodeList = "<h2>Nodes</h2><ul class = 'metricList'>";
 			
 			dojo.forEach(nodes, function(node) { 
@@ -209,12 +201,10 @@ function renderWidgetNodes(widget, container) {
 			nodeList += "</ul>";
 			
 			container.set("content", nodeList);
-		},
-		error: displayError,
-		handleAs: "json"
-	}
+		};
 	
-	dojo.xhrGet(req);
+	
+	req.get();
 }
 
 function loadDashboard(dashboard) {
@@ -254,15 +244,11 @@ function loadDashboard(dashboard) {
 }
 
 function reqDashboard() {
-	var req = {
-		url: "json/getDashboard",
-		handleAs: "json",
-		content: { id: 1 }, 
-		load: loadDashboard,
-		error: displayError
-	}; 
-	
-	dojo.xhrGet(req);
+	var req = newJsonReq();
+	req.url = "json/getDashboard",
+	req.content = { id: 1 }, 
+	req.load = loadDashboard,
+	req.get();
 }
 
 function reqGetServices() {
