@@ -1,0 +1,68 @@
+#!/bin/python
+
+import re
+import argparse
+from lxml import etree
+from pynag.Parsers import config
+
+def getSingleAttribute(nag_el, choices):
+	for arg in choices:
+		if arg in nag_el:
+			return nag_el[arg]
+	return "?"
+
+def parseCommandLine(s):
+	s = re.sub(r"\$ARG(\d)\$", r"$ARG\1", s)
+	return s
+
+def parseServiceCheckCommand(s):
+	s = s.split("!")
+
+	ret = {}
+	ret['name'] = s[0];
+	ret['arguments'] = []
+
+	s.pop(0)
+
+	for arg in s:
+		ret['arguments'].append(arg)
+
+	return ret
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--nagiosConfig', '-nc', help = "Nagios configuration file to convert from", action = "append")
+args = parser.parse_args()
+
+nc = config()
+
+upsilon_config = etree.Element("config")
+
+for nagios_config_file in args.nagiosConfig:
+	for nag_el in nc.parse_file(nagios_config_file):
+		if "command_line" in nag_el:
+			up_el = etree.Element("command");
+			up_el.set("id", nag_el['command_name'])
+			up_el.set("exec", parseCommandLine(nag_el['command_line']))
+
+			upsilon_config.append(up_el);
+		
+		if "check_command" in nag_el:
+			up_el = etree.Element("service");
+			up_el.set("id", getSingleAttribute(nag_el, ['description', 'service_description']))
+
+			command = parseServiceCheckCommand(nag_el['check_command'])
+
+			up_el.set("commandRef", command['name'])
+
+			for arg in command['arguments']:
+				arg_el = etree.Element("argument")
+				arg_el.text = arg
+
+				up_el.append(arg_el)
+
+			upsilon_config.append(up_el);
+
+
+xmlString = etree.tostring(upsilon_config, pretty_print = True)
+
+print xmlString
