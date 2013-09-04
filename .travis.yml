@@ -18,3 +18,4 @@ env:
                 - "ARTIFACTS_AWS_REGION=ireland"
                 - "ARTIFACTS_S3_BUCKET=upsilonproject"
                 - secure: "GCuCIcK1Uh4r91ajXKAwn5pj1wtfqOtKBrqskfQgJ7E+2D8VWdbPhVbLjDzXmn/3rAz1EnD8IZCTKN+h+4+KmQH+rFeJEe6dHxX3/0Bp1adigFUHpQaIaG7IoV6ME+crikP9fF/Q1rNa8KK5R8UtEfYAWnE1ekHNJk0zQClcoz0="
+                - secure: "hPkMWBy0JI8i/MIsPJIvrE1aVcLo9xScWkX/gHZ6KqA2aRuOEA/5BKssEW2QvZiLbcF5C4G/OA/acGJtroFRM9+50XXlq1KTrKqa2PbmXFdzk6ys2GN1VVmrwSUg54yB2tcz2o76WoqfgPH1cpAbdPIzVsi7I8U1gBt6Y0t4nkg="
