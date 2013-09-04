@@ -2,10 +2,19 @@ language: java
 jdk: 
         - openjdk7
 before_script:
+        - "gem install travis-artifacts"
         - mysql -e 'create database upsilon;'
         - mysql upsilon < var/schema.sql
+after_script:
+        - "travis-artifacts upload --path upsilon-node/upsilon-deb/target/*.deb"
 branches:
         only:
                 - master
 notifications:
         email: false
+
+env:
+        global:
+                - "ARTIFACTS_AWS_REGION=ireland"
+                - "ARTIFACTS_S3_BUCKET=upsilonproject"
+                - secure: "GCuCIcK1Uh4r91ajXKAwn5pj1wtfqOtKBrqskfQgJ7E+2D8VWdbPhVbLjDzXmn/3rAz1EnD8IZCTKN+h+4+KmQH+rFeJEe6dHxX3/0Bp1adigFUHpQaIaG7IoV6ME+crikP9fF/Q1rNa8KK5R8UtEfYAWnE1ekHNJk0zQClcoz0="
