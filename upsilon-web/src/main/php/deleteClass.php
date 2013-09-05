@@ -9,4 +9,4 @@ $stmt->execute();
 
 redirect('listClasses.php');
 
-
+?>
