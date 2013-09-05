@@ -14,3 +14,5 @@ $stmt->bindValue(':requirement', $requirementId);
 $stmt->execute();
 
 redirect('listClasses.php');
+
+?>
