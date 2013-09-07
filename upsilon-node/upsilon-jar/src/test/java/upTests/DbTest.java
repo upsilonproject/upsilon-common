@@ -24,11 +24,11 @@ public class DbTest {
 	 
 	@BeforeClass
 	public static void setupDb() throws Exception {
-		String hostname = "localhost";
-		String username = "root";
-		String password = "";
+		String hostname = System.getProperty("TEST_DB_HOSTNAME", "localhost");
+		String username = System.getProperty("TEST_DB_USER", "root");
+		String password = System.getProperty("TEST_DB_PASS", "");
 		int port = 3306;   
-		String dbname = "upsilon";
+		String dbname = System.getProperty("TEST_DB_NAME", "upsilon");
 		 
 		db = new Database(hostname, username, password, port, dbname);		
 		db.connect(); 
