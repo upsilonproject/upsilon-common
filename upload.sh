@@ -20,8 +20,8 @@ files+=("upsilon-node/upsilon-rpm-fedora18/target/rpm/upsilon-node/RPMS/noarch/u
 files+=("upsilon-node/upsilon-rpm-generic/target/rpm/upsilon-node/RPMS/noarch/upsilon-node-${VERSION_NODE}-1.generic.noarch.rpm releases/rpm-generic/");
 files+=("upsilon-node/upsilon-rpm-rhel6/target/rpm/upsilon-node/RPMS/noarch/upsilon-node-${VERSION_NODE}-1.el6.noarch.rpm releases/rpm-rhel6/");
 
-files+=("upsilon-node/upsilon-deb/target/upsilon-node-${VERSION_NODE}.deb releases/deb/");
-files+=("upsilon-node/upsilon-tgz/target/upsilon-node-${VERSION_NODE}.tar.gz releases/tgz/");
+files+=("upsilon-node/upsilon-node-deb/target/upsilon-node-${VERSION_NODE}.deb releases/deb/");
+files+=("upsilon-node/upsilon-node-tgz/target/upsilon-node-${VERSION_NODE}.tar.gz releases/tgz/");
 
 for file in "${files[@]}"; do
 	src=`echo "$file" | awk '{print $1}'`

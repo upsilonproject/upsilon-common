@@ -18,9 +18,9 @@
   <packaging>pom</packaging>
   <modules>
     <module>upsilon-jar</module>
-    <module>upsilon-doc</module>
-    <module>upsilon-tgz</module>
-    <module>upsilon-deb</module>
+    <module>upsilon-node-doc</module>
+    <module>upsilon-node-tgz</module>
+    <module>upsilon-node-deb</module>
   </modules> 
 
   <profiles>
