@@ -5,6 +5,7 @@ import java.util.HashMap;
 import junit.framework.Assert;
  
 import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.theories.suppliers.TestedOn;
 
@@ -21,6 +22,11 @@ import static org.hamcrest.MatcherAssert.*;
 
 public class DbTest { 
 	private static Database db;
+
+	@Before 
+	public void setupConfiguration() {
+		Configuration.instance.clear();	
+	}
 	 
 	@BeforeClass
 	public static void setupDb() throws Exception {
