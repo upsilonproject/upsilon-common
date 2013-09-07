@@ -41,13 +41,13 @@ public abstract class ResourceResolver {
         File f;
 
         if (os.contains("Windows")) {
-            f = new File(System.getenv("PROGRAMDATA"), "/Upsilon");
+            f = new File(System.getenv("PROGRAMDATA"), "/upsilon-node/");
         } else if (os.contains("Linux")) {
             f = new File("/etc/upsilon-node/");
 
             if (!f.exists()) {
                 if (!f.mkdirs()) {
-                    f = new File(System.getenv("HOME") + "/.upsilon/");
+                    f = new File(System.getenv("HOME") + "/.upsilon-node/");
                 }
             }
         } else {
