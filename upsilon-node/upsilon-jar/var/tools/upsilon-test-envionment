@@ -22,8 +22,8 @@ def test(title, result):
 	print "Test:", title
 
 def findUpsilonDirectory():
-	if os.path.isdir("/usr/share/upsilon"):
-		return "/usr/share/upsilon"
+	if os.path.isdir("/usr/share/upsilon-node/"):
+		return "/usr/share/upsilon-node/"
 	
 	return ""
 
@@ -40,6 +40,9 @@ test("Upsilon directory exists", os.path.isdir(upsilonDirectory))
 test("Upsilon directory contains upsilon.jar", os.path.isfile(os.path.join(upsilonDirectory, "upsilon.jar")))
 test("Upsilon config dir exists", os.path.isdir(configDirectory))
 test("Upsilon config.xml exists", os.path.isfile(os.path.join(configDirectory, "config.xml")))
+
+test("Upsilon legacy share directory does not exist", not os.path.isdir("/usr/share/upsilon/"))
+test("Upsilon legacy conf directory does not exist", not os.path.isdir("/etc/upsilon/"))
 
 httpClient = httplib.HTTPSConnection("localhost:4000", timeout=2)
 

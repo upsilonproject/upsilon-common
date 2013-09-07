@@ -27,9 +27,9 @@
 	<profile>
 		<id>rpm</id>
 		<modules>
-			<module>upsilon-rpm-generic</module>
-			<module>upsilon-rpm-rhel6</module>
-			<module>upsilon-rpm-fedora18</module>
+			<module>upsilon-node-rpm-generic</module>
+			<module>upsilon-node-rpm-rhel6</module>
+			<module>upsilon-node-rpm-fedora18</module>
 		</modules>
 	</profile>
   </profiles>

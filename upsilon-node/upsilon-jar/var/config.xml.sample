@@ -1,6 +1,6 @@
 <!--
 This is an EXAMPLE configuration file. You can use it as a template to create 
-your own /etc/upsilon/config.xml. 
+your own /etc/upsilon-node/config.xml. 
 
 It requires that the check_ping command is installed in order to work. To find
 the package for your system please visit; 

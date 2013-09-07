@@ -11,10 +11,10 @@
 		<artifactId>upsilon-node</artifactId>
 		<version>2.0.0</version>
 	</parent>
-	<artifactId>upsilon-rpm-fedora18</artifactId>
+	<artifactId>upsilon-node-rpm-generic</artifactId>
 	<packaging>rpm</packaging>
 	<build>
-		<finalName>upsilon-node-${releaseVersion}-fedora</finalName>
+		<finalName>upsilon-node-${releaseVersion}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -26,7 +26,7 @@
 					<copyright>GPLv3</copyright>
 					<distribution>Fedora</distribution>
 					<version>${releaseVersion}</version>
-					<release>1.fc18</release>
+					<release>1.generic</release>
 					<changelogFile>changelog.txt</changelogFile>
 					<name>upsilon-node</name>
 					<summary>Upsilon is a distributed, flexible and extensible system monitoring application</summary>
@@ -34,16 +34,8 @@
 
 					<requires>
 						<require>java-1.7.0-openjdk</require>
-<!--
-						<require>logback</require>
-						<require>slf4j</require>
-						<require>jersey</require>
-						<require>jul-to-slf4j-stub</require>
-						<require>joda-time</require>
-						<require>jakarta-commons-httpclient</require>
-						<require>guava</require>
-!-->
 					</requires>
+
 					<mappings>
 						<mapping>
 							<directory>/usr/share/man/man1/</directory>
@@ -57,18 +49,13 @@
 
 						<mapping>
 							<username>upsilon</username>
-							<directory>/usr/share/upsilon/</directory>
+							<directory>/usr/share/upsilon-node/</directory>
 							<directoryIncluded>false</directoryIncluded>
 							<sources>
 								<source>
-									<location>../upsilon-jar/target/upsilon-${releaseVersion}.jar</location>
-									<destination>upsilon-${releaseVersion}.jar</destination>
+									<location>../upsilon-jar/target/upsilon-node-${releaseVersion}.jar</location>
+									<destination>upsilon-node-${releaseVersion}.jar</destination>
 								</source>
-								<source>
-									<location>../upsilon-jar/target/upsilon-${releaseVersion}-nodeps.jar</location>
-									<destination>upsilon-${releaseVersion}-nodeps.jar</destination>
-								</source>
-
 							</sources>
 						</mapping>
 						<mapping>
@@ -76,27 +63,20 @@
 							<directoryIncluded>false</directoryIncluded>
 							<dependency>
 								<includes>
-									<!--<include>mysql:mysql-connector-java</include>!-->
+									<include>mysql:mysql-connector-java</include>
+									<include>jmock:jmock</include>
 								</includes>
 							</dependency>
 						</mapping>
 						<mapping>
 							<username>upsilon</username>
-							<directory>/lib/systemd/system/</directory>
+							<directory>/etc/init.d/</directory>
 							<directoryIncluded>false</directoryIncluded>
+							<filemode>0755</filemode>
 							<sources>
 								<source>
-									<location>../upsilon-jar/var/upsilon-debug.service</location>
-								</source>
-							</sources>
-						</mapping>
-						<mapping>
-							<username>upsilon</username>
-							<directory>/lib/systemd/system/</directory>
-							<directoryIncluded>false</directoryIncluded>
-							<sources>
-								<source>
-									<location>../upsilon-jar/var/upsilon.service</location>
+									<location>../upsilon-jar/var/upsilon-rhel-init.sh</location>
+									<destination>upsilon-node</destination>
 								</source>
 							</sources>
 						</mapping>
@@ -132,18 +112,29 @@
 							<directoryIncluded>false</directoryIncluded>
 							<sources>
 								<source>
-									<location>../../var/upsilon-rpm-fedora18.repo</location>
-									<destination>upsilon-rpm.repo</destination>
+									<location>../../var/upsilon-rpm-generic.repo</location>
+									<destination>upsilon-node-rpm.repo</destination>
 								</source>
 							</sources>
 						</mapping>
 						<mapping>
 							<username>upsilon</username>
-							<directory>/usr/share/upsilon</directory>
+							<directory>/usr/share/upsilon-node/tools/</directory>
+							<filemode>0755</filemode>
+							<sources>
+								<source>
+									<location>../upsilon-jar/var/tools/</location>
+								</source>
+							</sources>
+						</mapping>
+
+						<mapping>
+							<username>upsilon</username>
+							<directory>/usr/share/upsilon-node/</directory>
 							<sources>
 								<softlinkSource>
-									<destination>upsilon.jar</destination>
-									<location>upsilon-${releaseVersion}.jar</location>
+									<destination>upsilon-node.jar</destination>
+									<location>upsilon-node-${releaseVersion}.jar</location>
 								</softlinkSource>
 							</sources>
 						</mapping>
@@ -162,22 +153,23 @@
 					</mappings>
 					<preinstallScriptlet>
 						<script><![CDATA[ 
-mkdir -p /usr/share/upsilon/home
-id -u upsilon &>/dev/null || useradd -r upsilon -m -d /usr/share/upsilon/home
+mkdir -p /usr/share/upsilon-node/home
+id -u upsilon &>/dev/null || useradd -r upsilon -m -d /usr/share/upsilon-node/home
 
 exit 0
 ]]></script>
 					</preinstallScriptlet>
 					<postinstallScriptlet>
 						<script><![CDATA[ 
-systemctl --system daemon-reload 
+chkconfig --add upsilon-node
 
 service rsyslog restart
 ]]></script>
 					</postinstallScriptlet>
 					<preremoveScriptlet>
 						<script><![CDATA[ 
-service upsilon stop
+service upsilon-node stop					
+chkconfig --del upsilon-node				
 ]]></script>
 					</preremoveScriptlet>
 				</configuration>

@@ -10,7 +10,7 @@
 
 	<chapter xml:id = "installation">
 		<para>Native packages are available for Fedora, RHEL, Debian and Ubuntu. A .tar.gz archive is also available and will work on most other platforms.</para>
-		<para>If you use a package for installation, you'll find <computeroutput>upsilon.jar</computeroutput> in <computeroutput>/usr/share/upsilon/</computeroutput> on most systems.</para>
+		<para>If you use a package for installation, you'll find <computeroutput>upsilon.jar</computeroutput> in <computeroutput>/usr/share/upsilon-node/</computeroutput> on most systems.</para>
 		<para>You can run Upsilon Node like this: <computeroutput>java -jar upsilon.jar</computeroutput></para>
 		<para>On Fedora and Ubuntu, systemd is used to run the service. Run <computeroutput>service upsilon restart</computeroutput></para>
 	</chapter>

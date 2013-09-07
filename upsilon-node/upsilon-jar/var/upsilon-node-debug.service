@@ -1,0 +1,16 @@
+[Unit]
+Description=upsilon-node-debug
+After=syslog.target network.target remote-fs.target nss-lookup.target
+
+[Service]
+User=upsilon
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=upsilon-node
+ExecStart=/usr/bin/java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=6066 -Djava.net.preferIPv4Stack=true -jar /usr/share/upsilon-node/upsilon.jar $OPTIONS
+
+# If you really need JMX, try this;
+#ExecStart=/usr/bin/java -Dcom.sun.management.jmxremote.port=6067 -Djava.net.preferIPv4Stack=true -jar /usr/share/upsilon-node/upsilon.jar $OPTIONS
+ 
+[Install]
+WantedBy=multi-user.target

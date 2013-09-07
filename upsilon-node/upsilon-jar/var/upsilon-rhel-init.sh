@@ -2,7 +2,7 @@
 #
 # upsilon-node        Startup script for upsilon-node.
 #
-# chkconfig: - 60 80
+# chkconfig: - 80 80
 # description: Upsilon is a distributed, flexible and extensible \
 # system monitoring application
 ### BEGIN INIT INFO
@@ -27,12 +27,12 @@ checkpid() {
 
 RETVAL=0
 prog=upsilon-node
-cmdline="/usr/bin/java -Djava.net.preferIPv4Stack=true -jar /usr/share/upsilon/upsilon.jar"
+cmdline="/usr/bin/java -Djava.net.preferIPv4Stack=true -jar /usr/share/upsilon-node/upsilon.jar"
 
 start() {
 	if [[ -z "$PID" ]]; then
 		echo -n "Upsilon is starting... "
-		nohup $cmdline | logger -t upsilon &
+		nohup $cmdline | logger -t upsilon-node &
 
 		checkpid
 

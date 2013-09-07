@@ -89,7 +89,7 @@
 		</dependency>
 	</dependencies>
 	<build>
-		<finalName>upsilon-${releaseVersion}-nodeps</finalName>
+		<finalName>upsilon-node-${releaseVersion}-nodeps</finalName>
 
 		<resources>
 			<resource>
@@ -134,7 +134,7 @@
 							<goal>shade</goal>
 						</goals>
 						<configuration>
-							<finalName>upsilon-${releaseVersion}</finalName>
+							<finalName>upsilon-node-${releaseVersion}</finalName>
 							<transformers>
 								<transformer
 									implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />

@@ -23,13 +23,22 @@
 						<deb>${project.basedir}/target/upsilon-node-${releaseVersion}.deb</deb>
   						<dataSet>
   							<data>
-  								<src>../upsilon-jar/target/upsilon-${releaseVersion}.jar</src>
+  								<src>../upsilon-jar/target/upsilon-node-${releaseVersion}.jar</src>
   								<type>file</type>
   								<mapper>
   									<type>perm</type>
-  									<prefix>/usr/share/upsilon</prefix>
+  									<prefix>/usr/share/upsilon-node/</prefix>
   								</mapper>
   							</data>
+
+							<data>
+								<src>../upsilon-jar/var/tools/</src>
+								<type>directory</type>
+								<mapper>
+									<type>perm</type>
+									<prefix>/usr/share/upsilon-node/tools/</prefix>
+								</mapper>
+							</data>
 							<data>
 								<src>../upsilon-jar/var/upsilon-debian-init.sh</src>
 								<dst>upsilon</dst>
@@ -66,8 +75,8 @@
 							</data>
 							<data>
 								<type>link</type>
-								<linkName>/usr/share/upsilon/upsilon.jar</linkName>
-								<linkTarget>/usr/share/upsilon/upsilon-${releaseVersion}.jar</linkTarget>
+								<linkName>/usr/share/upsilon-node/upsilon.jar</linkName>
+								<linkTarget>/usr/share/upsilon-node/upsilon-${releaseVersion}.jar</linkTarget>
 								<symlink>true</symlink>
 							</data>
   						</dataSet>

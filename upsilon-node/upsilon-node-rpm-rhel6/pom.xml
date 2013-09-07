@@ -11,7 +11,7 @@
 		<artifactId>upsilon-node</artifactId>
 		<version>2.0.0</version>
 	</parent>
-	<artifactId>upsilon-rpm-rhel6</artifactId>
+	<artifactId>upsilon-node-rpm-rhel6</artifactId>
 	<packaging>rpm</packaging>
 	<build>
 		<finalName>upsilon-node-${releaseVersion}-rhel6</finalName>
@@ -49,17 +49,17 @@
 
 						<mapping>
 							<username>upsilon</username>
-							<directory>/usr/share/upsilon/</directory>
+							<directory>/usr/share/upsilon-node/</directory>
 							<directoryIncluded>false</directoryIncluded>
 							<sources>
 								<source>
-									<location>../upsilon-jar/target/upsilon-${releaseVersion}.jar</location>
-									<destination>upsilon-${releaseVersion}.jar</destination>
+									<location>../upsilon-jar/target/upsilon-node-${releaseVersion}.jar</location>
+									<destination>upsilon-node-${releaseVersion}.jar</destination>
 								</source>
 							</sources>
 						</mapping>
 						<mapping>
-							<directory>/usr/share/upsilon</directory>
+							<directory>/usr/share/upsilon-node/</directory>
 							<directoryIncluded>false</directoryIncluded>
 							<dependency>
 								<includes>
@@ -113,17 +113,27 @@
 							<sources>
 								<source>
 									<location>../../var/upsilon-rpm-rhel6.repo</location>
-									<destination>upsilon-rpm.repo</destination>
+									<destination>upsilon-node-rpm.repo</destination>
 								</source>
 							</sources>
 						</mapping>
 						<mapping>
 							<username>upsilon</username>
-							<directory>/usr/share/upsilon</directory>
+							<directory>/usr/share/upsilon-node/tools/</directory>
+							<filemode>0755</filemode>
+							<sources>
+								<source>
+									<location>../upsilon-jar/var/tools/</location>
+								</source>
+							</sources>
+						</mapping>
+						<mapping>
+							<username>upsilon</username>
+							<directory>/usr/share/upsilon-node/</directory>
 							<sources>
 								<softlinkSource>
-									<destination>upsilon.jar</destination>
-									<location>upsilon-${releaseVersion}.jar</location>
+									<destination>upsilon-node.jar</destination>
+									<location>upsilon-node-${releaseVersion}.jar</location>
 								</softlinkSource>
 							</sources>
 						</mapping>
@@ -131,7 +141,7 @@
 							<configuration>noreplace</configuration>
 							<username>upsilon</username>
 							<groupname>upsilon</groupname>
-							<directory>/etc/upsilon</directory>
+							<directory>/etc/upsilon-node/</directory>
 							<directoryIncluded>false</directoryIncluded>
 							<sources>
 								<source>
@@ -143,8 +153,8 @@
 					</mappings>
 					<preinstallScriptlet>
 						<script><![CDATA[ 
-mkdir -p /usr/share/upsilon/home
-id -u upsilon &>/dev/null || useradd -r upsilon -m -d /usr/share/upsilon/home
+mkdir -p /usr/share/upsilon-node/home
+id -u upsilon &>/dev/null || useradd -r upsilon -m -d /usr/share/upsilon-node/home
 
 exit 0
 ]]></script>
