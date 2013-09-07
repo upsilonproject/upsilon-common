@@ -28,16 +28,16 @@ def findUpsilonDirectory():
 	return ""
 
 def findConfigDirectory():
-	if os.path.isdir("/etc/upsilon/"):
-		return "/etc/upsilon"
+	if os.path.isdir("/etc/upsilon-node/"):
+		return "/etc/upsilon/node/"
 
 	return ""
 
 upsilonDirectory = findUpsilonDirectory();
 configDirectory = findConfigDirectory()
 
-test("Upsilon directory exists", os.path.isdir(upsilonDirectory))
-test("Upsilon directory contains upsilon.jar", os.path.isfile(os.path.join(upsilonDirectory, "upsilon.jar")))
+test("Upsilon share directory exists", os.path.isdir(upsilonDirectory))
+test("Upsilon share directory contains upsilon.jar", os.path.isfile(os.path.join(upsilonDirectory, "upsilon.jar")))
 test("Upsilon config dir exists", os.path.isdir(configDirectory))
 test("Upsilon config.xml exists", os.path.isfile(os.path.join(configDirectory, "config.xml")))
 

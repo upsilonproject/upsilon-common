@@ -18,7 +18,7 @@
 	<chapter xml:id = "c2">
 		<title>Configuration</title>
 
-		<para>Upsilon uses a XML configuration file, which is normally stored in /etc/upsilon.</para>
+		<para>Upsilon uses a XML configuration file, which is normally stored in /etc/upsilon-node/.</para>
 
 		<para>The XSD for this configuration file is at: http://upsilon-project.co.uk/files/upsilon.xsd</para>
 

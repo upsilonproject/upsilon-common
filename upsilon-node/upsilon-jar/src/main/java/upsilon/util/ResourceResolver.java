@@ -43,7 +43,7 @@ public abstract class ResourceResolver {
         if (os.contains("Windows")) {
             f = new File(System.getenv("PROGRAMDATA"), "/Upsilon");
         } else if (os.contains("Linux")) {
-            f = new File("/etc/upsilon/");
+            f = new File("/etc/upsilon-node/");
 
             if (!f.exists()) {
                 if (!f.mkdirs()) {

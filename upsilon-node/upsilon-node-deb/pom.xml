@@ -70,7 +70,7 @@
 								<type>file</type>
 								<mapper>
 									<type>perm</type>
-									<prefix>/etc/upsilon/</prefix>
+									<prefix>/etc/upsilon-node/</prefix>
 								</mapper>
 							</data>
 							<data>

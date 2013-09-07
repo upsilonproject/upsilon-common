@@ -59,12 +59,10 @@ public class Main implements UncaughtExceptionHandler {
  
 	public static void main(final String[] args) throws Exception {		
 		if (args.length > 0) {
-			Main.configurationOverridePath = new File(args[0]); 
-			Main.xmlLoader.setUrl(new UPath(Main.configurationOverridePath, "config.xml"));
-		} else {
-			Main.xmlLoader.setUrl(new UPath("/etc/upsilon/config.xml"));
-		}  
+			Main.configurationOverridePath = new File(args[0]);
+		}
 
+		Main.xmlLoader.setUrl(new UPath(ResourceResolver.getInstance().getConfigDir(), "config.xml"));
 		Main.instance.startup();
 	}
 
