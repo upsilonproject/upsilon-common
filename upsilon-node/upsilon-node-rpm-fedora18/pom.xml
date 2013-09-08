@@ -161,7 +161,7 @@
 							<configuration>noreplace</configuration>
 							<username>upsilon</username>
 							<groupname>upsilon</groupname>
-							<directory>/etc/upsilon</directory>
+							<directory>/etc/upsilon-node/</directory>
 							<directoryIncluded>false</directoryIncluded>
 							<sources>
 								<source>

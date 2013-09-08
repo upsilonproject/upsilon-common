@@ -7,7 +7,7 @@ User=upsilon
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=upsilon-node
-ExecStart=/usr/bin/java -Djava.net.preferIPv4Stack=true -jar /usr/share/upsilon-node/upsilon.jar $OPTIONS
+ExecStart=/usr/bin/java -Djava.net.preferIPv4Stack=true -jar /usr/share/upsilon-node/upsilon-node.jar $OPTIONS
 
 [Install]  
 WantedBy=multi-user.target

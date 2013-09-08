@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/python
 
 import httplib
 from lxml import etree
@@ -14,9 +14,13 @@ def bool2string(string, txt_true = "True", txt_false = "False"):
 parser = argparse.ArgumentParser();
 parser.add_argument('--address', '-a', help = "Hostname or IP address of upsilon-node", default = "localhost")
 parser.add_argument('--port', '-p', help = "Port", default = 4000)
+parser.add_argument('--ssl', action = "store_true")
 args = parser.parse_args();
 
-httpClient = httplib.HTTPSConnection(args.address + ":" + str(args.port), timeout=2)
+if args.ssl:
+	httpClient = httplib.HTTPSConnection(args.address + ":" + str(args.port), timeout=2)
+else:
+	httpClient = httplib.HTTPConnection(args.address + ":" + str(args.port), timeout=2)
 
 req = httpClient.request("GET", "/internalStatus");
 res = httpClient.getresponse()

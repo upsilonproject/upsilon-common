@@ -1,9 +1,18 @@
-#!/bin/python
+#!/usr/bin/python
 
 import os
 import httplib
+import subprocess
+from subprocess import call
+import argparse
 
 print "This script certifies an installation of upsilon. "
+
+parser = argparse.ArgumentParser();
+parser.add_argument('--address', '-a', help = "Hostname or IP address of upsilon-node", default = "localhost")
+parser.add_argument('--port', '-p', help = "Port", default = 4000)
+parser.add_argument('--ssl', action = "store_true")
+args = parser.parse_args();
 
 testsRun = 0
 testsPassed = 0
@@ -29,22 +38,29 @@ def findUpsilonDirectory():
 
 def findConfigDirectory():
 	if os.path.isdir("/etc/upsilon-node/"):
-		return "/etc/upsilon/node/"
+		return "/etc/upsilon-node/"
 
 	return ""
+
+def callret(cmd):
+	devnull = open("/dev/null", "wb")
+	return call(cmd, stderr=devnull, stdout=devnull, shell=True)
 
 upsilonDirectory = findUpsilonDirectory();
 configDirectory = findConfigDirectory()
 
 test("Upsilon share directory exists", os.path.isdir(upsilonDirectory))
-test("Upsilon share directory contains upsilon.jar", os.path.isfile(os.path.join(upsilonDirectory, "upsilon.jar")))
+test("Upsilon share directory contains upsilon-node.jar", os.path.isfile(os.path.join(upsilonDirectory, "upsilon-node.jar")))
 test("Upsilon config dir exists", os.path.isdir(configDirectory))
 test("Upsilon config.xml exists", os.path.isfile(os.path.join(configDirectory, "config.xml")))
 
 test("Upsilon legacy share directory does not exist", not os.path.isdir("/usr/share/upsilon/"))
 test("Upsilon legacy conf directory does not exist", not os.path.isdir("/etc/upsilon/"))
 
-httpClient = httplib.HTTPSConnection("localhost:4000", timeout=2)
+if args.ssl:
+	httpClient = httplib.HTTPSConnection(args.address + ":" + str(args.port), timeout=2)
+else:
+	httpClient = httplib.HTTPConnection(args.address + ":" + str(args.port), timeout=2)
 
 req = httpClient.request("GET", "/");
 res = httpClient.getresponse()
@@ -57,5 +73,12 @@ res = httpClient.getresponse()
 
 test("Got /internalStatus", res.status == 200)
 test("Got some content", len(res.read()) > 100);
+
+test("bash manpage exists", callret("man bash") == 0)
+test("upsilon-node manpage exists", callret("man upsilon-node") == 0)
+test("upsilon manpage does not exist", callret("man upsilon") != 0)
+
+test("log exists", os.path.isfile("/var/log/upsilon-node.log"))
+test("log is not empty", os.path.getsize("/var/log/upsilon-node.log"))
 
 print "Tests run:", testsRun, " Passed:", testsPassed, " Failed:", testsRun - testsPassed
