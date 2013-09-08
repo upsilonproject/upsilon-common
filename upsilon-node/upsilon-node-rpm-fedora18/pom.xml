@@ -111,7 +111,6 @@
 								</source>
 							</sources>
 						</mapping>
-
 						<mapping>
 							<configuration>noreplace</configuration>
 							<username>upsilon</username>
@@ -166,6 +165,10 @@
 							<sources>
 								<source>
 									<location>../upsilon-jar/var/config.xml.sample</location>
+								</source>
+								<source>
+									<location>../upsilon-jar/var/logging.syslog.xml</location>
+									<destination>logging.xml</destination>
 								</source>
 							</sources>
 						</mapping>

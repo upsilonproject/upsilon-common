@@ -59,6 +59,15 @@
 								</mapper>
 							</data>
 							<data>
+								<src>../upsilon-jar/var/logging.syslog.xml</src>
+								<dst>logging.xml</dst>
+								<type>file</type>
+								<mapper>
+									<type>perm</type>
+									<prefix>/etc/upsilon-node/</prefix>
+								</mapper>
+							</data>
+							<data>
 								<src>../upsilon-jar/var/upsilon.syslog.conf</src>
 								<type>file</type>
 								<mapper>
@@ -85,7 +94,7 @@
 							<data>
 								<type>link</type>
 								<linkName>/usr/share/upsilon-node/upsilon-node.jar</linkName>
-								<linkTarget>/usr/share/upsilon-node/upsilon-node-${releaseVersion}.jar</linkTarget>
+								<linkTarget>upsilon-node-${releaseVersion}.jar</linkTarget>
 								<symlink>true</symlink>
 							</data>
   						</dataSet>
