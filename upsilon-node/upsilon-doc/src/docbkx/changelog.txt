@@ -1,2 +1,0 @@
-* Sat Jan 26 2013 James Read <contact@jwread.com>
-- Changelog started

@@ -1,6 +1,6 @@
 <!--
 This is an EXAMPLE configuration file. You can use it as a template to create 
-your own /etc/upsilon/config.xml. 
+your own /etc/upsilon-node/config.xml. 
 
 It requires that the check_ping command is installed in order to work. To find
 the package for your system please visit; 
@@ -25,7 +25,15 @@ http://upsilon-project.co.uk/site/index.php/Upsilon-node
 	!-->
     </system>
 
-    <command id = "checkPing" exec = "/usr/lib64/nagios/plugins/check_ping -H $ARG1 -w 75,10% -c 125,10% -p 3" />
+    <!--
+    The nagios ping command is defined here to save you some time, if you have 
+    it installed on your system. The two example services defined in this file
+    use the standard system `ping` to make it quicker to get up and running,
+    but consider using the nagios ping command in the future, it is far better.
+    !-->
+    <command id = "checkPingNagios" exec = "/usr/lib64/nagios/plugins/check_ping -H $ARG1 -w 75,10% -c 125,10% -p 3" />
+
+    <command id = "checkPing" exec = "/bin/ping -c 1 $ARG1 -W 2" />
 
     <service id = "pingGoogle" commandRef = "checkPing">
         <argument>google.com</argument>

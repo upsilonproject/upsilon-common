@@ -1,0 +1,235 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<version>1.0.3</version>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<parent>
+		<groupId>upsilon</groupId>
+		<artifactId>upsilon-node</artifactId>
+		<version>2.0.0</version>
+	</parent>
+	<artifactId>upsilon-node-rpm-fedora18</artifactId>
+	<packaging>rpm</packaging>
+	<build>
+		<finalName>upsilon-node-${releaseVersion}-fedora</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>rpm-maven-plugin</artifactId>
+				<version>2.1-alpha-2</version>
+				<extensions>true</extensions>
+				<configuration>
+					<group>Applications/System</group>
+					<copyright>GPLv3</copyright>
+					<distribution>Fedora</distribution>
+					<version>${releaseVersion}</version>
+					<release>1.fc18</release>
+					<changelogFile>changelog.txt</changelogFile>
+					<name>upsilon-node</name>
+					<summary>Upsilon is a distributed, flexible and extensible system monitoring application</summary>
+					<description>A distributed, flexible and extensible system monitoring application.</description>
+
+					<requires>
+						<require>java-1.7.0-openjdk</require>
+<!--
+						<require>logback</require>
+						<require>slf4j</require>
+						<require>jersey</require>
+						<require>jul-to-slf4j-stub</require>
+						<require>joda-time</require>
+						<require>jakarta-commons-httpclient</require>
+						<require>guava</require>
+!-->
+					</requires>
+					<mappings>
+						<mapping>
+							<directory>/usr/share/man/man1/</directory>
+							<directoryIncluded>false</directoryIncluded>
+							<sources>
+								<source>
+									<location>../var/manpage/upsilon-node.1.gz</location>
+								</source>
+							</sources>
+						</mapping>
+
+						<mapping>
+							<username>upsilon</username>
+							<directory>/usr/share/upsilon-node/</directory>
+							<directoryIncluded>false</directoryIncluded>
+							<sources>
+								<source>
+									<location>../upsilon-jar/target/upsilon-node-${releaseVersion}.jar</location>
+									<destination>upsilon-node-${releaseVersion}.jar</destination>
+								</source>
+								<source>
+									<location>../upsilon-jar/target/upsilon-node-${releaseVersion}-nodeps.jar</location>
+									<destination>upsilon-node-${releaseVersion}-nodeps.jar</destination>
+								</source>
+
+							</sources>
+						</mapping>
+						<mapping>
+							<directory>/usr/share/upsilon-node/</directory>
+							<directoryIncluded>false</directoryIncluded>
+							<dependency>
+								<includes>
+									<!--<include>mysql:mysql-connector-java</include>!-->
+								</includes>
+							</dependency>
+						</mapping>
+						<mapping>
+							<username>upsilon</username>
+							<directory>/lib/systemd/system/</directory>
+							<directoryIncluded>false</directoryIncluded>
+							<sources>
+								<source>
+									<location>../upsilon-jar/var/upsilon-node-debug.service</location>
+								</source>
+							</sources>
+						</mapping>
+						<mapping>
+							<username>upsilon</username>
+							<directory>/lib/systemd/system/</directory>
+							<directoryIncluded>false</directoryIncluded>
+							<sources>
+								<source>
+									<location>../upsilon-jar/var/upsilon-node.service</location>
+								</source>
+							</sources>
+						</mapping>
+						<mapping>
+							<configuration>noreplace</configuration>
+							<username>upsilon</username>
+							<directory>/etc/rsyslog.d/</directory>
+							<directoryIncluded>false</directoryIncluded>
+							<sources>
+								<source>
+									<location>../upsilon-jar/var/upsilon.syslog.conf</location>
+								</source>
+							</sources>
+						</mapping>
+						<mapping>
+							<configuration>noreplace</configuration>
+							<username>upsilon</username>
+							<directory>/etc/logrotate.d/</directory>
+							<directoryIncluded>false</directoryIncluded>
+							<sources>
+								<source>
+									<location>../upsilon-jar/var/upsilon-node.logrotate</location>
+									<destination>upsilon-node</destination>
+								</source>
+							</sources>
+						</mapping>
+
+						<mapping>
+							<configuration>noreplace</configuration>
+							<username>upsilon</username>
+							<directory>/etc/yum.repos.d/</directory>
+							<directoryIncluded>false</directoryIncluded>
+							<sources>
+								<source>
+									<location>../../var/upsilon-rpm-fedora18.repo</location>
+									<destination>upsilon-node-rpm.repo</destination>
+								</source>
+							</sources>
+						</mapping>
+						<mapping>
+							<username>upsilon</username>
+							<directory>/usr/share/upsilon-node/tools/</directory>
+							<filemode>0755</filemode>
+							<sources>
+								<source>
+									<location>../upsilon-jar/var/tools/</location>
+								</source>
+							</sources>
+						</mapping>
+						<mapping>
+							<username>upsilon</username>
+							<directory>/usr/share/upsilon-node/</directory>
+							<sources>
+								<softlinkSource>
+									<destination>upsilon-node.jar</destination>
+									<location>upsilon-node-${releaseVersion}.jar</location>
+								</softlinkSource>
+							</sources>
+						</mapping>
+						<mapping>
+							<configuration>noreplace</configuration>
+							<username>upsilon</username>
+							<groupname>upsilon</groupname>
+							<directory>/etc/upsilon-node/</directory>
+							<directoryIncluded>false</directoryIncluded>
+							<sources>
+								<source>
+									<location>../upsilon-jar/var/config.xml.sample</location>
+								</source>
+								<source>
+									<location>../upsilon-jar/var/logging.syslog.xml</location>
+									<destination>logging.xml</destination>
+								</source>
+							</sources>
+						</mapping>
+					</mappings>
+					<preinstallScriptlet>
+						<script><![CDATA[ 
+mkdir -p /usr/share/upsilon-node/home
+id -u upsilon &>/dev/null || useradd -r upsilon -m -d /usr/share/upsilon-node/home
+
+exit 0
+]]></script>
+					</preinstallScriptlet>
+					<postinstallScriptlet>
+						<script><![CDATA[ 
+systemctl --system daemon-reload 
+
+service rsyslog restart
+]]></script>
+					</postinstallScriptlet>
+					<preremoveScriptlet>
+						<script><![CDATA[ 
+service upsilon-node stop
+]]></script>
+					</preremoveScriptlet>
+				</configuration>
+			</plugin>
+		</plugins>
+
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.codehaus.mojo</groupId>
+										<artifactId>
+											rpm-maven-plugin
+										</artifactId>
+										<versionRange>
+											[2.1-alpha-2,)
+										</versionRange>
+										<goals>
+											<goal>version</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>

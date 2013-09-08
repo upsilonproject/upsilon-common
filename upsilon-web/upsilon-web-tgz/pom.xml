@@ -23,6 +23,7 @@
 					<descriptor>src/assembly/tgz.xml</descriptor>
 					<finalName>upsilon-web-${releaseVersion}</finalName>
 					<appendAssemblyId>false</appendAssemblyId>
+					<tarLongFileMode>gnu</tarLongFileMode>
 				</configuration>
 				<executions>
 					<execution>

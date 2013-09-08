@@ -1,0 +1,43 @@
+#!/usr/bin/python
+
+import httplib
+from lxml import etree
+from prettytable import PrettyTable
+import argparse
+
+def bool2string(string, txt_true = "True", txt_false = "False"):
+	if string.lower() in ["yes", "true", "1"]:
+		return txt_true
+	else:
+		return txt_false
+
+parser = argparse.ArgumentParser();
+parser.add_argument('--address', '-a', help = "Hostname or IP address of upsilon-node", default = "localhost")
+parser.add_argument('--port', '-p', help = "Port", default = 4000)
+parser.add_argument('--ssl', action = "store_true")
+args = parser.parse_args();
+
+if args.ssl:
+	httpClient = httplib.HTTPSConnection(args.address + ":" + str(args.port), timeout=2)
+else:
+	httpClient = httplib.HTTPConnection(args.address + ":" + str(args.port), timeout=2)
+
+req = httpClient.request("GET", "/internalStatus");
+res = httpClient.getresponse()
+
+assert res.status == 200
+
+resp = res.read()
+
+assert len(resp) > 0
+
+xml = etree.XML(resp)
+
+internalStatus = PrettyTable(["Property", "Status"])
+internalStatus.add_row(["Encryption", bool2string(xml.xpath("//crypto/text()")[0], "Enabled", "Disabled")])
+internalStatus.add_row(["Start time", xml.xpath("//startTime/text()")[0]])
+internalStatus.add_row(["PID", xml.xpath("//pid/text()")[0]])
+internalStatus.add_row(["Java VM", xml.xpath("//vm/text()")[0]])
+internalStatus.add_row(["Java Classpath", xml.xpath("//classpath/text()")[0]])
+
+print internalStatus

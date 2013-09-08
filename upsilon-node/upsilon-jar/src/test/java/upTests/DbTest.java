@@ -5,6 +5,7 @@ import java.util.HashMap;
 import junit.framework.Assert;
  
 import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.theories.suppliers.TestedOn;
 
@@ -21,14 +22,19 @@ import static org.hamcrest.MatcherAssert.*;
 
 public class DbTest { 
 	private static Database db;
+
+	@Before 
+	public void setupConfiguration() {
+		Configuration.instance.clear();	
+	}
 	 
 	@BeforeClass
 	public static void setupDb() throws Exception {
-		String hostname = "localhost";
-		String username = "root";
-		String password = "";
+		String hostname = System.getProperty("TEST_DB_HOSTNAME", "localhost");
+		String username = System.getProperty("TEST_DB_USER", "root");
+		String password = System.getProperty("TEST_DB_PASS", "");
 		int port = 3306;   
-		String dbname = "upsilon";
+		String dbname = System.getProperty("TEST_DB_NAME", "upsilon");
 		 
 		db = new Database(hostname, username, password, port, dbname);		
 		db.connect(); 

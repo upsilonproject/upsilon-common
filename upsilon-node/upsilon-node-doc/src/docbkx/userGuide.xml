@@ -1,0 +1,69 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<book xml:id="simple_book" xmlns="http://docbook.org/ns/docbook" version="5.0">
+	<title>Upsilon Node - User Guide</title>
+
+	<chapter xml:id = "c1">
+		<title>Introduction</title>
+
+		<para>A paragraph about Upsilon.</para>
+	</chapter>
+
+	<chapter xml:id = "installation">
+		<para>Native packages are available for Fedora, RHEL, Debian and Ubuntu. A .tar.gz archive is also available and will work on most other platforms.</para>
+		<para>If you use a package for installation, you'll find <computeroutput>upsilon.jar</computeroutput> in <computeroutput>/usr/share/upsilon-node/</computeroutput> on most systems.</para>
+		<para>You can run Upsilon Node like this: <computeroutput>java -jar upsilon.jar</computeroutput></para>
+		<para>On Fedora and Ubuntu, systemd is used to run the service. Run <computeroutput>service upsilon restart</computeroutput></para>
+	</chapter>
+
+	<chapter xml:id = "c2">
+		<title>Configuration</title>
+
+		<para>Upsilon uses a XML configuration file, which is normally stored in /etc/upsilon-node/.</para>
+
+		<para>The XSD for this configuration file is at: http://upsilon-project.co.uk/files/upsilon.xsd</para>
+
+		<para>An example configuration file looks like this:</para>
+
+		<programlisting>
+<![CDATA[
+<config>
+	<system crypto = "false" />
+
+	<command id = "checkHostname" exec = "/bin/hostname" />
+
+	<service id = "localHostname" commandRef = "checkHostname" />
+</config>
+]]>
+		</programlisting>
+
+<sect1>
+		<title>Syntax</title>
+		
+		<sect2>
+				<title>Element: <computeroutput>command</computeroutput></title>
+				<para>The command element describes an executable command on the local system.</para>
+
+				<sect3>
+						<title>Attributes for <computeroutput>command</computeroutput></title>
+						<itemizedlist>
+							<listitem><computeroutput>id</computeroutput> A unique ID for this command.</listitem>
+							<listitem><computeroutput>exec</computeroutput> The command to execute.</listitem>
+						</itemizedlist>
+				</sect3>
+		</sect2>
+
+		<sect2>
+				<title>Element: <computeroutput>service</computeroutput></title>
+				<para>An instance of a command.</para>
+
+				<sect3>
+						<title>Attributes for <computeroutput>service</computeroutput></title>
+						<itemizedlist>
+							<listitem><computeroutput>id</computeroutput> A unique ID for this service.</listitem>
+							<listitem><computeroutput>commandRef</computeroutput> A reference to a command id.</listitem>
+						</itemizedlist>
+				</sect3>
+		</sect2>
+</sect1>
+	</chapter>
+</book>

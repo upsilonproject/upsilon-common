@@ -26,6 +26,8 @@ public class ProcessExecutorTest {
 	public void testUnicodeInOutput() throws Exception {
 		final StructureCommand cmd = new StructureCommand();
 		cmd.setCommandLine("src/test/resources/executionTestScripts/testMbStrings.py");
+
+		LOG.debug("testUnicodeInOutput");
 		
 		final StructureService dummyService = new StructureService();
 		dummyService.setIdentifier("Dummy Service"); 
@@ -35,13 +37,16 @@ public class ProcessExecutorTest {
 		RobustProcessExecutor rpe = new RobustProcessExecutor(dummyService);
 		rpe.execAsync();
 		 
-		Thread.sleep(1000); // FIXME
+		Thread.sleep(1500); // FIXME This is really stupid.
+
+		String expected = "\u5f15\u8d77\u7684\u6216";
+		LOG.debug("Service unicodeInOutput: karma: " + dummyService.getKarmaString() + ". Output: " + dummyService.getOutput() + ". Expected: " + expected);
 		  
 		Assert.assertEquals("GOOD", dummyService.getKarmaString());
 		
 		String execHostnameOutput = dummyService.getOutput();
 		    
-		Assert.assertEquals("\u5f15\u8d77\u7684\u6216", execHostnameOutput);
+		Assert.assertEquals(expected, execHostnameOutput);
 	} 
 	
 	@Test

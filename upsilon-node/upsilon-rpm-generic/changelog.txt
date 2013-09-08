@@ -1,2 +1,0 @@
-* Tue Aug 20 2013 James Read <contact@jwread.com> 0.116.0-1.generic
-- Records started.

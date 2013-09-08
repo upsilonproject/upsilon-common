@@ -37,3 +37,5 @@ abstract class Browser {
 		return 0;
 	}
 }
+
+?>
