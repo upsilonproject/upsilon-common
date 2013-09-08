@@ -472,9 +472,6 @@ div.loginFormContainer {
 
 .graph {
 	min-height: 150px;
-	border: 1px solid black;
-	margin-left: -2px;
-	background-color: white;
 }
 
 .gridxMain { 

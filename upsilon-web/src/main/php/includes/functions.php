@@ -205,6 +205,16 @@ function isMobile() {
 	return false;
 }
 
+function isJsonSubResultsValid($results) {
+	foreach ($results as $result) {
+		if (!is_array($result)) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
 function parseOutputJson(&$service) {
 	$pat = '#<json>(.+)</json>#ims';
 
@@ -218,9 +228,9 @@ function parseOutputJson(&$service) {
 		//$service['output'] = $service['output']; 
 		$json = json_decode($matches[1], true);
 
-		if (!empty($json['subresults'])) {
+		if (!empty($json['subresults']) && isJsonSubResultsValid($json['subresults'])) {
 			$service['listSubresults'] = $json['subresults'];
-
+				
 			foreach ($service['listSubresults'] as $key => $result) {
 				if (!isset($result['karma'])) {
 					$service['listSubresults'][$key]['karma'] = $service['karma'];
@@ -580,9 +590,11 @@ function isApiPage() {
 	return strpos($_SERVER['PHP_SELF'], 'json');
 }
 
-function denyApiAccess() {
+function denyApiAccess($message = 'API Access Forbidden. Did you authenticate?') {
 	header('HTTP/1.0 403 Forbidden');
-	outputJson("API Access Forbidden. Did you authenticate?");
+	header('Content-Type: application/json');
+
+	outputJson($message);
 }
 
 function validateAcceptableDowntime($el) {
@@ -644,8 +656,6 @@ function deleteServiceByIdentifier($identifier) {
 	$stmt = stmt($sql);
 	$stmt->bindValue(':serviceIdentifier', $identifier);
 	$stmt->execute();
-
-
 }
 
 
@@ -850,5 +860,82 @@ function setGroupPermissions($id, array $perms) {
 
 	}
 }
+
+function getSingleServiceMetric($service, $field) {
+	$pat = '#<json>(.+)</json>#ims';
+
+	if ($field == 'karma') {
+			$metric = new stdClass;
+			$metric->date = $service['date'];
+			$metric->karma = $service['karma'];
+			$metric->value = karmaToInt($service['karma']);
+
+			return $metric;
+		}
+
+		$res = preg_match($pat, $service['output'], $matches);
+
+		if ($res) {
+			$ret = preg_replace($pat, null, $service['output']);
+
+			$json = json_decode($matches[1]);
+
+			if ($field == 'count') {
+				$metric = new stdClass;
+				$metric->date = $service['date'];
+				$metric->karma = $service['karma'];
+				$metric->value = count($json);
+
+				return $metric;
+			}
+
+			if (!empty($json->metrics)) {
+				foreach ($json->metrics as $metric) {
+					if ($metric->name == $field) {
+						$metric->value = $metric->value;
+					} else {
+						return;
+					}
+			
+					$metric->date = $service['date'];
+					$metric->karma = $service['karma'];
+
+					return $metric;
+				}
+			}
+		} else {
+			$metric = extractNagiosMetric($service, $field);
+/*
+			$metric = new stdClass;
+			$metric->date = $service['date'];
+			$metric->karma = $service['karma'];
+			$metric->value = '[NO OUTPUT]';
+*/
+			return $metric;
+		}
+
+}
+
+function getServiceMetrics($results, $field) {
+	$matches = array();
+	$metrics = array();
+
+	foreach ($results as $service) {
+		$metric = getSingleServiceMetric($service, $field);
+
+		if (!empty($metric)) {
+			$metrics[] = $metric;
+		}
+	}
+	
+
+	foreach ($metrics as &$metric) {
+		$metric->date = strtotime($metric->date);
+	}
+
+	return $metrics;
+}
+
+
 
 ?>

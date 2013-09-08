@@ -2,14 +2,6 @@ function onLoad() {
 	showFormLogin();
 }
 
-function createDashboardWidget() {
-require([
-	"dojo/dom-construct", 
-	"dojo/_base/window"
-], function(domConstruct, win) {
-	var node = domConstruct.create("div", {style: { backgroundColor: "red" }}, win.body());
-});}
-
 function main() {
 	require([
 		"dojo/request",
@@ -20,9 +12,11 @@ function main() {
 }
  
 function applyPermissionsToToolbar(permissions) {
-	require(["dijit/registry"], function(registry){
-		registry.byId("mniDashboard").set("disabled", !permissions.viewDashboard);
-		registry.byId("mniServices").set("disabled", !permissions.viewServices);
+	require([
+		"dijit/registry"
+	], function(_registry){
+		_registry.byId("mniDashboard").set("disabled", !permissions.viewDashboard);
+		_registry.byId("mniServices").set("disabled", !permissions.viewServices);
 	});
 } 
 
@@ -40,12 +34,12 @@ function reqUpdatePermissions() {
 }
 
 function displayError(err) {
-	window.alert(err);
+	window.alert("General Error: " + err);
 } 
 
 function initGridNodes() {
 	require([
-	    "gridx/Grid",
+		"gridx/Grid",
 		"dojo/store/Memory",
 		"gridx/core/model/cache/Sync",
 		"gridx/modules/VirtualVScroller"
@@ -98,6 +92,13 @@ function mniNodesClicked() {
 	req.get();
 }
 
+function mniLogoutClicked() {
+	req = newJsonReq();
+	req.url = "json/logout";
+	req.load = loadLogout;
+	req.get();
+}
+
 function setupToolbar() {
 	require([
 		"dijit/MenuBar",
@@ -108,6 +109,7 @@ function setupToolbar() {
 		mainToolbar.addChild(new MenuBarItem({id: "mniDashboard", label: "Dashboard", onClick: mniDashboardClicked }));
 		mainToolbar.addChild(new MenuBarItem({id: "mniNodes", label: "Nodes", onClick: mniNodesClicked})); 
 		mainToolbar.addChild(new MenuBarItem({id: "mniServices", label: "Services", onClick: mniServicesClicked }));
+		mainToolbar.addChild(new MenuBarItem({id: "mniLogout", label: "Logout", onClick: mniLogoutClicked }));
 
 		mainToolbar.placeAt("wrapper");
 		mainToolbar.startup();  
@@ -126,11 +128,17 @@ function mniDashboardClicked() {
 	reqDashboard(1);
 }
 
-function loadLogin(res) {
+function loadLogout() {
 	setupHeader();
 	setupToolbar();
-	setupWindowMenu();
-	createDashboardWidget();
+
+	reqUpdatePermissions();
+}
+
+function loadLogin(res, a, b, c) {
+	console.log(res, a, b, c);
+	setupHeader();
+	setupToolbar();
 
 	reqUpdatePermissions();
 }
@@ -143,6 +151,10 @@ function showFormLogin() {
 	});
 }
 
+function errorLogin() {
+	window.alert("hiihi");
+}
+
 function reqLogin(username, password) {
 	var req = newJsonReq();
 	req.url = "json/authenticate";
@@ -151,6 +163,7 @@ function reqLogin(username, password) {
 		password: password,
 	};
 	req.load = loadLogin;
+	req.error = errorLogin;
 	req.get();
 }
 
@@ -170,8 +183,12 @@ function newJsonReq() {
 
 function renderWidgetEvents() {}
 function renderWidgetTasks() {}
-function renderWidgetGraphMetrics() {}
+function renderWidgetGraphMetrics(widget) {
+	console.log(widget);
+}
 function renderWidgetListMetrics() {}
+function renderWidgetListSubresults() {}
+function renderWidgetServicesFromGroup() {}
 
 function renderWidgetProblemServices(widget, container) {
 	var req = newJsonReq();
@@ -262,7 +279,37 @@ function reqGetServices() {
 	dojo.xhrGet(req);
 }
 
-function mniServicesClicked() {}
+function serviceGroupsModel() {
+	getItem = function () {
+		console.log("yoo");
+	}
+}
+
+function mniServicesClicked() {
+	require([
+		"dijit/Tree",
+		"dojo/store/JsonRest",
+		"dijit/tree/ObjectStoreModel",
+		"dojo/store/Memory"
+	], function(Tree, JsonRestStore, ObjectStoreModel, Memory) {
+		st = new JsonRestStore({
+			target: "/foo"
+		});
+
+		st = new Memory({
+			data: []
+		});
+
+		tree = new Tree({
+			store: new ObjectStoreModel({ store: st}),
+			query: { id: 0 },
+			labelAttr: "foo", 
+		});
+
+		tree.placeAt("wrapper");
+		tree.startup();
+	});
+}
 
 function setTitle(newTitle) {
 	require(["dijit/registry"], function(registry){
@@ -287,22 +334,3 @@ function setupHeader() {
 	});
 }
 
-function setupWindowMenu() {
-	require([
-		"dijit/Menu",
-		"dijit/MenuItem",
-		"dijit/MenuSeparator",
-		"dijit/PopupMenuItem",
-		"dojo/domReady!"
-	], function(Menu, MenuItem, CheckedMenuItem, MenuSeparator, PopupMenuItem){
-		var menu = new Menu({
-			contextMenuForWindow: true
-		});
-
-		menu.addChild(new MenuItem({
-			label: "Hi",
-		}));
-
-		menu.startup();
-	});
-}

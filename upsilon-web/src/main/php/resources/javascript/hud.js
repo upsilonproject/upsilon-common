@@ -28,17 +28,18 @@ function rawPlot(plot, ctx) {
 
 function labelDateAxis(date) {
 	var d = new Date(date * 1000);
-
-	return window.stamp.format(d, {formatLength: "short" });
+	
+	return window.stamp.format(d, {selector:"date", datePattern: "H:m" });
 }
 
 function updateGraph(results) {
 	require([
 		"dojox/charting/Chart",
+		"dojox/charting/themes/Claro",
 		"dojo/date/locale",
 		"dojox/charting/plot2d/Lines",
 		"dojox/charting/axis2d/Default"
-	], function(Chart, stamp) {
+	], function(Chart, theme, stamp) {
 		window.stamp = stamp;
 
 		$('#graphService' + results.graphIndex).empty();
@@ -48,14 +49,19 @@ function updateGraph(results) {
 		{colors: ["#cecece", '#cecece'] }
 		*/
 
-		var c = new Chart("graphService" + results.graphIndex, {title: "Metric: " + results.metric});
+		var c = new Chart("graphService" + results.graphIndex, {
+			title: "Metric: " + results.metric,
+			titleFont: "sans-serif",
+			axisFont: "sans-serif",
+		});
+		c.setTheme(theme);
 		c.addPlot("default", {
 			type: "Lines",
-			markers: true
+			markers: true,
 		});
 
-		c.addAxis("x", {vertical: false, title: "Time", titleOrientation: "away", labelFunc: labelDateAxis });
-		c.addAxis("y", {vertical: true, title: "Metric", titleOrientation: "axis" });
+		c.addAxis("x", {vertical: false, titleOrientation: "away", font: "sans-serif", labelFunc: labelDateAxis });
+		c.addAxis("y", {vertical: true, titleOrientation: "axis", font: "sans-serif" });
 
 		$(results.services).each(function(index, service) {
 			axisData = []

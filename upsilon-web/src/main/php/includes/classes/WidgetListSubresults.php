@@ -5,12 +5,12 @@ require_once 'includes/classes/Widget.php';
 use \libAllure\ElementNumeric;
 use \libAllure\ElementCheckbox;
 
-class WidgetListMetrics extends Widget {
+class WidgetListSubresults extends Widget {
 	public function __construct() {
 		parent::__construct();
 		$this->arguments['service'] = null;
 		$this->arguments['serviceDetail'] = null;
-		$this->arguments['metricsTitle'] = null;
+		$this->arguments['subresultsTitle'] = null;
 	}
 
 	public function init() {
@@ -32,8 +32,8 @@ class WidgetListMetrics extends Widget {
 		} else {
 			$tpl->assign('service', $this->service);
 			$tpl->assign('serviceDetail', $this->getArgumentValue('serviceDetail'));
-			$tpl->assign('metricsTitle', $this->getArgumentValue('metricsTitle'));
-			$tpl->display('widgetListMetrics.tpl');
+			$tpl->assign('subresultsTitle', $this->getArgumentValue('subresultsTitle'));
+			$tpl->display('widgetListSubresults.tpl');
 		}
 	}
 
@@ -44,10 +44,14 @@ class WidgetListMetrics extends Widget {
 		default:
 			return parent::getArgumentFormElement($name);
 		}
+	}
 
-		$metric = getSingleServiceMetric($this->service, ['karma']);
-
-		return !empty($this->service['metrics']);
+	public function isShown() {
+		if ($this->service == null) {
+			return true;
+		} else {
+			return !empty($this->service['listSubresults']);
+		}
 	}
 }
 

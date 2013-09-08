@@ -27,7 +27,7 @@
 {if !empty($hiddenWidgets)}
 <h3>Hidden Widgets</h3>
 {foreach from = $hiddenWidgets item = itemWidget}
-	{$itemWidget.instance->getTitle()}. 
+	<a href = "updateWidgetInstance.php?id={$itemWidget.id}">{$itemWidget.instance->getTitle()}</a> (<a href = "deleteWidgetInstance.php?id={$itemWidget.id}">X</a>) . 
 {/foreach}
 {/if}
 

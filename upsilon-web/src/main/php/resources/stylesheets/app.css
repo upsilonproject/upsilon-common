@@ -6,8 +6,13 @@
 
 .claro .dijitDialogTitleBar {
 	background-color: #444;
+	background-image: none;
 	font-weight: bold;
 	border-style: none;
+}
+
+.claro .dijitDialog {
+	border: 0;
 }
 
 .claro .dijitDialogTitle {
@@ -17,10 +22,37 @@
 .gridxSortNode {
 }
 
-.gridxHeaderRowInner table {
-	background-color: #dee3e7;
+.gridxHeaderRowInner .gridxCell {
+	background-color: #666;
+	color: white;
+	font-weight: bold;
+}
+
+.gridxHeaderRowInner .gridxCell:hover {
+	background-color: black !important;
+}
+
+div.gridx {
+	height: 100%:
+}
+
+div.gridx * {
+	border: 0 !important;
+}
+
+.gridxHeaderRowInner tr td:hover { 
+	background-color: yellow;
 }
 
 .claro .gridxRowOdd .gridxRowTable {
 	background-color: #efefef;
+}
+
+.claro .gridxRowTable:hover .gridxCell {
+	background-color: beige !important;
+	background-image: none !important;
+}
+
+.claro .dijitDialogPaneContent {
+	height: 100%;
 }
