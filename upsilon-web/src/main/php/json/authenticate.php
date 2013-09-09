@@ -18,7 +18,7 @@ try {
 
 	outputJson("logged in");
 } catch (Exception $e) {
-	outputJson('Exception. ' . get_class($e) . ' = ' . $e->getMessage());
+	denyApiAccess(outputJson('Exception. ' . get_class($e) . ' = ' . $e->getMessage()));
 }
 
 ?>
