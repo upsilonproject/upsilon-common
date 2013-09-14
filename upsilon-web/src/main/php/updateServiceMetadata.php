@@ -68,7 +68,7 @@ class FormUpdateMetadata extends Form {
 		$this->addElement(new ElementHtml('desc', 'Desc', '<p>Sometimes, you need to change the the result of a service check to display differently to the actual check result.</p>'));
 		$this->addElement($this->getCastElement('critical', $this->metadata['criticalCast']));
 		$this->addElement($this->getCastElement('good', $this->metadata['goodCast']));
-		$this->addElement($this->getElementSelectSla($this->metadata['acceptableDowntimeSla']));
+		$this->addElement($this->getElementSelectMaintPeriod($this->metadata['acceptableDowntimeSla']));
 		$this->addElement(new ElementTextbox('acceptableDowntime', 'Acceptable downtime', $this->metadata['acceptableDowntime']));
 
 		$this->addSection('Physical');
@@ -87,17 +87,15 @@ class FormUpdateMetadata extends Form {
 		validateAcceptableDowntime($this->getElement('acceptableDowntime'));
 	}
 
-	private function getElementSelectSla($existing) {
-		$el = new ElementSelect('acceptableDowntimeSla', 'Acceptable Downtime SLA');
+	private function getElementSelectMaintPeriod($existing) {
+		$el = new ElementSelect('acceptableDowntimeSla', 'Maint Period');
 		$el->addOption('(none)', null);
 
 		$sql = 'SELECT s.id, s.title FROM acceptable_downtime_sla s';
 		$stmt = DatabaseFactory::getInstance()->prepare($sql);
 		$stmt->execute();
 
-		$listSla = $stmt->fetchAll();
-
-		foreach ($listSla as $sla) {
+		foreach ($stmt->fetchAll() as $sla) {
 			$el->addOption($sla['title'], $sla['id']);
 		}
 

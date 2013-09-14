@@ -1,5 +1,4 @@
 {if !empty($itemGroup.listServices) || !empty($itemGroup.listSubgroups)}
-
 <div class = "metricGroup block" {if $hidden}style = "display: none"{/if}>
 	<h3>{if $drawNavigation}<a href = "viewGroup.php?id={$itemGroup.id}">{/if}{$itemGroup.title}{if $drawNavigation}</a>{/if}</h3>
 

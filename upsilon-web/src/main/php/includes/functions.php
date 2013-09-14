@@ -429,7 +429,7 @@ function array2dFetchKey($array, $key) {
 
 function enrichGroups($listGroups, $subGroupDepth = 1) {
 	foreach ($listGroups as &$itemGroup) {
-		$itemGroup['listServices'] = getServices($itemGroup['title']);
+		$itemGroup['listServices'] = getServices($itemGroup['id']);
 
 		if ($subGroupDepth > 0) {
 				$sql = 'SELECT g.* FROM service_groups g WHERE g.parent = :name';
@@ -785,8 +785,8 @@ function getRooms() {
 	$stmt->execute();
 }
 
-function getSlaById($id) {
-	$sql = 'SELECT s.content FROM acceptable_downtime_sla s WHERE s.id = :id';
+function getMaintPeriodById($id) {
+	$sql = 'SELECT s.content, s.title FROM acceptable_downtime_sla s WHERE s.id = :id';
 	$stmt = DatabaseFactory::getInstance()->prepare($sql);
 	$stmt->bindValue(':id', $id);
 	$stmt->execute();
@@ -795,10 +795,23 @@ function getSlaById($id) {
 	return $sla;
 }
 
-function setSlaContent($id, $content) {
-	$sql = 'UPDATE acceptable_downtime_sla SET content = :content WHERE id = :id';
+function deleteMaintPeriodById($id) {
+	$sql = 'DELETE FROM acceptable_downtime_sla WHERE id = :id';
+	$stmt = stmt($sql);
+	$stmt->bindValue(':id', $id);
+	$stmt->execute();
+
+	$sql = 'UPDATE service_metadata SET acceptableDowntimeSla = NULL WHERE acceptableDowntimeSla = :id';
+	$stmt = stmt($sql);
+	$stmt->bindValue(':id', $id);
+	$stmt->execute();
+}
+
+function setMaintPeriodContent($id, $content, $title) {
+	$sql = 'UPDATE acceptable_downtime_sla SET content = :content, title = :title WHERE id = :id';
 	$stmt = DatabaseFactory::getInstance()->prepare($sql);
 	$stmt->bindValue(':content', $content);
+	$stmt->bindValue(':title', $title);
 	$stmt->bindValue(':id', $id);
 	$stmt->execute();
 }

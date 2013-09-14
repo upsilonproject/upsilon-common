@@ -2,16 +2,23 @@
 
 require_once 'includes/common.php';
 
+$id = san()->filterUint('id');
+
+$links = linksCollection();
+$links->add('deleteMaintPeriod.php?id=' . $id, 'Delete');
+
 use \libAllure\Form;
 use \libAllure\DatabaseFactory;
 use \libAllure\ElementTextbox;
 use \libAllure\FormHandler;
+use \libAllure\ElementInput;
 	
-class FormUpdateSla extends Form {
+class FormUpdateMaintPeriod extends Form {
 	public function __construct($id) {
 		$this->addElementReadOnly('ID', $id, 'id');
 
-		$sla = getSlaById($id);
+		$sla = getMaintPeriodById($id);
+		$this->addElement(new ElementInput('title', 'Title', $sla['title']));
 		$this->addElement(new ElementTextbox('content', 'Content', $sla['content'], 'Current Week:' . date('W')));
 
 		$this->addDefaultButtons();
@@ -22,13 +29,13 @@ class FormUpdateSla extends Form {
 	}
 
 	public function process() {
-		setSlaContent($this->getElementValue('id'), $this->getElementValue('content'));
-		redirect('listSlas.php');
+		setMaintPeriodContent($this->getElementValue('id'), $this->getElementValue('content'), $this->getElementValue('title'));
+		redirect('listMaintPeriods.php');
 	}
 }
 
-$fh = new FormHandler('FormUpdateSla');
-$fh->setConstructorArgument(0, san()->filterUint('id'));
+$fh = new FormHandler('FormUpdateMaintPeriod');
+$fh->setConstructorArgument(0, $id);
 $fh->handle();
 
 ?>
