@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.5.32, for Linux (x86_64)
+-- MySQL dump 10.14  Distrib 5.5.31-MariaDB, for Linux (x86_64)
 --
 -- Host: localhost    Database: upsilon
 -- ------------------------------------------------------
--- Server version	5.5.32
+-- Server version	5.5.31-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -136,9 +136,9 @@ DROP TABLE IF EXISTS `dashboard`;
 CREATE TABLE `dashboard` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(32) DEFAULT NULL,
-  `servicesGrouped` tinyint(4) DEFAULT 0,
+  `servicesGrouped` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -223,7 +223,7 @@ CREATE TABLE `permissions` (
   `key` varchar(32) DEFAULT NULL,
   `description` longtext,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -319,6 +319,41 @@ CREATE TABLE `service_check_results` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `service_group_memberships`
+--
+
+DROP TABLE IF EXISTS `service_group_memberships`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `service_group_memberships` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `group` varchar(128) DEFAULT NULL,
+  `service` varchar(128) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `group` (`group`,`service`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `service_groups`
+--
+
+DROP TABLE IF EXISTS `service_groups`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `service_groups` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `description` varchar(255) NOT NULL,
+  `title` varchar(128) DEFAULT NULL,
+  `name` varchar(128) DEFAULT NULL,
+  `parent` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`title`),
+  UNIQUE KEY `name_UNIQUE` (`name`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `service_metadata`
 --
 
@@ -386,6 +421,25 @@ CREATE TABLE `settings` (
   `value` longtext,
   PRIMARY KEY (`key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `srevice_groups`
+--
+
+DROP TABLE IF EXISTS `srevice_groups`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `srevice_groups` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `description` varchar(255) NOT NULL,
+  `title` varchar(128) DEFAULT NULL,
+  `name` varchar(128) DEFAULT NULL,
+  `parent` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`title`),
+  UNIQUE KEY `name_UNIQUE` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -500,4 +554,4 @@ CREATE TABLE `widgets` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-08-18 17:44:18
+-- Dump completed on 2013-09-14 19:11:30
