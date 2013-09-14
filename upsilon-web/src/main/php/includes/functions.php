@@ -656,6 +656,11 @@ function deleteServiceByIdentifier($identifier) {
 	$stmt = stmt($sql);
 	$stmt->bindValue(':serviceIdentifier', $identifier);
 	$stmt->execute();
+
+	$sql = 'DELETE FROM service_check_results WHERE service = :serviceIdentifier';
+	$stmt = stmt($sql);
+	$stmt->bindValue(':serviceIdentifier', $identifier);
+	$stmt->execute();
 }
 
 
