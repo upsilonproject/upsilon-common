@@ -17,7 +17,7 @@ class FormUpdateGroup extends \libAllure\Form {
 		$this->itemGroup = getGroup($id);
 
 		$this->addElementReadOnly('ID', $id, 'id');
-		$this->addElement(new ElementInput('title', 'Title', $this->itemGroup['name']));
+		$this->addElement(new ElementInput('title', 'Title', $this->itemGroup['title']));
 		$this->addElement($this->getGroupSelectionElement());
 		$this->getElement('parent')->setValue($this->itemGroup['parent']);
 
@@ -25,7 +25,7 @@ class FormUpdateGroup extends \libAllure\Form {
 	}
 	
 	private function getGroupSelectionElement() {
-		$sql = 'SELECT g.name FROM service_groups g ORDER BY g.name ASC';
+		$sql = 'SELECT g.title FROM service_groups g ORDER BY g.title ASC';
 		$stmt = DatabaseFactory::getInstance()->prepare($sql);
 		$stmt->execute();
 
@@ -33,20 +33,20 @@ class FormUpdateGroup extends \libAllure\Form {
 		$el->addOption('None', '');
 
 		foreach ($stmt->fetchAll() as $itemGroup) {
-			$el->addOption($itemGroup['name'], $itemGroup['name']);
+			$el->addOption($itemGroup['title'], $itemGroup['title']);
 		}
 
 		return $el;
 	}
 	
 	public function process() {
-		$sql = 'UPDATE group_memberships SET `group` = :new_title WHERE `group` = :title ';
+		$sql = 'UPDATE service_group_memberships SET `group` = :new_title WHERE `group` = :title ';
 		$stmt = stmt($sql);
-		$stmt->bindValue(':title', $this->itemGroup['name']);
+		$stmt->bindValue(':title', $this->itemGroup['title']);
 		$stmt->bindValue(':new_title', $this->getElementValue('title'));
 		$stmt->execute();
 		
-		$sql = 'UPDATE service_groups SET name = :title, parent = :parent WHERE id = :id';
+		$sql = 'UPDATE service_groups SET title = :title, parent = :parent WHERE id = :id';
 		$stmt = DatabaseFactory::getInstance()->prepare($sql);
 
 		$stmt->bindValue(':id', $this->itemGroup['id']);

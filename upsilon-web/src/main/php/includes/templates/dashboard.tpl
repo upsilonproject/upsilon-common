@@ -11,11 +11,13 @@
 		{foreach from = $listInstances item = widget}
 			{if $widget.instance->isShown()}
 			<div class = "block">
-				<h3>{$widget.instance->getTitle()|default:'Untitled Widget'}</h3>
+				<h3 data-dojo-type = "dijit/form/DropDownButton">
+					<span>{$widget.instance->getTitle()|default:'Untitled Widget'}</span>
 
-				{if $drawNavigation}
-					{include file = "links.tpl" links = $widget.instance->getLinks() skipTitle = true}
-				{/if}
+					{if $drawNavigation}
+						{include file = "links.tpl" links = $widget.instance->getLinks() skipTitle = true sub = true}
+					{/if}
+				</h3>
 
 				{$widget.instance->render()}
 			</div>

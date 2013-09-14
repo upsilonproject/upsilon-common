@@ -37,7 +37,7 @@ function updateGraph(results) {
 		"dojox/charting/Chart",
 		"dojox/charting/themes/Claro",
 		"dojo/date/locale",
-		"dojox/charting/plot2d/Lines",
+		"dojox/charting/plot2d/StackedAreas",
 		"dojox/charting/axis2d/Default"
 	], function(Chart, theme, stamp) {
 		window.stamp = stamp;
@@ -56,7 +56,7 @@ function updateGraph(results) {
 		});
 		c.setTheme(theme);
 		c.addPlot("default", {
-			type: "Lines",
+			type: "StackedAreas",
 			markers: true,
 		});
 

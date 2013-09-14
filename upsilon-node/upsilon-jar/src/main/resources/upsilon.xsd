@@ -110,7 +110,7 @@
 	</xs:complexType>
 	<xs:simpleType name="portType">
 		<xs:restriction base="xs:int"> 
-			<xs:minExclusive value="1024"></xs:minExclusive>
+			<xs:minExclusive value="1"></xs:minExclusive>
 			<xs:maxExclusive value="65536"></xs:maxExclusive>
 		</xs:restriction>
 	</xs:simpleType>
