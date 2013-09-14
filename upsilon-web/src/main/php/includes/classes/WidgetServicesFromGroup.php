@@ -16,7 +16,7 @@ class WidgetServicesFromGroup extends Widget {
 
 		if (empty($widgetTitle)) {
  			if (empty($groupTitle)) {
-				return parent::getTitle();
+				return "Services from group";
 			} else {
 				return 'Group: ' . $groupTitle;
 			}

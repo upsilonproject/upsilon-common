@@ -32,7 +32,7 @@ class FormCreateClassRequirement extends Form {
 $id = Sanitizer::getInstance()->filterUint('id');
 $fh = new FormHandler('FormCreateClassRequirement');
 $fh->setConstructorArgument(0, $id);
-$fh->setRedirect('viewClass.php?id=' . $id);
+$fh->setRedirect('listClasses.php?id=' . $id);
 $fh->handle();
 
 ?>

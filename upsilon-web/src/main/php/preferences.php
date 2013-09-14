@@ -1,7 +1,7 @@
 <?php
 
 $title = 'Preferences';
-require_once 'includes/widgets/header.php';
+require_once 'includes/common.php';
 
 require_once 'libAllure/FormHandler.php';
 
@@ -67,7 +67,5 @@ class UserPreferences extends Form {
 $handler = new FormHandler('UserPreferences');
 $handler->setRedirect('preferences.php');
 $handler->handle();
-
-require_once 'includes/widgets/footer.php';
 
 ?>

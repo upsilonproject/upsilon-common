@@ -2,6 +2,7 @@
 <div class = "box tutorialMessage">
 	<p><strong>Classes</strong> define a standard set of service requirements. By using classes, it is easy to identify what is <em>not</em> being currently checked.<p>
 	<p>For example, <tt>database servers</tt> are a class, which should have the requirements of <tt>free disk space</tt>, a running <tt>database service</tt> and <tt>recent software updates</tt>.</p>
+	<p style = "font-size: x-small " class = "subtle">This message is being shown because <a href = "preferences.php">tutorial mode</a> is enabled.</p>
 </div>
 {/if}
 
@@ -40,7 +41,7 @@
 <h3>All Instances</h3>
 
 {if $listInstances|@count == 0}
-<p>No class instances.</p>
+	<p>No class instances. <a href = "createClassInstance.php">Create class instance</a></p>
 {else}
 <table class = "dataTable hover">
 	<thead>

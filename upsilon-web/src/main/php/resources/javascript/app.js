@@ -195,7 +195,7 @@ function renderWidgetProblemServices(widget, container) {
 	req.url = "json/getServices";
 	req.load = function(services) {
 		list = "<h2>Problem Services</h2>";
-		
+
 		dojo.forEach(services, function(service) {
 			list += '<span class = "metricIndictator ' + service.karma.toLowerCase() + '">' + service.karma + '</span> ' + service.identifier + "<br />"; 
 		}); 
@@ -209,16 +209,27 @@ function renderWidgetNodes(widget, container) {
 	var req = newJsonReq();
 	req.url = "json/listNodes",
 	req.load = function(nodes) {
-			nodeList = "<h2>Nodes</h2><ul class = 'metricList'>";
-			
-			dojo.forEach(nodes, function(node) { 
-				nodeList += '<li><div class = "metricIndicatorContainer"><span class = "metricIndicator ' + node.karma.toLowerCase() + '">' + node.karma + '</span></div> ' + node.identifier + "</li>"; 
+		define([ 
+			"dojo/_base/declare",
+			"dijit/_WidgetBase",
+			"dijit/_TemplatedMixin",
+			"dojo/text!/upsilon/upsilon-web/src/main/php/resources/templatesclient/example.tpl"
+		], function(declare, _WidgetBase, _TemplatedMixin, tpl) {
+			return declare([_WidgetBase, _TemplatedMixin], {
+				message: "Hello World"
 			});
+		});
 
-			nodeList += "</ul>";
-			
-			container.set("content", nodeList);
-		};
+		nodeList = "<h2>Nodes</h2><ul class = 'metricList'>";
+		
+		dojo.forEach(nodes, function(node) { 
+			nodeList += '<li><div class = "metricIndicatorContainer"><span class = "metricIndicator ' + node.karma.toLowerCase() + '">' + node.karma + '</span><span class = "metricText">' + node.identifier + "</span></div></li>"; 
+		});
+
+		nodeList += "</ul>";
+		
+		container.set("content", nodeList);
+	};
 	
 	
 	req.get();
@@ -245,7 +256,7 @@ function loadDashboard(dashboard) {
 					id: "widget" + widget.id,
 					class: "block",
 				});   
-				widgetContent.set("content", "title:" + widget.class);
+				widgetContent.set("content", "<h2>" + widget.class + "</h2><div>Undefined Widget Content</div>");
 				container.addChild(widgetContent);
 			}   
 			

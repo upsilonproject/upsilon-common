@@ -45,9 +45,12 @@ if (Session::isLoggedIn()) {
 	$generalLinks = linksCollection();
 
 	global $links, $title;
+	$generalLinks->add('#', 'Actions');
+
 	if (isset($links)) {
-		$generalLinks->add('#', $title . ' Actions');
-		$generalLinks->addChildCollection($title . ' Actions', $links);
+		$generalLinks->addChildCollection('Actions', $links);
+	} else {
+		$generalLinks->setEnabled(0, false);
 	}
 
 	$generalLinks->add('listDashboards.php', 'Dashboards');

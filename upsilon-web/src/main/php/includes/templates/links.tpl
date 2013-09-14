@@ -11,7 +11,11 @@
 
 	{foreach from = $links item = link}
 
-		{if count($link.children) > 0}
+		{if not $link.enabled}
+			<div disabled = "disabled" data-dojo-type = "dijit/PopupMenuBarItem">
+				<span>{$link.title}</span>
+			</div>
+		{else if count($link.children) > 0}
 			<div data-dojo-type = "dijit/PopupMenuBarItem">
 				<span>{$link.title}</span>
 

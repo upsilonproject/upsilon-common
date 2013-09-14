@@ -11,7 +11,7 @@ class Widget {
 	protected $arguments = array();
 
 	public function __construct() {
-		$this->arguments['title'] = null;
+		$this->arguments['title'] = get_class($this);
 	}
 
 	public function getTitle() {

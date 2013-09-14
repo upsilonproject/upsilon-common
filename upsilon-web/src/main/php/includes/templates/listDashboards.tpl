@@ -1,6 +1,7 @@
 {if $tutorialMode}
 <div class = "box tutorialMessage">
 	<p><strong>Dashboards</strong> are useful for grouping up lots of information in to one easy to view place. </p>
+	<p style = "font-size: x-small " class = "subtle">This message is being shown because <a href = "preferences.php">tutorial mode</a> is enabled.</p>
 </div>
 {/if}
 

@@ -25,10 +25,10 @@ require_once 'includes/widgets/header.php';
 
 use \libAllure\DatabaseFactory;
 
-# leaf/edge nodes
+// leaf/edge nodes
 $ssql = 'SELECT n.id, n.title AS parentId FROM classes AS n WHERE n.r = n.l + 1';
 
-# children at depth 1
+// children at depth 1
 $sqlImmediateChildren = <<<SQL
 SELECT 
 	n.id AS id,
@@ -65,7 +65,7 @@ ORDER BY n.l
 	
 SQL;
 
-# full graph overview
+// full graph overview
 $sql = <<<SQL
 SELECT
 	c.title AS classTitle

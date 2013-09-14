@@ -1,6 +1,7 @@
 {if $tutorialMode}
 <div class = "box tutorialMessage">
 	<p><strong>Dashboards</strong> are useful for grouping up lots of information in to one easy to view place. <strong>Widgets</strong> on dashboards are responsible for showing information.</p>
+	<p style = "font-size: x-small " class = "subtle">This message is being shown because <a href = "preferences.php">tutorial mode</a> is enabled.</p>
 </div>
 {/if}
 
@@ -11,13 +12,14 @@
 		{foreach from = $listInstances item = widget}
 			{if $widget.instance->isShown()}
 			<div class = "block">
-				<h3 data-dojo-type = "dijit/form/DropDownButton">
-					<span>{$widget.instance->getTitle()|default:'Untitled Widget'}</span>
+				<div style = "float: right" data-dojo-type = "dijit/form/DropDownButton">
+					<span>Widget</span>
 
 					{if $drawNavigation}
 						{include file = "links.tpl" links = $widget.instance->getLinks() skipTitle = true sub = true}
 					{/if}
-				</h3>
+				</div>
+				<h3>{$widget.instance->getTitle()}</h3>
 
 				{$widget.instance->render()}
 			</div>
