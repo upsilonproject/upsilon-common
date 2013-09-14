@@ -28,11 +28,11 @@
 <div class = "box">
 <h3>Sub Classes</h3>
 
-{if $listClasses|@count eq 0}
+{if $listSubClasses|@count eq 0}
 	<p>No child classes.</p>
 {else}
 	<p style = "text-align: left">
-	{include file = "listClassesTree.tpl" listClasses = $listClasses}
+	{include file = "listClassesTree.tpl" listSubClasses = $listSubClasses}
 	</p>
 {/if}
 </div>

@@ -1,7 +1,7 @@
 <?php
 
 $title = 'Update class instance';
-require_once 'includes/widgets/header.php';
+require_once 'includes/common.php';
 
 require_once 'libAllure/FormHandler.php';
 
@@ -86,7 +86,5 @@ class FormUpdateClassInstance extends \libAllure\Form {
 $h = new FormHandler('FormUpdateClassInstance');
 $h->setRedirect('viewClassInstance.php?id=' . Sanitizer::getInstance()->filterUint('instance'));
 $h->handle();
-
-require_once 'includes/widgets/footer.php';
 
 ?>

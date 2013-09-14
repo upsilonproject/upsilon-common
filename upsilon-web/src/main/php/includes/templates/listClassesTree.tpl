@@ -8,7 +8,7 @@
 </thead>
 
 <tbody>
-{foreach from = $listClasses item = itemClass}
+{foreach from = $listSubClasses item = itemClass}
 	<tr>
 		<td><a href = "listClasses.php?id={$itemClass.id}">{$itemClass.title}</a></td>
 		<td>{$itemClass.childrenCount}</td>
