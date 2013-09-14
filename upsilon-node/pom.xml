@@ -21,9 +21,15 @@
     <module>upsilon-node-doc</module>
     <module>upsilon-node-tgz</module>
     <module>upsilon-node-deb</module>
-  </modules> 
+  </modules>
 
   <profiles>
+  	<profile>
+		<id>nsis</id>
+		<modules>
+			<module>upsilon-node-nsis</module>
+		</modules>
+	</profile>
 	<profile>
 		<id>rpm</id>
 		<modules>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This is the logging configuration for upsilon-node
+
+Please note that this is mainly intended for developers, it is recommended that
+you use syslog to configure logging if you are unfamilier with the syntax of
+this file.
+
+See also: http://upsilon-project.co.uk/site/index.php/Upsilon-node_Logging
+!-->
+<configuration>
+	<logger name = "sun.net.www.protocol" level = "WARN" />
+    <logger name = "ch.qos.logback" level = "WARN" />
+    <logger name = "javax.management" level = "WARN" />
+    <logger name = "com.sun.jersey" level = "WARN" />
+     
+    <!-- set webserver and general SSL messages on -->    
+    <logger name = "org.glassfish.grizzly.http.server" level = "WARN" /> 
+    <logger name = "org.glassfish.grizzly" level = "INFO" />
+    <logger name = "org.glassfish.grizzly.ssl" level = "TRACE" />
+      
+    <!-- disable low level SSL messages -->
+    <logger name = "org.glassfish.grizzly.ssl.SSLEncoderTransformer" level = "INFO" />
+    <logger name = "org.glassfish.grizzly.ssl.SSLDecoderTransformer" level = "INFO" />
+    <logger name = "org.glassfish.grizzly.ssl.SSLFilter" level = "INFO" />    
+     
+    <!-- disable low level XML messages -->
+    <logger name = "com.sun.xml.bind.v2" level = "WARN" />
+    <logger name = "com.sun.xml.internal.bind.v2" level = "WARN" /> 
+    <logger name = "javax.xml.bind" level = "WARN" />
+    
+    <logger name = "upsilon" level = "DEBUG" />  
+
+	        
+    <root>
+		<!-- 
+		Example Windows syslog config. 
+
+	    <appender name="SYSLOG" class="ch.qos.logback.classic.net.SyslogAppender">
+	        <syslogHost>remote_host</syslogHost>
+		    <facility>AUTH</facility>
+		    <suffixPattern>[%thread] %logger %msg</suffixPattern>
+	    </appender>
+		!-->
+
+        <appender class="ch.qos.logback.core.ConsoleAppender">   
+        	<encoder>   
+        		<pattern>%-5level [%thread] %msg%n</pattern>
+        	</encoder>    
+        </appender>    
+    </root>   
+</configuration>   
