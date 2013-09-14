@@ -6,7 +6,7 @@ use \libAllure\DatabaseFactory;
 
 class WidgetProblemServices extends Widget {
 	public function __construct() {
-		$this->arguments['title'] = null;
+		$this->arguments['title'] = 'Problem Services';
 		$this->problemServices = getServicesBad();
 	}
 

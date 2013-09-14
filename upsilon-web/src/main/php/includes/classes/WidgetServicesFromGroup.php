@@ -3,6 +3,7 @@
 require_once 'Widget.php';
 
 use \libAllure\DatabaseFactory;
+use \libAllure\ElementSelect;
 
 class WidgetServicesFromGroup extends Widget {
 	public function __construct() {
@@ -12,7 +13,8 @@ class WidgetServicesFromGroup extends Widget {
 
 	public function getTitle() {
 		$widgetTitle = $this->getArgumentValue('title');
-		$groupTitle = $this->getArgumentValue('group');
+		$group = getGroup($this->getArgumentValue('group'));
+		$groupTitle = $group['title'];
 
 		if (empty($widgetTitle)) {
  			if (empty($groupTitle)) {
@@ -21,7 +23,7 @@ class WidgetServicesFromGroup extends Widget {
 				return 'Group: ' . $groupTitle;
 			}
 		} else {
-			return $wigetTitle;
+			return $widgetTitle;
 		}
 	}
 

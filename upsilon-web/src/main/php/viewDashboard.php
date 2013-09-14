@@ -10,8 +10,7 @@ $id = san()->filterUint('id');
 
 $links = new HtmlLinksCollection('Dashboard &nabla;');
 $links->add('createWidgetInstance.php?dashboard=' . $id, 'Create Widget Instance');
-$links->add('requestRescanWidgets()', 'RefreshWidgets');
-$links->add('updateDashboard.php?id=' . $id, 'Update');
+$links->add('updateDashboard.php?id=' . $id, 'Update this dashboard');
 $links->add('deleteDashboard.php?id=' . $id, 'Delete this dashboard');
 
 $itemDashboard = new Dashboard($id); 

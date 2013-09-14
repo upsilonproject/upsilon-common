@@ -80,12 +80,25 @@ class Widget {
 		return $val;
 	}
 
+	private function getGroupSelectionElement($group = null) {
+		$el = new ElementSelect('group', 'Group');
+
+		foreach (getGroups() as $group) {
+			$el->addOption($group['title'], $group['id']);
+		}
+
+
+		return $el;
+	}
+
 	public function getArgumentFormElement($optionName) {
 		switch ($optionName) {
 		case 'service[]':
 			return $this->getFormElementService(true);
 		case 'service':
 			return $this->getFormElementService(false);
+		case 'group':
+			return $this->getGroupSelectionElement();
 		default:
 			$input = new ElementInput($optionName, ucwords($optionName), null);
 			$input->setMinMaxLengths(0, 128);
