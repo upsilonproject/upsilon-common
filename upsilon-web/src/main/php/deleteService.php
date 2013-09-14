@@ -11,7 +11,7 @@ use \libAllure\Session;
 $serviceIdentifier = Sanitizer::getInstance()->filterString('identifier');
 
 if (isset($_REQUEST['confirm']) || intval(Session::getUser()->getData('promptBeforeDeletions')) == 1) {
-	deleteServiceByIdentifier($groupIdentifier);
+	deleteServiceByIdentifier($serviceIdentifier);
 
 	$tpl->assign('message', 'Service deleted. <a href = "index.php">Index</a>');
 	$tpl->display('message.tpl');
