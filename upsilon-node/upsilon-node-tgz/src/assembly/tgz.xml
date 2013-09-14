@@ -10,6 +10,7 @@
 			<outputDirectory>setup</outputDirectory>
 			<includes>
 				<include>config.xml.sample</include>
+				<include>logging.syslog.xml</include>
 			</includes>
 		</fileSet>
 		<fileSet>
