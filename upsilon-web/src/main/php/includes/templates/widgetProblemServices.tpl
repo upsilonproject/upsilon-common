@@ -1,19 +1,7 @@
-<script type = "text/javascript">
-{literal}
-function renderServiceList(data) {
-	alert("yay, services!");
-}
+<div class = "widgetRef{$ref}"> 
+	<script type = "text/Javascript">
+updateMetricList("json/getServices", "{$ref}");
+	</script>
+</div>
 
-function failedServiceList(data) {
-	alert("aww, no services today");
-}
-
-$.ajax({
-	url: '/json/getServices',
-	success: renderServiceList,
-	failure: failedServiceList,
-	dataType: 'json',
-});
-{/literal}
-</script>
 

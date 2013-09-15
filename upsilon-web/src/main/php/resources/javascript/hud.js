@@ -296,3 +296,56 @@ function requestRescanWidgets() {
 
 	proBar.set("value", 50);
 }
+
+function renderServiceList(data, stuff, req) {
+	container = $('.widgetRef' + req.htmlRef);
+	container.addClass('metricListContainer');
+	container.empty();
+
+	list = $('<ul class = "metricList" />');
+	container.append(list);
+
+	$(data).each(function(index, service) {
+		metric = $('<li />');
+		indicator = $('<span class = "metricIndicator" />');
+		indicator.addClass(service.karma.toLowerCase());
+
+		if (service.icon != null) {
+			indicator.append($('<img src = "resources/images/serviceIcons/' + service.icon + '" /><br />'));
+		}
+
+		indicator.append('<span>' + service.goodCount + '</span>');
+		indicator = $('<div class = "metricIndicatorContainer" />').append(indicator);
+
+		metric.append(indicator);
+
+		text = $('<div class = "metricText" />');
+		text.append('<span class = "metricDetail">' + service.estimatedNextCheckRelative + '</span>');
+		text.append('<a href = "viewService.php?id=' + service.id + '"><span class = "metricTitle">' + service.alias + '</span></a>');
+		metric.append(text);
+
+		metric.append
+
+		list.append(metric);
+	});
+}
+
+function updateMetricList(url, ref, callback, qp, repeat) {
+	var fn = function() {
+		var req = $.ajax({
+			url: url,
+			success: callback,
+			failure: window.alert,
+			dataType: 'json',
+			data: qp
+		});
+
+		req.htmlRef = ref;
+	}
+	
+	fn();
+
+	if (repeat > 0) {
+		setInterval(fn, repeat);
+	}
+}

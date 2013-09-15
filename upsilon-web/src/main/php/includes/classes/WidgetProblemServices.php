@@ -12,12 +12,16 @@ class WidgetProblemServices extends Widget {
 
 	public function render() {
 		global $tpl;
+		$tpl->assign('ref', rand());
 		$tpl->assign('listServices', $this->problemServices);
 
                 if (empty($this->problemServices)) {
                         echo '<p>No services with problems!</p>';
                 } else {
-                        $tpl->display('metricList.tpl');
+			$tpl->assign('url', 'json/getServices');
+			$tpl->assign('callback', 'renderServiceList');
+			$tpl->assign('repeat', 60000);
+			$tpl->display('widgetAjax.tpl');
                 }
 	}
 }

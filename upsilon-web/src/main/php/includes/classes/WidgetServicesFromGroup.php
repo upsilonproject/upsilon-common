@@ -29,16 +29,12 @@ class WidgetServicesFromGroup extends Widget {
 
 	public function render() {
 		global $tpl;
-
-		$this->services = getServices($this->getArgumentValue('group'));
-
-		$tpl->assign('listServices', $this->services);
-
-                if (empty($this->services)) {
-                        echo '<p>No services.</p>';
-                } else {
-                        $tpl->display('metricList.tpl');
-                }
+		$tpl->assign('ref', rand());
+		$tpl->assign('url', 'json/getServicesInGroup');
+		$tpl->assign('queryParams', json_encode(array('group' => $this->getArgumentValue('group'))));
+		$tpl->assign('callback', 'renderServiceList');
+		$tpl->assign('repeat', 60000);
+		$tpl->display('widgetAjax.tpl');
 	}
 }
 

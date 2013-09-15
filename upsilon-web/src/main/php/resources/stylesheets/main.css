@@ -97,6 +97,10 @@ ul.metricList > li:last-child {
 	font-size: 8pt;
 }
 
+.metricIndicator img {
+	padding-top: 4px;
+}
+
 .metricIndicator.grouped {
 	border: 1px dashed black;
 }
@@ -109,6 +113,7 @@ ul.metricList > li:last-child {
 	display: inline-block;	
 	vertical-align: top;
 	width: 85%;
+	padding-left: 5px;
 }
 
 .metricDetail {

@@ -4,11 +4,6 @@
 <head>
 	<title>Upsilon &raquo; {$title|default:'Untitled page'}</title>
 
-
-	{if not $mobile}
-	<meta http-equiv = "refresh" content = "60" />
-	{/if}
-
 	{if $mobile}
 	<link rel = "alternative stylesheet" type = "text/css" href = "resources/stylesheets/mobile.css" title = "mobile" />
 	{else}
