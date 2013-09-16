@@ -29,7 +29,7 @@ class FormUpdateApiClient extends Form {
 		$elRedirect->addOption('HUD', 'hud');
 
 		foreach ($this->getDashboards() as $dashboard) {
-			$elRedirect->addOption('Dashboard:' . $dashboard['id'], 'dashboard:' . $dashboard['id']);
+			$elRedirect->addOption('Dashboard:' . $dashboard['title'], 'dashboard:' . $dashboard['id']);
 		}
 
 		$elRedirect->addOption('Mobile (stats only)', 'mobile');
@@ -44,7 +44,7 @@ class FormUpdateApiClient extends Form {
 	}
 
 	private function getDashboards() {
-		$sql = 'SELECT d.id FROM dashboard d';
+		$sql = 'SELECT d.id, d.title FROM dashboard d';
 		$stmt = stmt($sql);
 		$stmt->execute();
 

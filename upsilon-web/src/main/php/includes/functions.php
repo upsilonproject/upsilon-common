@@ -467,9 +467,9 @@ function getGroup($id) {
 	$stmt->bindValue(':id', $id);
 	$stmt->execute();
 
-	$itemGroup = enrichGroups($stmt->fetchAll());
+	$itemGroup = enrichGroups(array($stmt->fetchRowNotNull()));
 
-	return current($itemGroup);
+	return $itemGroup[0];
 }
 
 function handleApiLogin() {

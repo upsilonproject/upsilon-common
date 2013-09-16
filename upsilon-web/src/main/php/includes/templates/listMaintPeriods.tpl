@@ -14,7 +14,7 @@
 		{foreach from = $listMaintPeriods item = itemMaintPeriod}
 			<tr>
 				<td><a href = "updateMaintPeriod.php?id={$itemMaintPeriod.id}">{$itemMaintPeriod.id}</a></td>
-				<td>{$itemMaintPeriod.title}</td>
+				<td><a href = "updateMaintPeriod.php?id={$itemMaintPeriod.id}">{$itemMaintPeriod.title}</a></td>
 				<td><pre>{$itemMaintPeriod.content}</pre></td>
 			</td>
 		{/foreach}

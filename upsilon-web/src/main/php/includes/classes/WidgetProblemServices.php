@@ -25,6 +25,10 @@ class WidgetProblemServices extends Widget {
 			$tpl->display('widgetAjax.tpl');
                 }
 	}
+
+	public function addLinks() {
+		$this->links->add('viewList.php?problems', 'Services with problems');
+	}
 }
 
 ?>

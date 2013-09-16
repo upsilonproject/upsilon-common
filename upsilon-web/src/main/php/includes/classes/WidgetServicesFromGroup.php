@@ -9,18 +9,21 @@ class WidgetServicesFromGroup extends Widget {
 	public function __construct() {
 		$this->arguments['title'] = null;
 		$this->arguments['group'] = null;
+
+	}
+
+	public function init() {
+		$this->group = getGroup($this->getArgumentValue('group'));
 	}
 
 	public function getTitle() {
 		$widgetTitle = $this->getArgumentValue('title');
-		$group = getGroup($this->getArgumentValue('group'));
-		$groupTitle = $group['title'];
 
 		if (empty($widgetTitle)) {
- 			if (empty($groupTitle)) {
+ 			if (empty($this->group['title'])) {
 				return "Services from group";
 			} else {
-				return 'Group: ' . $groupTitle;
+				return 'Group: ' . $this->group['title'];
 			}
 		} else {
 			return $widgetTitle;
@@ -35,6 +38,10 @@ class WidgetServicesFromGroup extends Widget {
 		$tpl->assign('callback', 'renderServiceList');
 		$tpl->assign('repeat', 60000);
 		$tpl->display('widgetAjax.tpl');
+	}
+
+	public function addLinks() {
+		$this->links->add('viewGroup.php?id=' . $this->group['id'], 'Group: ' . $this->group['title']);
 	}
 }
 

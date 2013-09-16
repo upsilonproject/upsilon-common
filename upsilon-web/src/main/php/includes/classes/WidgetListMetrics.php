@@ -49,6 +49,10 @@ class WidgetListMetrics extends Widget {
 
 		return !empty($this->service['metrics']);
 	}
+
+	public function addLinks() {
+		$this->links->add('viewService.php?id=' . $this->service['id'], 'Service: ' . $this->service['identifier']);
+	}
 }
 
 ?>
