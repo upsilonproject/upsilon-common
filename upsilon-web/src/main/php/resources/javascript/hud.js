@@ -328,6 +328,9 @@ function renderServiceList(data, stuff, req) {
 
 		list.append(metric);
 	});
+
+	layoutBoxes();
+	toggleGroups();
 }
 
 function updateMetricList(url, ref, callback, qp, repeat) {

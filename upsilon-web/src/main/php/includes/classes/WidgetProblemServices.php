@@ -20,6 +20,7 @@ class WidgetProblemServices extends Widget {
                 } else {
 			$tpl->assign('url', 'json/getServices');
 			$tpl->assign('callback', 'renderServiceList');
+			$tpl->assign('queryParams', json_encode(array()));
 			$tpl->assign('repeat', 60000);
 			$tpl->display('widgetAjax.tpl');
                 }
