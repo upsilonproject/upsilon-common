@@ -55,6 +55,10 @@ public class ProcessExecutorTest {
 		Assert.assertEquals(ResultKarma.GOOD, ResultKarma.valueOfOrUnknown("GOOD"));
 		Assert.assertEquals(ResultKarma.BAD, ResultKarma.valueOfOrUnknown("BAD")); 
 	}
+ 
+	@Ignore
+	public void testHogStdIn() {
+	}
 	
 	@Test
 	public void testStdError() throws Exception {

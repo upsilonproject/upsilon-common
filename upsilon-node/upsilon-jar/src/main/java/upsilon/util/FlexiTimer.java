@@ -6,12 +6,15 @@ import java.util.Random;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 import org.joda.time.Period;
+ 
 
 import upsilon.dataStructures.ResultKarma;
+import upsilon.management.rest.server.util.InstantAdapter;
 
 @XmlRootElement
 public class FlexiTimer {
@@ -47,6 +50,7 @@ public class FlexiTimer {
 
 	public FlexiTimer() {
 		this.lastTouched = Instant.now();
+		this.lastChanged = Instant.now(); 
 	}
 
 	@XmlElement
@@ -54,7 +58,7 @@ public class FlexiTimer {
 		return this.currentDelay;
 	} 
 
-	@XmlElement
+	@XmlElement    
 	public Instant getEstimatedFireDate() {
 		return this.lastTouched.plus(this.currentDelay);
 	}

@@ -15,7 +15,7 @@ import org.joda.time.Instant;
 import upsilon.Configuration;
 import upsilon.Main;
 import upsilon.configuration.XmlNodeHelper;
-import upsilon.management.rest.server.util.DurationAdaptor;
+import upsilon.management.rest.server.util.DurationAdapter;
 import upsilon.util.FlexiTimer;
 import upsilon.util.GlobalConstants;
 import upsilon.util.MutableFlexiTimer;
@@ -130,9 +130,8 @@ public class StructureService extends ConfigStructure implements AbstractService
 	@XmlElement
 	public long getSecondsRemaining() {
 		return this.ft.getSecondsRemaining();
-	}
+	} 
 
-	@XmlJavaTypeAdapter(DurationAdaptor.class)
 	public Duration getTimeout() {
 		return this.timeoutSeconds;
 	}

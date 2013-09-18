@@ -4,7 +4,7 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.joda.time.Duration;
 
-public class DurationAdaptor extends XmlAdapter<String, Duration> {
+public class DurationAdapter extends XmlAdapter<String, Duration> {
 
     @Override
     public String marshal(final Duration arg0) throws Exception {

@@ -79,7 +79,8 @@ public class StructureRemoteService implements AbstractService {
     public int getResultConsequtiveCount() {
         return this.consecutiveCount;
     }
-     
+      
+    @Override
     public Instant getLastChanged() {
     	return this.lastChanged;
     }
