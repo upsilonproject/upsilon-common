@@ -75,7 +75,7 @@ public class MutableFlexiTimer extends FlexiTimer {
 		for (int i = 0; i < multiplier; i++) {
 			if (this.currentResult.equals(result)) {
 				this.consecutiveCount++;  
-			} else {  
+			} else {    
 				this.currentResult = result;
 				this.lastChanged = Instant.now(); 
 				 

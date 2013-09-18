@@ -103,6 +103,11 @@ public class Index {
 
             return threads;
         }
+        
+        @XmlElement(name = "version")
+        public String getVersion() {  
+        	return Main.getVersion(); 
+        }
 
         @XmlElement
         public String getVm() {

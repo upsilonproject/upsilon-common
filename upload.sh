@@ -1,4 +1,4 @@
-VERSION_NODE=0.117.0
+VERSION_NODE=0.117.2
 VERSION_WEB=1.3.0
 
 basepath="/public_html/"
