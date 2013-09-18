@@ -14,7 +14,7 @@
 						{if !$mobile && !empty($itemService.icon)} 
 							<img src = "resources/images/serviceIcons/{$itemService.icon}" alt = "serviceIcon" style = "padding-top: 4px" /><br />
 						{/if}
-						{$itemService.goodCount|default:'?'}
+						{$itemService.consecutiveCount|default:'?'}
 					</span>
 
 					{if false && $itemService.karma != "good" && $itemService.stabilityProbibility > 0}

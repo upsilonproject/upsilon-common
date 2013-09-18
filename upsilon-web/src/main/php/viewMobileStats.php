@@ -5,7 +5,7 @@ require_once 'includes/widgets/header.php';
 
 use \libAllure\DatabaseFactory;
 
-$sql = 'SELECT s.id, s.identifier, s.description, s.karma, s.goodCount, s.output FROM services s WHERE s.karma = "good"';
+$sql = 'SELECT s.id, s.identifier, s.description, s.karma, s.consecutiveCount, s.output FROM services s WHERE s.karma = "good"';
 $stmt = DatabaseFactory::getInstance()->prepare($sql);
 $stmt->execute();
 $stmt->fetchAll();

@@ -13,7 +13,7 @@
 		<p><strong>Estimated Next Check:</strong> {$itemService.estimatedNextCheck} <span class = "subtle">{$itemService.estimatedNextCheckRelative}</span></p>
 
 		<p>
-			<strong>Karma:</strong> <span class = "metricIndicator {$itemService.karma|strtolower}">{$itemService.karma} ({$itemService.goodCount} in a row)</span>
+			<strong>Karma:</strong> <span class = "metricIndicator {$itemService.karma|strtolower}">{$itemService.karma} ({$itemService.consecutiveCount} in a row)</span>
 		</p>
 
 		{if isset($metadata.criticalCast)}

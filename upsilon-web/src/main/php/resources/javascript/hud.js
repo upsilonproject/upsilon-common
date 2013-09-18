@@ -314,7 +314,7 @@ function renderServiceList(data, stuff, req) {
 			indicator.append($('<img src = "resources/images/serviceIcons/' + service.icon + '" /><br />'));
 		}
 
-		indicator.append('<span>' + service.goodCount + '</span>');
+		indicator.append('<span>' + service.consequtiveCount + '</span>');
 		indicator = $('<div class = "metricIndicatorContainer" />').append(indicator);
 
 		metric.append(indicator);
