@@ -68,23 +68,25 @@ if (Session::isLoggedIn()) {
 	$generalLinks->add('listClasses.php', 'Classes');
 	$generalLinks->add('listNodes.php', 'Nodes');
 
-	$generalLinksPlus = linksCollection();
-	$generalLinksPlus->add('viewTasks.php', 'Tasks');
-	$generalLinksPlus->add('viewRoom.php?id=1', 'Rooms');
-	$generalLinksPlus->add('listUsergroups.php', 'Usergroups');
-	$generalLinksPlus->add('listUsers.php', 'Users');
+	if (Session::getUser()->getData('experimentalFeatures')) {
+		$experimentalLinks = linksCollection();
+		$experimentalLinks->add('viewTasks.php', 'Tasks');
+		$experimentalLinks->add('viewRoom.php?id=1', 'Rooms');
 
-	$generalLinks->add('#', 'Other');
-	$generalLinks->addChildCollection('Other', $generalLinksPlus);
+		$generalLinks->add('#', 'Experimental');
+		$generalLinks->addChildCollection('Experimental', $experimentalLinks);
+	}
 
-	$userLinks = linksCollection();
-	$userLinks->add('preferences.php', 'Preferences');
-	$userLinks->add('listApiClients.php', 'API Clients');
-	$userLinks->addIf(Session::getUser()->getData('enableDebug'), 'viewDebugInfo.php', 'Debug');
-	$userLinks->add('logout.php', 'Logout');
+	$systemLinks = linksCollection();
+	$systemLinks->addIf(Session::getUser()->getData('enableDebug'), 'viewDebugInfo.php', 'Debug');
+	$systemLinks->add('listUsergroups.php', 'Usergroups');
+	$systemLinks->add('listUsers.php', 'Users');
+	$systemLinks->add('listApiClients.php', 'API Clients');
+	$systemLinks->add('preferences.php', 'Preferences');
+	$systemLinks->add('logout.php', 'Logout');
 
-	$generalLinks->add('#', 'User');
-	$generalLinks->addChildCollection('User', $userLinks);
+	$generalLinks->add('#', 'System');
+	$generalLinks->addChildCollection('System', $systemLinks);
 }
 
 $tpl->assign('generalLinks', $generalLinks);

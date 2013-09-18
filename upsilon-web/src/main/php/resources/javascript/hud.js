@@ -29,7 +29,7 @@ function rawPlot(plot, ctx) {
 function labelDateAxis(date) {
 	var d = new Date(date * 1000);
 	
-	return window.stamp.format(d, {selector:"date", datePattern: "H:m" });
+	return window.stamp.format(d, {selector:"date", datePattern: "HH:mm" });
 }
 
 function updateGraph(results) {
@@ -328,6 +328,9 @@ function renderServiceList(data, stuff, req) {
 
 		list.append(metric);
 	});
+
+	layoutBoxes();
+	toggleGroups();
 }
 
 function updateMetricList(url, ref, callback, qp, repeat) {

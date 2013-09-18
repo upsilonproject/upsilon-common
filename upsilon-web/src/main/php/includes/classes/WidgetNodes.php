@@ -13,6 +13,10 @@ class WidgetNodes extends Widget {
 		$tpl->assign('listNodes', getNodes());
 		$tpl->display('widgetNodes.tpl');
 	}
+
+	public function addLinks() {
+		$this->links->add('listNodes.php', 'List of nodes');
+	}
 }
 
 ?>

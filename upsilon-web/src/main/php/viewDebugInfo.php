@@ -83,6 +83,25 @@ echo '<h2> Apache modules</h2>';
 metric('mod_expires?', in_array('mod_expires', $modules));
 metric('mod_rewrite?', in_array('mod_rewrite', $modules));
 
+echo '<h2>Table sizes</h2>';
+
+$sql = 'SELECT table_name AS name, engine, table_rows AS rows, data_length/power(1024,2) AS data_mb, index_length/power(1024,2) AS index_mb FROM information_schema.tables WHERE table_schema = :schema';
+$stmt = stmt($sql);
+$stmt->bindValue(':schema', 'upsilon');
+$stmt->execute();
+
+echo '<table><tr><th>table</th><th>engine</th><th>rows</th><th>data (mb)</th><th>index (mb)</th></tr>';
+foreach ($stmt->fetchAll() as $tbl) {
+	echo '<tr>';
+	echo '<td>' . $tbl['name'] . '</td>';
+	echo '<td>' . $tbl['engine'] . '</td>';
+	echo '<td>' . $tbl['rows'] . '</td>';
+	echo '<td>' . $tbl['data_mb'] . '</td>';
+	echo '<td>' . $tbl['index_mb'] . '</td>';
+	echo '</tr>';
+}
+echo '</table>';
+
 require_once 'includes/widgets/footer.php'
 
 ?>

@@ -79,6 +79,8 @@ class FormHandler {
 	}
 
 	private function handleRenderForm(\libAllure\Form $form) {
+		global $title; $title = $form->getTitle();
+
 		require_once 'includes/widgets/header.php';
 
 		if ($this->showSidebar) {

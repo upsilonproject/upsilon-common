@@ -2,7 +2,7 @@
 --
 -- Host: localhost    Database: upsilon
 -- ------------------------------------------------------
--- Server version	5.5.31-MariaDB
+-- Server version	5.5.31-MariaDB-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -314,7 +314,8 @@ CREATE TABLE `service_check_results` (
   `karma` varchar(32) DEFAULT NULL,
   `output` longtext,
   PRIMARY KEY (`id`),
-  KEY `ix_service` (`service`)
+  KEY `ix_service` (`service`),
+  KEY `checked` (`checked`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -405,8 +406,7 @@ CREATE TABLE `services` (
   `isLocal` tinyint(4) DEFAULT NULL,
   `node` varchar(128) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `identifier` (`identifier`),
-  KEY `identifier_2` (`identifier`)
+  UNIQUE KEY `identifier` (`identifier`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -555,4 +555,4 @@ CREATE TABLE `widgets` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-09-14 19:11:30
+-- Dump completed on 2013-09-16 16:12:39

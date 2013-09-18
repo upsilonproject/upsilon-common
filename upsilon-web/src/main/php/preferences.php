@@ -28,6 +28,7 @@ class UserPreferences extends Form {
 		$this->addElement(new ElementCheckbox('promptBeforeDeletions', 'Prompet me before deletions?', Session::getUser()->getData('promptBeforeDeletions')));
 		$this->addElement(new ElementNumeric('oldServiceThreshold', 'Old Service Threshold', Session::getUser()->getData('oldServiceThreshold')));
 		$this->addElement(new ElementCheckbox('enableDebug', 'Enable debug link', Session::getUser()->getData('enableDebug'), 'Simply shows a link to the debug page in the user links menu.'));
+		$this->addElement(new ElementCheckbox('enableExperimentalFeatures', 'Enable experimental features', Session::getUser()->getData('experimentalFeatures'), 'Enable various links to experimental stuff'));
 
 		$this->addSection('Password');
 
@@ -56,6 +57,7 @@ class UserPreferences extends Form {
 		Session::getUser()->setData('oldServiceThreshold', $this->getElementValue('oldServiceThreshold'));
 		Session::getUser()->setData('tutorialMode', $this->getElementValue('tutorialMode'));
 		Session::getUser()->setData('enableDebug', $this->getElementValue('enableDebug'));
+		Session::getUser()->setData('experimentalFeatures', $this->getElementValue('enableExperimentalFeatures'));
 		Session::getUser()->getAttribute('username', false);
 
 		if ($this->supportsPasswords() && strlen($this->getElementValue('password')) > 0) {
