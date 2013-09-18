@@ -26,6 +26,8 @@ public interface AbstractService {
     public abstract String getOutput();
 
     public abstract int getResultConsequtiveCount();
+    
+    public abstract Instant getLastChanged();  
 
     public abstract long getSecondsRemaining();
 

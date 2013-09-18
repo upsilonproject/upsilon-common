@@ -67,30 +67,6 @@ public class Database {
         return super.equals(obj);
     }
 
-    public int getInt(final String field, final String table, final String fieldEq, final String equals) {
-        int ret = 0;
-        final String sql = "SELECT " + field + " FROM " + table + " WHERE " + fieldEq + " = ?";
-        ResultSet rs;
-
-        try {
-            final PreparedStatement stmt = this.conn.prepareStatement(sql);
-            stmt.setString(1, equals);
-            rs = stmt.executeQuery();
-            rs.beforeFirst();
-
-            if (!rs.first()) {
-                throw new RuntimeException("Cannot get int, there where 0 rows");
-            }
-
-            ret = rs.getInt(1);
-            stmt.close();
-        } catch (final SQLException e) {
-            e.printStackTrace();
-        }
-
-        return ret;
-    }
-
     public HashMap<String, String> getRow(final String table, final String fieldEq, final String equals, final String... fields) {
         final StringBuilder fieldList = new StringBuilder();
 
@@ -228,7 +204,7 @@ public class Database {
 
         this.log.debug("updating service:" + s.getIdentifier());
 
-        String sql = "INSERT INTO services (identifier, description, executable, karma) VALUES (?, ?, ?, '') ON DUPLICATE KEY UPDATE karma = ?, secondsRemaining = ?, output = ?, commandLine = ?, lastUpdated = ?, goodCount = ?, estimatedNextCheck = ?, isLocal = ?, node = ?";
+        String sql = "INSERT INTO services (identifier, description, executable, karma) VALUES (?, ?, ?, '') ON DUPLICATE KEY UPDATE karma = ?, secondsRemaining = ?, output = ?, commandLine = ?, lastUpdated = ?, consecutiveCount = ?, lastChanged = ?, estimatedNextCheck = ?, isLocal = ?, node = ?";
 
         try {
             int paramIndex = 1;
@@ -238,11 +214,12 @@ public class Database {
             stmt.setString(paramIndex++, s.getExecutable());
 
             stmt.setString(paramIndex++, s.getKarmaString());
-            stmt.setLong(paramIndex++, s.getSecondsRemaining());
+            stmt.setLong(paramIndex++, s.getSecondsRemaining());  
             stmt.setString(paramIndex++, s.getOutput());
             stmt.setString(paramIndex++, s.getFinalCommandLine(s));
             stmt.setTimestamp(paramIndex++, new java.sql.Timestamp(s.getLastUpdated().toDate().getTime()));
-            stmt.setLong(paramIndex++, s.getResultConsequtiveCount());
+            stmt.setLong(paramIndex++, s.getResultConsequtiveCount());  
+            stmt.setTimestamp(paramIndex++, new java.sql.Timestamp(s.getLastChanged().toDate().getTime()));  
             stmt.setTimestamp(paramIndex++, new java.sql.Timestamp(s.getEstimatedNextCheck().toDate().getTime()));
             stmt.setBoolean(paramIndex++, s.isLocal());
             stmt.setString(paramIndex++, s.getNodeIdentifier());

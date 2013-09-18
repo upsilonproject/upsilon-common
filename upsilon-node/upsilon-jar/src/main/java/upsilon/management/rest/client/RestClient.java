@@ -107,8 +107,9 @@ public class RestClient {
         srs.setEstimatedNextCheck(s.getEstimatedNextCheck());
         srs.setExecutable(s.getExecutable());
         srs.setFinalCommandLine(s.getFinalCommandLine(s));
-        srs.setResultConsequtiveCount(s.getFlexiTimer().getGoodCount());
-
+        srs.setResultConsequtiveCount(s.getFlexiTimer().getConsequtiveCount());
+        srs.setLastChanged(s.getFlexiTimer().getLastChanged());
+ 
         RestClient.LOG.debug("Pushing service: " + s.getIdentifier() + " to: " + this.url);
 
         try {

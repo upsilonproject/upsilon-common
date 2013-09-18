@@ -37,24 +37,11 @@ public class StructureService extends ConfigStructure implements AbstractService
 
 	private StructureService dependsOn;
 
-	public void addResult(final ResultKarma karma, final Date whenChecked) {
-		this.karma = karma;
-		this.ft.touch(whenChecked);
-
-		if (this.karma == ResultKarma.GOOD) {
-			this.ft.submitResult(true);
-		} else {
-			this.ft.submitResult(false);
-		}
-	}
-
-	public void addResult(final ResultKarma karma, final int count, final String message) {
-		this.addResult(karma, message);
-		this.ft.setGoodCount(count);
-	}
-
 	public void addResult(final ResultKarma karma, final String output) {
-		this.addResult(karma, Calendar.getInstance().getTime());
+		this.karma = karma;
+		this.ft.touch(Calendar.getInstance().getTime());
+		this.ft.submitResult(this.karma);
+		 
 		this.output = output;
 		this.setDatabaseUpdateRequired(true);
 	}
@@ -136,7 +123,7 @@ public class StructureService extends ConfigStructure implements AbstractService
 	@Override
 	@XmlElement
 	public int getResultConsequtiveCount() {
-		return this.ft.getGoodCount();
+		return this.ft.getConsequtiveCount();
 	}
 
 	@Override
@@ -249,6 +236,11 @@ public class StructureService extends ConfigStructure implements AbstractService
 		} else {
 			this.setRegistered(false);
 		}
+	}
+
+	@Override
+	public Instant getLastChanged() {
+		return this.ft.getLastChanged(); 
 	}
 	
 

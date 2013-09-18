@@ -15,12 +15,13 @@ public class StructureRemoteService implements AbstractService {
     private String id;
 
     private Instant lastUpdated;
+    private Instant lastChanged;
 
     private String executable;
 
     private String cmdline;
     private Instant estimatedNextCheck;
-    private int goodCount;
+    private int consecutiveCount;
 
     private String nodeIdentifier = "???";
 
@@ -76,7 +77,11 @@ public class StructureRemoteService implements AbstractService {
 
     @Override
     public int getResultConsequtiveCount() {
-        return this.goodCount;
+        return this.consecutiveCount;
+    }
+     
+    public Instant getLastChanged() {
+    	return this.lastChanged;
     }
 
     @Override
@@ -107,7 +112,7 @@ public class StructureRemoteService implements AbstractService {
     public void setDescription(final String description2) {
         this.description = description2;
     }
-
+ 
     public void setEstimatedNextCheck(final Instant estimatedNextCheck) {
         this.estimatedNextCheck = estimatedNextCheck;
     }
@@ -131,6 +136,10 @@ public class StructureRemoteService implements AbstractService {
     public void setLastUpdated(final Instant lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
+    
+    public void setLastChanged(final Instant lastChanged) {
+    	this.lastChanged = lastChanged;     
+    }
 
     public void setNodeIdentifier(final String nodeIdentifier) {
         this.nodeIdentifier = nodeIdentifier;
@@ -140,7 +149,7 @@ public class StructureRemoteService implements AbstractService {
         this.output = output2;
     }
 
-    public void setResultConsequtiveCount(final int goodCount2) {
-        this.goodCount = goodCount2;
+    public void setResultConsequtiveCount(final int count) {
+        this.consecutiveCount = count; 
     }
 }

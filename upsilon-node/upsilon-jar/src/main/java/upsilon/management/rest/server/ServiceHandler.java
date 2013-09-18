@@ -49,7 +49,7 @@ public class ServiceHandler {
     @XmlElement
     public Vector<StructureRemoteService> listRemote() {
         return Configuration.instance.remoteServices;
-    }
+    }  
 
     @GET
     @Path("/id/{id}/queue")

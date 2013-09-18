@@ -109,20 +109,8 @@ public class RobustProcessExecutor implements Callable<Integer> {
 					final String output = RobustProcessExecutor.this.getOutput();
 
 					RobustProcessExecutor.this.log.debug("Output {}: " + output, new Object[] { RobustProcessExecutor.this.service.getIdentifier() });
-
-					switch (RobustProcessExecutor.this.getReturn()) {
-					case 0:
-						RobustProcessExecutor.this.service.addResult(ResultKarma.GOOD, output);
-						break;
-					case 1:
-						RobustProcessExecutor.this.service.addResult(ResultKarma.WARNING, output);
-						break;
-					case 2:
-						RobustProcessExecutor.this.service.addResult(ResultKarma.BAD, output);
-						break;
-					default:
-						RobustProcessExecutor.this.service.addResult(ResultKarma.UNKNOWN, output);
-					}
+					ResultKarma karma = ResultKarma.fromProcessExitCode(RobustProcessExecutor.this.getReturn());
+					RobustProcessExecutor.this.service.addResult(karma, output); 
 				} catch (final IOException | ExecutionException e) {
 					RobustProcessExecutor.this.service.addResult(ResultKarma.BAD, "Java Exception (" + e.getClass().getSimpleName() + ") occoured: " + e.toString());
 				} catch (InterruptedException | TimeoutException e) {

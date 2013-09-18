@@ -6,6 +6,8 @@ import java.util.Date;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 
+import upsilon.dataStructures.ResultKarma;
+
 public class MutableFlexiTimer extends FlexiTimer {
 
 	public MutableFlexiTimer(Duration sleepMin, Duration sleepMax, Duration sleepIncrement, String name) {
@@ -17,18 +19,18 @@ public class MutableFlexiTimer extends FlexiTimer {
 
 		this.setName(name);
 	}
-
+ 
 	private void recalculateDelay() {
-		this.currentDelay = this.sleepMin.plus((this.inc.getMillis() * this.goodCount));
+		this.currentDelay = this.sleepMin.plus((this.inc.getMillis() * this.consecutiveCount));
 		this.currentDelay = FlexiTimer.getPeriodWithinBounds(this.currentDelay, this.sleepMin, this.sleepMax);
 	}
  
 	public void setAbrupt(boolean isAbrupt) {
 		this.isAbrupt = isAbrupt;
 	}
-
-	public void setGoodCount(int count) {
-		this.goodCount = count;
+ 
+	protected void setGoodCount(int count) {
+		this.consecutiveCount = count;
 	}
 
 	public final void setInc(Duration inc) {
@@ -60,20 +62,30 @@ public class MutableFlexiTimer extends FlexiTimer {
 		this.name = name;
 	}
 
-	public void submitResult(boolean result) {
+	public void submitResult(ResultKarma result) {
 		this.submitResult(result, 1);
 	}
 
-	public void submitResult(boolean result, int multiplier) {
-		if (result) {
-			this.goodCount += multiplier;
-		} else {
-			if (this.isAbrupt) {
-				this.goodCount = 0;
-			} else {
-				this.goodCount--;
-			}
+	public void submitResult(ResultKarma result, int multiplier) {
+		if (currentResult == null) {
+			currentResult = result;
+			lastChanged = Instant.now(); 
 		}
+		
+		for (int i = 0; i < multiplier; i++) {
+			if (this.currentResult.equals(result)) {
+				this.consecutiveCount++;  
+			} else {  
+				this.currentResult = result;
+				this.lastChanged = Instant.now(); 
+				 
+				if (this.isAbrupt) {  
+					this.consecutiveCount = 0;
+				} else {
+					this.consecutiveCount--;
+				}
+			}
+		}  
 
 		this.recalculateDelay();
 	}
@@ -84,6 +96,10 @@ public class MutableFlexiTimer extends FlexiTimer {
 
 	public void touch(Date touchDate) {
 		this.lastTouched = new Instant(touchDate.getTime());
+	}
+
+	public Instant getLastChanged() {
+		return lastChanged; 
 	}
 
 }
