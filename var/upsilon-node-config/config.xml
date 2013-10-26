@@ -1,9 +1,0 @@
-<config>
-  <command identifier="check_ping" exec="ping $HOSTNAME and $TIMEOUT"/>
-  <command identifier="check_nothing" exec="nothing"/>
-  <service name="ping_google"/>
-  <service name="ping_technowax">
-    <argument name="HOSTNAME">technowax.net</argument>
-    <argument name="TIMEOUT">0</argument>
-  </service>
-</config>
