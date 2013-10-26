@@ -6,15 +6,12 @@ import java.util.Random;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 import org.joda.time.Period;
- 
 
 import upsilon.dataStructures.ResultKarma;
-import upsilon.management.rest.server.util.InstantAdapter;
 
 @XmlRootElement
 public class FlexiTimer {
@@ -38,11 +35,11 @@ public class FlexiTimer {
 	protected Duration inc = GlobalConstants.DEF_INC_SERVICE_UPDATE;
 	protected Duration currentDelay = GlobalConstants.DEF_INC_SERVICE_UPDATE;
 	protected String name = "untitled timer";
-	
+
 	protected int consecutiveCount = 0;
-	protected ResultKarma currentResult; 
+	protected ResultKarma currentResult;
 	protected Instant lastChanged;
- 
+
 	protected Instant lastTouched;
 	protected boolean isAbrupt = true;
 
@@ -50,21 +47,21 @@ public class FlexiTimer {
 
 	public FlexiTimer() {
 		this.lastTouched = Instant.now();
-		this.lastChanged = Instant.now(); 
+		this.lastChanged = Instant.now();
+	}
+
+	public int getConsequtiveCount() {
+		return this.consecutiveCount;
 	}
 
 	@XmlElement
 	public Duration getCurrentDelay() {
 		return this.currentDelay;
-	} 
-
-	@XmlElement    
-	public Instant getEstimatedFireDate() {
-		return this.lastTouched.plus(this.currentDelay);
 	}
 
-	public int getConsequtiveCount() {
-		return this.consecutiveCount;
+	@XmlElement
+	public Instant getEstimatedFireDate() {
+		return this.lastTouched.plus(this.currentDelay);
 	}
 
 	@XmlElement
@@ -73,12 +70,13 @@ public class FlexiTimer {
 	}
 
 	@XmlElement
-	public Instant getLastTouched() {
-		return this.lastTouched;
-	}
-	@XmlElement
 	public Instant getLastChanged() {
 		return this.lastChanged;
+	}
+
+	@XmlElement
+	public Instant getLastTouched() {
+		return this.lastTouched;
 	}
 
 	@XmlElement

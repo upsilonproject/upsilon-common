@@ -8,112 +8,112 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class XmlNodeHelper {
-    private final Node node;
-    private XmlNodeHelper parent;
+	private final Node node;
+	private XmlNodeHelper parent;
 
-    public XmlNodeHelper(final Node node) {
-        this.node = node;
-    }
-    
-    public <T> T getAttributeValue(final String key, final T def) {
-        return this.getAttributeValueOrParentOrDefault(key, def);
-    }
+	private String source = "";
 
-    public <T> T getAttributeValueOrDefault(final String key, final T def) {
-        final Node attr = this.node.getAttributes().getNamedItem(key);
+	public XmlNodeHelper(final Node node) {
+		this.node = node;
+	}
 
-        if (attr == null) {
-            return def;
-        } else {
-            final String value = attr.getNodeValue();
+	public <T> T getAttributeValue(final String key, final T def) {
+		return this.getAttributeValueOrParentOrDefault(key, def);
+	}
 
-            if (def instanceof Integer) {
-                return (T) (Integer) Integer.parseInt(value);
-            } else if (def instanceof Boolean) {
-                return (T) (Boolean) Boolean.parseBoolean(value);
-            } else {
-                return (T) attr.getNodeValue();
-            }
-        }
-    }
+	public <T> T getAttributeValueOrDefault(final String key, final T def) {
+		final Node attr = this.node.getAttributes().getNamedItem(key);
 
-    public <T> T getAttributeValueOrParentOrDefault(final String key, final T def) {
-        if (this.hasAttribute(key)) {
-            final String val = this.getAttributeValueUnchecked(key);
+		if (attr == null) {
+			return def;
+		} else {
+			final String value = attr.getNodeValue();
 
-            if (def instanceof Duration) {
-                return (T) Period.parse(val).toStandardDuration();
-            } else if (def instanceof Integer) {
-                return (T) new Integer(Integer.parseInt(val));
-            } else {
-                return (T) val;
-            }
-        } else {
-            if (this.parent == null) {
-                return def;
-            } else {
-                return this.parent.getAttributeValueOrParentOrDefault(key, def);
-            }
-        }
-    }
+			if (def instanceof Integer) {
+				return (T) (Integer) Integer.parseInt(value);
+			} else if (def instanceof Boolean) {
+				return (T) (Boolean) Boolean.parseBoolean(value);
+			} else {
+				return (T) attr.getNodeValue();
+			}
+		}
+	}
 
-    public String getAttributeValueUnchecked(final String string) {
-        return this.node.getAttributes().getNamedItem(string).getNodeValue();
-    }
+	public <T> T getAttributeValueOrParentOrDefault(final String key, final T def) {
+		if (this.hasAttribute(key)) {
+			final String val = this.getAttributeValueUnchecked(key);
 
-    public Vector<XmlNodeHelper> getChildElements(final String string) {
-        final Vector<XmlNodeHelper> xmlHelperChildren = new Vector<XmlNodeHelper>();
-        final NodeList children = this.node.getChildNodes();
+			if (def instanceof Duration) {
+				return (T) Period.parse(val).toStandardDuration();
+			} else if (def instanceof Integer) {
+				return (T) new Integer(Integer.parseInt(val));
+			} else {
+				return (T) val;
+			}
+		} else {
+			if (this.parent == null) {
+				return def;
+			} else {
+				return this.parent.getAttributeValueOrParentOrDefault(key, def);
+			}
+		}
+	}
 
-        for (int i = 0; i < children.getLength(); i++) {
-            final Node n = children.item(i);
+	public String getAttributeValueUnchecked(final String string) {
+		return this.node.getAttributes().getNamedItem(string).getNodeValue();
+	}
 
-            if (n.getNodeName().equals(string)) {
-                xmlHelperChildren.add(new XmlNodeHelper(n));
-            }
-        }
+	public Vector<XmlNodeHelper> getChildElements(final String string) {
+		final Vector<XmlNodeHelper> xmlHelperChildren = new Vector<XmlNodeHelper>();
+		final NodeList children = this.node.getChildNodes();
 
-        return xmlHelperChildren;
-    }
+		for (int i = 0; i < children.getLength(); i++) {
+			final Node n = children.item(i);
 
-    public XmlNodeHelper getFirstChildElement(final String string) {
-        for (int i = 0; i < this.node.getChildNodes().getLength(); i++) {
-            final Node n = this.node.getChildNodes().item(i);
+			if (n.getNodeName().equals(string)) {
+				xmlHelperChildren.add(new XmlNodeHelper(n));
+			}
+		}
 
-            if (n.getNodeName().equals(string)) {
-                return new XmlNodeHelper(n);
-            }
-        }
+		return xmlHelperChildren;
+	}
 
-        return null;
-    }
+	public XmlNodeHelper getFirstChildElement(final String string) {
+		for (int i = 0; i < this.node.getChildNodes().getLength(); i++) {
+			final Node n = this.node.getChildNodes().item(i);
 
-    public String getNodeName() {
-        return this.node.getNodeName();
-    }
+			if (n.getNodeName().equals(string)) {
+				return new XmlNodeHelper(n);
+			}
+		}
 
-    public String getNodeValue() {
-        return this.node.getFirstChild().getNodeValue();
-    }
+		return null;
+	}
 
-    public boolean hasAttribute(final String string) {
-        return this.node.getAttributes().getNamedItem(string) != null;
-    }
+	public String getNodeName() {
+		return this.node.getNodeName();
+	}
 
-    public boolean hasChildElement(final String string) {
-        return this.getFirstChildElement(string) != null;
-    }
-
-    public void setParent(final XmlNodeHelper search) {
-        this.parent = search;
-    }
+	public String getNodeValue() {
+		return this.node.getFirstChild().getNodeValue();
+	}
 
 	public String getSource() {
-		return source;
+		return this.source;
 	}
-	
-	private String source = "";
-	
+
+	public boolean hasAttribute(final String string) {
+		return this.node.getAttributes().getNamedItem(string) != null;
+	}
+
+	public boolean hasChildElement(final String string) {
+		return this.getFirstChildElement(string) != null;
+	}
+
+	public void setParent(final XmlNodeHelper search) {
+		this.parent = search;
+	}
+
 	public void setSource(String source) {
 		this.source = source;
 	}

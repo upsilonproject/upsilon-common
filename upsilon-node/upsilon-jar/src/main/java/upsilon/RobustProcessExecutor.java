@@ -1,10 +1,7 @@
 package upsilon;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -18,13 +15,13 @@ import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.CharStreams;
-
 import upsilon.dataStructures.ResultKarma;
 import upsilon.dataStructures.StructureService;
 import upsilon.util.GlobalConstants;
 import upsilon.util.Util;
+
+import com.google.common.base.Charsets;
+import com.google.common.io.CharStreams;
 
 public class RobustProcessExecutor implements Callable<Integer> {
 
@@ -110,7 +107,7 @@ public class RobustProcessExecutor implements Callable<Integer> {
 
 					RobustProcessExecutor.this.log.debug("Output {}: " + output, new Object[] { RobustProcessExecutor.this.service.getIdentifier() });
 					ResultKarma karma = ResultKarma.fromProcessExitCode(RobustProcessExecutor.this.getReturn());
-					RobustProcessExecutor.this.service.addResult(karma, output); 
+					RobustProcessExecutor.this.service.addResult(karma, output);
 				} catch (final IOException | ExecutionException e) {
 					RobustProcessExecutor.this.service.addResult(ResultKarma.BAD, "Java Exception (" + e.getClass().getSimpleName() + ") occoured: " + e.toString());
 				} catch (InterruptedException | TimeoutException e) {
@@ -127,17 +124,17 @@ public class RobustProcessExecutor implements Callable<Integer> {
 
 		RobustProcessExecutor.executingThreadPool.execute(monitoringThread);
 	}
- 
+
 	private String getOutput() throws IOException {
 		String output = "";
 		final String errorStream = CharStreams.toString(new InputStreamReader(this.p.getErrorStream(), Charsets.UTF_8));
 
-		if (!errorStream.isEmpty()) { 
+		if (!errorStream.isEmpty()) {
 			output = "STDERROR: " + errorStream;
 		}
- 
+
 		output += CharStreams.toString(new InputStreamReader(this.p.getInputStream(), Charsets.UTF_8));
- 
+
 		return output.trim();
 	}
 

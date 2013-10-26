@@ -1,13 +1,11 @@
 package upsilon.dataStructures;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Vector;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.joda.time.Duration;
 import org.joda.time.Instant;
@@ -15,7 +13,6 @@ import org.joda.time.Instant;
 import upsilon.Configuration;
 import upsilon.Main;
 import upsilon.configuration.XmlNodeHelper;
-import upsilon.management.rest.server.util.DurationAdapter;
 import upsilon.util.FlexiTimer;
 import upsilon.util.GlobalConstants;
 import upsilon.util.MutableFlexiTimer;
@@ -24,7 +21,6 @@ import upsilon.util.Util;
 @XmlRootElement
 public class StructureService extends ConfigStructure implements AbstractService {
 	private String identifier;
-
 
 	private StructureCommand command;
 	@XmlElement
@@ -41,7 +37,7 @@ public class StructureService extends ConfigStructure implements AbstractService
 		this.karma = karma;
 		this.ft.touch(Calendar.getInstance().getTime());
 		this.ft.submitResult(this.karma);
-		 
+
 		this.output = output;
 		this.setDatabaseUpdateRequired(true);
 	}
@@ -102,6 +98,11 @@ public class StructureService extends ConfigStructure implements AbstractService
 	}
 
 	@Override
+	public Instant getLastChanged() {
+		return this.ft.getLastChanged();
+	}
+
+	@Override
 	public Instant getLastUpdated() {
 		return this.ft.getLastTouched();
 	}
@@ -130,7 +131,7 @@ public class StructureService extends ConfigStructure implements AbstractService
 	@XmlElement
 	public long getSecondsRemaining() {
 		return this.ft.getSecondsRemaining();
-	} 
+	}
 
 	public Duration getTimeout() {
 		return this.timeoutSeconds;
@@ -208,7 +209,8 @@ public class StructureService extends ConfigStructure implements AbstractService
 	public void setUpdateIncrement(final Duration increment) {
 		this.ft.setInc(increment);
 	}
-	
+
+	@Override
 	public String toString() {
 		return this.identifier;
 	}
@@ -236,11 +238,5 @@ public class StructureService extends ConfigStructure implements AbstractService
 			this.setRegistered(false);
 		}
 	}
-
-	@Override
-	public Instant getLastChanged() {
-		return this.ft.getLastChanged(); 
-	}
-	
 
 }

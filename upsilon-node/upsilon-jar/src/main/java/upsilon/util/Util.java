@@ -1,6 +1,5 @@
 package upsilon.util;
 
-import java.net.URL;
 import java.util.concurrent.ThreadFactory;
 
 import org.joda.time.Duration;
@@ -11,6 +10,14 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 public class Util {
 	private static final transient Logger LOG = LoggerFactory.getLogger(Util.class);
+
+	public static String bool2s(boolean value, String t, String f) {
+		if (value) {
+			return t;
+		} else {
+			return f;
+		}
+	}
 
 	public static ThreadFactory getThreadFactory(final String string) {
 		return new ThreadFactoryBuilder().setNameFormat(string + " (%d)").build();
@@ -32,14 +39,6 @@ public class Util {
 			Thread.sleep(howLong.getMillis());
 		} catch (final InterruptedException e) {
 			Util.LOG.warn("Insomnia in thread.", e);
-		}
-	}
-	 
-	public static String bool2s(boolean value, String t, String f) {
-		if (value) { 
-			return t;
-		} else {
-			return f; 
 		}
 	}
 }

@@ -1,16 +1,11 @@
 package upsilon.configuration;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
-import java.net.CookieStore;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Vector;
 
 import javax.xml.XMLConstants;
@@ -27,101 +22,99 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-import org.xml.sax.ext.DefaultHandler2;
-import org.xml.sax.helpers.DefaultHandler;
 
-import upsilon.util.UPath;
 import upsilon.util.ResourceResolver;
+import upsilon.util.UPath;
 
 public class XmlConfigurationValidator implements ErrorHandler {
-    private final Vector<SAXParseException> parseErrors = new Vector<SAXParseException>();
-    private final DocumentBuilder builder;
-    private Document d;
-    private boolean isParsed = false;
+	private final Vector<SAXParseException> parseErrors = new Vector<SAXParseException>();
+	private final DocumentBuilder builder;
+	private Document d;
+	private boolean isParsed = false;
 	private boolean isAux = false;
 
-    private static final Logger LOG = LoggerFactory.getLogger(XmlConfigurationValidator.class);
-    
-    static {   
-    	CookieManager.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
-    }
+	private static final Logger LOG = LoggerFactory.getLogger(XmlConfigurationValidator.class);
 
-    public XmlConfigurationValidator(final UPath u, boolean isAux) throws Exception {
-    	this.isAux = isAux; 
-    	
-        final InputStream xsdSchemaStream = selectSchema();
-        final StreamSource xsdSchema = new StreamSource(xsdSchemaStream);
+	static {
+		CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
+	}
 
-        final Schema s = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(xsdSchema);
+	private final UPath path;
 
-        final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setSchema(s);
-  
-        this.path = u;  
-        this.builder = dbf.newDocumentBuilder();  
-        this.builder.setErrorHandler(this); 
-    }
-        
-    private InputStream selectSchema() throws Exception {
-    	if (this.isAux) {  
-    		return ResourceResolver.getInstance().getInternalFromFilename("upsilon.aux.xsd");
-    	} else {
-    		return ResourceResolver.getInstance().getInternalFromFilename("upsilon.xsd");
-    	}
-    } 
+	public XmlConfigurationValidator(final UPath u, boolean isAux) throws Exception {
+		this.isAux = isAux;
 
-    @Override
-    public void error(final SAXParseException exception) throws SAXException {
-        this.parseErrors.add(exception);
-    }
+		final InputStream xsdSchemaStream = this.selectSchema();
+		final StreamSource xsdSchema = new StreamSource(xsdSchemaStream);
 
-    @Override
-    public void fatalError(final SAXParseException exception) throws SAXException {
-        this.parseErrors.add(exception);
-    }
+		final Schema s = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(xsdSchema);
 
-    public Document getDocument() {
-        return this.d;
-    }
+		final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		dbf.setSchema(s);
 
-    public Vector<SAXParseException> getParseErrors() {
-        return this.parseErrors;
-    }
+		this.path = u;
+		this.builder = dbf.newDocumentBuilder();
+		this.builder.setErrorHandler(this);
+	}
 
-    public boolean isParseClean() {
-        return this.isParsed && this.parseErrors.isEmpty();
-    }
+	@Override
+	public void error(final SAXParseException exception) throws SAXException {
+		this.parseErrors.add(exception);
+	}
 
-    public boolean isParsed() {
-        return this.isParsed;
-    }
+	@Override
+	public void fatalError(final SAXParseException exception) throws SAXException {
+		this.parseErrors.add(exception);
+	}
 
-    public void validate() throws IOException, SAXParseException, SAXException, URISyntaxException {
-        if (!this.path.exists()) {
-            XmlConfigurationValidator.LOG.warn("Wont parse non existant configuration file: " + this.path);
-        } else if (!this.path.isFile()) {
-            XmlConfigurationValidator.LOG.warn("Wont parse thing on filesystem, it does not look like a file: " + this.path);
-        } else {   
-	    	InputSource is = new InputSource(path.getInputStream());
-	    	
-	        this.d = this.builder.parse(is);
+	public Document getDocument() {
+		return this.d;
+	}
 
-	        this.isParsed = true;
-        }
-    }
-
-    @Override
-    public void warning(final SAXParseException exception) throws SAXException {
-        this.parseErrors.add(exception);
-    }
-     
-    public boolean isAux() {
-    	return isAux; 
-    }
+	public Vector<SAXParseException> getParseErrors() {
+		return this.parseErrors;
+	}
 
 	public UPath getPath() {
-		return this.path; 
-	}  
-	 
-	private UPath path; 
+		return this.path;
+	}
+
+	public boolean isAux() {
+		return this.isAux;
+	}
+
+	public boolean isParseClean() {
+		return this.isParsed && this.parseErrors.isEmpty();
+	}
+
+	public boolean isParsed() {
+		return this.isParsed;
+	}
+
+	private InputStream selectSchema() throws Exception {
+		if (this.isAux) {
+			return ResourceResolver.getInstance().getInternalFromFilename("upsilon.aux.xsd");
+		} else {
+			return ResourceResolver.getInstance().getInternalFromFilename("upsilon.xsd");
+		}
+	}
+
+	public void validate() throws IOException, SAXParseException, SAXException, URISyntaxException {
+		if (!this.path.exists()) {
+			XmlConfigurationValidator.LOG.warn("Wont parse non existant configuration file: " + this.path);
+		} else if (!this.path.isFile()) {
+			XmlConfigurationValidator.LOG.warn("Wont parse thing on filesystem, it does not look like a file: " + this.path);
+		} else {
+			InputSource is = new InputSource(this.path.getInputStream());
+
+			this.d = this.builder.parse(is);
+
+			this.isParsed = true;
+		}
+	}
+
+	@Override
+	public void warning(final SAXParseException exception) throws SAXException {
+		this.parseErrors.add(exception);
+	}
 }

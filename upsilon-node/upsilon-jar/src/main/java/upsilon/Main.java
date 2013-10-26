@@ -3,11 +3,10 @@ package upsilon;
 import java.io.File;
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
-import java.util.Iterator;
 import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Level;
-import java.util.logging.LogManager; 
+import java.util.logging.LogManager;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
@@ -18,14 +17,12 @@ import upsilon.configuration.XmlConfigurationLoader;
 import upsilon.dataStructures.CollectionOfStructures;
 import upsilon.dataStructures.StructureNode;
 import upsilon.dataStructures.StructurePeer;
-import upsilon.util.UPath; 
 import upsilon.util.ResourceResolver;
 import upsilon.util.SslUtil;
+import upsilon.util.UPath;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.Appender;
 
 public class Main implements UncaughtExceptionHandler {
 	public static final Main instance = new Main();
@@ -37,7 +34,7 @@ public class Main implements UncaughtExceptionHandler {
 	private static transient final Logger LOG = (Logger) LoggerFactory.getLogger(Main.class);
 
 	public static File getConfigurationOverridePath() {
-		return Main.configurationOverridePath; 
+		return Main.configurationOverridePath;
 	}
 
 	public static String getVersion() {
@@ -47,7 +44,7 @@ public class Main implements UncaughtExceptionHandler {
 			try {
 				final Properties props = new Properties();
 				props.load(Main.class.getResourceAsStream("/releaseVersion.properties"));
-				Main.releaseVersion = props.getProperty("releaseVersion"); 
+				Main.releaseVersion = props.getProperty("releaseVersion");
 			} catch (IOException | NullPointerException e) {
 				Main.LOG.warn("Could not get release version from jar.", e);
 			}
@@ -57,10 +54,10 @@ public class Main implements UncaughtExceptionHandler {
 			}
 		}
 
-		return Main.releaseVersion;  
+		return Main.releaseVersion;
 	}
- 
-	public static void main(final String[] args) throws Exception {		
+
+	public static void main(final String[] args) throws Exception {
 		if (args.length > 0) {
 			Main.configurationOverridePath = new File(args[0]);
 		}
@@ -75,20 +72,20 @@ public class Main implements UncaughtExceptionHandler {
 		SLF4JBridgeHandler.install();
 
 		final File loggingConfiguration = new File(ResourceResolver.getInstance().getConfigDir(), "logging.xml");
- 
+
 		try {
 			if (loggingConfiguration.exists()) {
 				Main.LOG.info("Logging override configuration exists, parsing: " + loggingConfiguration.getAbsolutePath());
- 
-				for (Logger logger : ((LoggerContext)LoggerFactory.getILoggerFactory()).getLoggerList()) {
+
+				for (Logger logger : ((LoggerContext) LoggerFactory.getILoggerFactory()).getLoggerList()) {
 					logger.detachAndStopAllAppenders();
-				}  
-				
+				}
+
 				final JoranConfigurator loggerConfigurator = new JoranConfigurator();
 				loggerConfigurator.setContext((LoggerContext) LoggerFactory.getILoggerFactory());
 				loggerConfigurator.doConfigure(loggingConfiguration);
 			}
-		} catch (final Exception e) { 
+		} catch (final Exception e) {
 			Main.LOG.warn("Could not set up logging config.", e);
 		}
 	}
@@ -126,23 +123,23 @@ public class Main implements UncaughtExceptionHandler {
 
 		return "non-standard-node";
 	}
- 
+
 	public void shutdown() {
 		for (final Daemon t : this.daemons) {
-			t.stop();  
+			t.stop();
 		}
-		
+
 		if (Database.instance != null) {
 			try {
 				Database.instance.disconnect();
-			} catch (Exception e) {    
+			} catch (Exception e) {
 				LOG.error("SQL Error during disconnect: " + e.getMessage());
 			}
 		}
-		
+
 		DirectoryWatcher.stopAll();
 		RobustProcessExecutor.executingThreadPool.shutdown();
-		RobustProcessExecutor.monitoringThreadPool.shutdown(); 
+		RobustProcessExecutor.monitoringThreadPool.shutdown();
 		FileChangeWatcher.stopAll();
 
 		Main.LOG.warn("All daemons have been requested to stop. Main application should now shutdown.");
@@ -156,8 +153,8 @@ public class Main implements UncaughtExceptionHandler {
 		t.setUncaughtExceptionHandler(this);
 		Thread.setDefaultUncaughtExceptionHandler(this);
 	}
-	
-	private void startup() throws Exception { 
+
+	private void startup() throws Exception {
 		Main.setupLogging();
 		SslUtil.init();
 
@@ -168,7 +165,7 @@ public class Main implements UncaughtExceptionHandler {
 
 		try {
 			Main.xmlLoader.load();
-			
+
 			if (!Main.xmlLoader.getValidator().isParseClean()) {
 				throw new IllegalStateException("Parse is unclean.");
 			}
@@ -177,12 +174,12 @@ public class Main implements UncaughtExceptionHandler {
 
 			Main.LOG.error("Could not parse the initial configuration file. Upsilon cannot ever have a good configuration if it does not start off with a good configuration. Exiting.");
 			return;
-		}  
-		  
+		}
+
 		if (Configuration.instance.daemonRestEnabled) {
 			this.startDaemon(new DaemonRest());
 		}
-		
+
 		this.startDaemon(new DaemonScheduler());
 
 		Main.LOG.debug("Best guess at node type: " + this.guessNodeType());
