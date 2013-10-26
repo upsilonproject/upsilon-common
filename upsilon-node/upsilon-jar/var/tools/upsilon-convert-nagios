@@ -30,7 +30,7 @@ def parseServiceCheckCommand(s):
 	return ret
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--nagiosConfig', '-nc', help = "Nagios configuration file to convert from", action = "append")
+parser.add_argument('--nagiosConfig', '-nc', help = "Nagios configuration file to convert from", action = "append", required = True)
 args = parser.parse_args()
 
 nc = config()

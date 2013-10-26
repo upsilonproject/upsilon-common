@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
+from upsiloncommon import *
 import os
-import httplib
 import subprocess
 from subprocess import call
 import argparse
@@ -46,6 +46,14 @@ def callret(cmd):
 	devnull = open("/dev/null", "wb")
 	return call(cmd, stderr=devnull, stdout=devnull, shell=True)
 
+def testsComplete():
+	global testsRun, testsPassed
+
+	print "Tests run:", testsRun, " Passed:", testsPassed, " Failed:", testsRun - testsPassed
+
+	exitCode = 0 if testsPassed == testsRun else 1;
+	sys.exit(exitCode)
+
 upsilonDirectory = findUpsilonDirectory();
 configDirectory = findConfigDirectory()
 
@@ -57,13 +65,14 @@ test("Upsilon config.xml exists", os.path.isfile(os.path.join(configDirectory, "
 test("Upsilon legacy share directory does not exist", not os.path.isdir("/usr/share/upsilon/"))
 test("Upsilon legacy conf directory does not exist", not os.path.isdir("/etc/upsilon/"))
 
-if args.ssl:
-	httpClient = httplib.HTTPSConnection(args.address + ":" + str(args.port), timeout=2)
-else:
-	httpClient = httplib.HTTPConnection(args.address + ":" + str(args.port), timeout=2)
+httpClient = getHttpClient(args.ssl, args.address, args.port)
 
-req = httpClient.request("GET", "/");
-res = httpClient.getresponse()
+try: 
+	req = httpClient.request("GET", "/");
+	res = httpClient.getresponse()
+except:
+	test("Initial HTTP request - server might be running with SSL?", False)
+	testsComplete();
 
 test("Got / (home)", res.status == 200)
 test("Got some content", len(res.read()) > 500);
@@ -81,4 +90,5 @@ test("upsilon manpage does not exist", callret("man upsilon") != 0)
 test("log exists", os.path.isfile("/var/log/upsilon-node.log"))
 test("log is not empty", os.path.getsize("/var/log/upsilon-node.log"))
 
-print "Tests run:", testsRun, " Passed:", testsPassed, " Failed:", testsRun - testsPassed
+testsComplete();
+
