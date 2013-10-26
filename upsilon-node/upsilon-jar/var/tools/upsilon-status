@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
+from upsiloncommon import *
 import sys
-import httplib
 from lxml import etree
 from prettytable import PrettyTable
 import argparse
@@ -18,29 +18,8 @@ parser.add_argument('--port', '-p', help = "Port", default = 4000)
 parser.add_argument('--ssl', action = "store_true")
 args = parser.parse_args();
 
-if args.ssl:
-	httpClient = httplib.HTTPSConnection(args.address + ":" + str(args.port), timeout=2)
-else:
-	httpClient = httplib.HTTPConnection(args.address + ":" + str(args.port), timeout=2)
-
-try:
-	req = httpClient.request("GET", "/internalStatus");
-except Exception as e:
-	print e
-	sys.exit()
-
-try:
-	res = httpClient.getresponse()
-except httplib.BadStatusLine as e:
-	print "Connected, but could not parse HTTP response."
-	print "If this server is running SSL, try again with --ssl"
-	sys.exit()
-
-assert res.status == 200
-
-resp = res.read()
-
-assert len(resp) > 0
+client = getHttpClient(args.ssl, args.address, args.port);
+resp = getHttpContent(client, "/internalStatus")
 
 xml = etree.XML(resp)
 
