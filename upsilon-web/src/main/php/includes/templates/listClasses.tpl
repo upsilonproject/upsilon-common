@@ -58,7 +58,7 @@
 		<tr>
 			<td>{$itemInstance.id}</td>
 			<td><a href = "viewClassInstance.php?id={$itemInstance.id}">{$itemInstance.title}</a></td>
-			<td class = "{$itemInstance.assignedKarma}">{$itemInstance.consecutiveCount} out of {$itemInstance.assignedCount}</td>
+			<td class = "{$itemInstance.assignedKarma}">{$itemInstance.goodCount} out of {$itemInstance.assignedCount}</td>
 			<td class = "{$itemInstance.overallKarma}">{$itemInstance.assignedCount} / {$itemInstance.totalCount}</td>
 		</tr>
 		{/foreach}
