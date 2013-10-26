@@ -1,30 +1,55 @@
 #!/bin/python
 
-from dialog import *
-from xml.dom.minidom import parse
-from xml.parsers.expat import ExpatError
+import shutil
+import time
 from sys import exit
+import argparse
+
+try:
+	from dialog import *
+except: 
+	print "Could not import `dialog`. Try installing `python-dialog` with your package manager."
+	exit(0);
+
+from lxml import etree
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--config', help = "The configuration file to edit", default = "config.xml")
+parser.add_argument('--backup', default = True, action = 'store_true')
+args = parser.parse_args()
+
+REGEX_IDENTIFIER = ("^[a-z0-9_]+$", "Please enter an identifier")
 
 def error(message = None):
 	print message
-	sys.exit(1)
+	exit(1)
 
 def mainMenu():
-	result = dialog.menu("", choices = [["addService", "Add Services"], ["removeService", "Remove service"], ["quit", ""]], title = "upsilon-config Main Menu")
+	result = dialog.menu("", choices = [
+		["addService", "Add Services"], 
+		["removeService", "Remove service"], 
+		["cleanCheck", "Clean & Check the config"],
+		["quit", ""]
+	], title = "upsilon-config Main Menu")
 	result = result[1]
 
 	{
 		"addService": addService,
 		"removeService": removeService,
-		"quit": lambda: sys.exit(0),
-		"": lambda: sys.exit(0)
+		"cleanCheck": cleanCheck,
+		"quit": lambda: exit(0),
+		"": lambda: exit(0)
 	}[result]()
 
-
-def prompt(question, minLength = 4, maxLength = 64):
+def prompt(question, minLength = 4, maxLength = 64, regex = ("", "")):
 	while True:
 		txt = dialog.inputbox(question)
 		txt = txt[1]
+
+		if not regex[0] == "" and not re.match(regex[0], txt):
+			dialog.msgbox("Your input does not match the regex.");
+			continue
+
 
 		if len(txt) == 0:
 			raise RuntimeError("Dialog cancelled");
@@ -39,59 +64,124 @@ def prompt(question, minLength = 4, maxLength = 64):
 
 		return txt;
 
+def cleanCheck():
+	clearEmptyNodes(dom.getroot())
+	checkConfig()
+	save()
+
+	dialog.msgbox("Config cleaned and checked.")
+
 def checkConfig():
-	clearEmptyNodes(dom.childNodes[0])
+	pass
 
 def clearEmptyNodes(node):
-	for child in node.childNodes:
-		if child.nodeType == node.TEXT_NODE:
-			child.data = child.data.strip()
-
-	node.normalize()
+	pass
 
 def save():
+	global args
+
+	if args.backup:
+		shutil.copyfile(args.config, args.config + ".backup-" + time.strftime("%Y-%m-%d.%H-%M-%S") + '~')
+
 	configFile.truncate()
 	configFile.seek(0)
-	configFile.write(dom.toprettyxml())
+	configFile.write(etree.tostring(dom, pretty_print = True))
 
-def getServices():
-	return (el for el in root.childNodes if el.localName == "service")
+def getCommandTemplates():
+	choices = list()
+	commands = dom.xpath("//command")
+
+	for command in commands:
+		commandTemplate = {}
+		commandTemplate["identifier"] = command.get("identifier")
+		commandTemplate["arguments"] = parseExecForVariableNames(command.get("exec"))
+
+		choices.append(commandTemplate)
+
+
+	return choices
+
+def parseExecForVariableNames(execLine):
+	matches = re.findall('\$([a-zA-Z]+)', execLine)
+	
+	return matches
 		
 def removeService():
 	choices = list()
+	services = dom.xpath("//service")
 
-	for index, service in enumerate(getServices()):
-		choices.append([ str(index), service.attributes["name"].value ])
+	if len(services) == 0:
+		dialog.msgbox("There are 0 services to remove!")
+	else:
+		try: 
+			for service in services:
+				choices.append([ service.get("name"), ""])
 
-	serviceIndex = dialog.menu("Which service?", choices = choices)
+			selectedChoice = dialog.menu("Which service?", choices = choices)
+			selectedChoice = selectedChoice[1]
+			selectedService = (el for el in services if el.get("name") == selectedChoice).next()
 
-	dialog.msgbox("You want to remove " + str(serviceIndex))
+			dialog.msgbox("You want to remove " + str(selectedService.get("name")))
+			dom.getroot().remove(selectedService)
+
+			save()
+		except:
+			pass
+
+def selectCommandTemplate(templates):
+	choices = list()
+
+	try: 
+		index = 0
+		for template in templates:
+			index += 1
+			choices.append([ str(index), template['identifier'] ])
+
+		selectedChoice = dialog.menu("Command to use as template:", choices = choices)
+		selectedChoice = selectedChoice[0]
+	except Exception as e:
+		raise e
+
+	return templates[selectedChoice]
 
 def addService():
-	try: 
-		serviceIdentifier = prompt("Service identifier?")
-	except RuntimeError:
+	commandTemplates = getCommandTemplates()
+
+	if len(commandTemplates) == 0:
+		dialog.msgbox("There are 0 templates defined in the config. \n\nPlease add some <command />'s to your config first.", width = 60)
 		return
 
-	elService = dom.createElement("service")
-	elService.attributes["name"] = serviceIdentifier
-	
-	root = dom.childNodes[0]
-	root.appendChild(elService)
+	try: 
+		serviceIdentifier = prompt("Service identifier?", regex = REGEX_IDENTIFIER)	
+		selectedTemplate = selectCommandTemplate(commandTemplates)
 
-	dialog.msgbox("Service added: " + serviceIdentifier)
+		elService = etree.Element("service")
+		elService.set("name", serviceIdentifier)
+
+		for argument in selectedTemplate['arguments']:
+			argValue = prompt("Value for " + argument, 0, 64)
+
+			elArgument = etree.SubElement(elService, "argument")
+			elArgument.set('name', argument)
+			elArgument.text = argValue
+		
+		dom.getroot().append(elService)
+
+		dialog.msgbox("Service added: " + serviceIdentifier)
+	except RuntimeError:
+		return
 
 	save();
 
 #===============================================================================
-configFile = open("config.xml", 'r+')
+configFile = open(args.config, 'r+')
 
 try:
-	dom = parse(configFile);
-	root = dom.childNodes[0]
+	p = etree.XMLParser(remove_blank_text=True)
+	dom = etree.parse(configFile, parser = p)
 
 	checkConfig()
-except ExpatError as e:
+except Exception as e:
 	error("Config is not valid XML: " + str(e))
 
 
