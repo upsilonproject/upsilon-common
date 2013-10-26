@@ -27,10 +27,10 @@ public class ProcessExecutorTest {
 		cmd.setCommandLine("echo");
 
 		StructureService srv1 = new StructureService();
-		srv1.setCommand(cmd);
+		srv1.setCommandWithOnlyPositionalArgs(cmd);
 
 		StructureService srv2 = new StructureService();
-		srv2.setCommand(cmd);
+		srv2.setCommandWithOnlyPositionalArgs(cmd);
 
 		srv1.setDependsOn(srv2);
 
@@ -52,7 +52,7 @@ public class ProcessExecutorTest {
 		cmd.setCommandLine("hostname");
 
 		final StructureService dummyService = new StructureService();
-		dummyService.setCommand(cmd);
+		dummyService.setCommandWithOnlyPositionalArgs(cmd);
 		dummyService.setTimeout(Duration.standardSeconds(3));
 
 		RobustProcessExecutor rpe = new RobustProcessExecutor(dummyService);
@@ -81,7 +81,7 @@ public class ProcessExecutorTest {
 
 		final StructureService dummyService = new StructureService();
 		dummyService.setIdentifier("Dummy Service");
-		dummyService.setCommand(cmd);
+		dummyService.setCommandWithOnlyPositionalArgs(cmd);
 		dummyService.setTimeout(Duration.standardSeconds(3));
 
 		RobustProcessExecutor rpe = new RobustProcessExecutor(dummyService);
@@ -105,7 +105,7 @@ public class ProcessExecutorTest {
 
 		final StructureService dummyService = new StructureService();
 		dummyService.setIdentifier("Dummy Service");
-		dummyService.setCommand(cmd);
+		dummyService.setCommandWithOnlyPositionalArgs(cmd);
 		dummyService.setTimeout(Duration.standardSeconds(3));
 
 		RobustProcessExecutor rpe = new RobustProcessExecutor(dummyService);

@@ -94,7 +94,7 @@ public class HttpServerAndClientTest {
 		
 		StructureService service = new StructureService();
 		service.setIdentifier("superService");
-		service.setCommand(command);
+		service.setCommandWithOnlyPositionalArgs(command);
 		service.setRegistered(true);
 		service.setPeerUpdateRequired(true); 
 		  

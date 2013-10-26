@@ -62,7 +62,7 @@ public class DbTest {
 		cmd.setCommandLine("echo");
 
 		StructureService service = new StructureService();
-		service.setCommand(cmd);
+		service.setCommandWithOnlyPositionalArgs(cmd);
 		service.addResult(ResultKarma.GOOD, "Test service.");
 		service.setIdentifier("testService");
 		service.setDatabaseUpdateRequired(true);

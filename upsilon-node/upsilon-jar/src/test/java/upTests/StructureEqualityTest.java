@@ -58,9 +58,9 @@ public class StructureEqualityTest {
 		final StructureService s2 = new StructureService();
 
 		s1.setIdentifier("one");
-		s1.setCommand(check_command, "check_pie!foo");
+		s1.setCommandWithOnlyPositionalArgs(check_command, "check_pie!foo");
 		s2.setIdentifier("two");
-		s1.setCommand(check_command, "check_pie!bar");
+		s1.setCommandWithOnlyPositionalArgs(check_command, "check_pie!bar");
 		Assert.assertThat(s1, notNullValue());
 		Assert.assertThat(s1, not(s2));
 
@@ -68,8 +68,8 @@ public class StructureEqualityTest {
 		s2.setIdentifier("pie");
 		Assert.assertThat(s1, equalTo(s2));
 
-		s1.setCommand(check_command, "check_pie!foo");
-		s2.setCommand(check_command, "check_pie!bar");
+		s1.setCommandWithOnlyPositionalArgs(check_command, "check_pie!foo");
+		s2.setCommandWithOnlyPositionalArgs(check_command, "check_pie!bar");
 		Assert.assertThat(s1, equalTo(s2));
 
 		Assert.assertThat(s1, not(new Object()));
@@ -80,7 +80,7 @@ public class StructureEqualityTest {
 		StructureRemoteService srs = new StructureRemoteService();
 		Assert.assertFalse(srs.isLocal());
 		Assert.assertTrue(srs.isRegistered());
-		Assert.assertThat(srs.getArguments(), hasSize(0));
+		Assert.assertThat(srs.getArguments().keySet(), hasSize(0));
 	}
 
 	@Test

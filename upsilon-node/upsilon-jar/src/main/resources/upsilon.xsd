@@ -65,10 +65,18 @@
 		<xs:attribute name="id" type="identifier" use="required"></xs:attribute>
 		<xs:attribute name="exec" type="xs:string" use="required"></xs:attribute>
 	</xs:complexType>
+	
+	<xs:complexType name = "argument">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="name" type = "xs:string" use = "optional"></xs:attribute>
+			</xs:extension>   
+		</xs:simpleContent>
+	</xs:complexType>
+	  
 	<xs:complexType name="service">
-		<xs:sequence>
-			<xs:element minOccurs="0" maxOccurs="unbounded" name="argument"
-				type="xs:string" />
+		<xs:sequence> 
+			<xs:element minOccurs="0" maxOccurs="unbounded" name="argument" type="argument" />
 		</xs:sequence>
 		<xs:attribute name="id" type="identifier"></xs:attribute>
 		<xs:attribute name="minDelay" type="intervalType" use="optional"></xs:attribute>

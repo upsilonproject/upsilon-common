@@ -6,17 +6,19 @@
 	</system>  
 	
 	<peer id = "peer1" address = "127.0.0.1" port = "1337" certSha1Fingerprint = "77ff0663ea49d2a0b132f99c94e052315a3099f6" />
-	
-	<command id = "check_ping" exec = "/usr/local/sbin/nix/check_ping" />
 	 
-	<service id = "baseService"  commandRef = "check_ping" register = "false" minDelay = "5s" maxDelay = "10s" />
+ 	<service id = "baseService"  commandRef = "check_ping" register = "false" minDelay = "PT10S" maxDelay = "PT10S" />
+	 	
+	<command id = "check_ping" exec = "/usr/local/sbin/nix/check_ping $ARG1" />
 	  
 	<service id = "mindstormPing" commandRef = "check_ping" register = "true" parent = "baseService"> 
-		<argument>mindstorm5.teratan.lan</argument> 
-	</service>    
-  
-	<group id = "Hosts">    
-		<member serviceRef = "mindstormPing" />
-	</group>  
+		<argument>mindstorm.teratan.lan</argument> 
+	</service>     
 	 
+	<command id = "check_ping_namedarg" exec = "/usr/local/sbin/nix/check_ping_named $HOSTNAME $TIMEOUT" />
+	 
+	<service id = "ping_host_namedarg" commandRef = "check_ping_namedarg">
+		<argument name = "HOSTNAME">host1.example.com</argument>
+		<argument name = "TIMEOUT">60</argument> 
+	</service>
 </config>        

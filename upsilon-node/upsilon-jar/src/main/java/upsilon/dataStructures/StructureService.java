@@ -1,7 +1,7 @@
 package upsilon.dataStructures;
 
 import java.util.Calendar;
-import java.util.Vector;
+import java.util.HashMap;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -28,7 +28,7 @@ public class StructureService extends ConfigStructure implements AbstractService
 	private final MutableFlexiTimer ft = new MutableFlexiTimer(Duration.standardSeconds(10), Duration.standardSeconds(60), Duration.standardSeconds(5), "service timer");
 	private boolean register = true;
 	private String output = "(not yet executed)";
-	private Vector<String> arguments = new Vector<String>();
+	private HashMap<String, String> arguments = new HashMap<String, String>();
 	private transient Duration timeoutSeconds = GlobalConstants.DEF_TIMEOUT;
 
 	private StructureService dependsOn;
@@ -44,7 +44,7 @@ public class StructureService extends ConfigStructure implements AbstractService
 
 	@Override
 	@XmlElement
-	public Vector<String> getArguments() {
+	public HashMap<String, String> getArguments() {
 		return this.arguments;
 	}
 
@@ -165,20 +165,23 @@ public class StructureService extends ConfigStructure implements AbstractService
 		return this.register;
 	}
 
-	public void setCommand(final StructureCommand command, final String... arguments) {
-		final Vector<String> vectorArgs = new Vector<String>();
-
-		for (final String a : arguments) {
-			vectorArgs.add(a);
-		}
-
-		this.setCommand(command, vectorArgs);
+	public void setCommandImpl(final StructureCommand command, HashMap<String, String> args) {
+		this.command = command;
+		this.arguments = args;
 	}
 
-	public void setCommand(final StructureCommand command, final Vector<String> arguments) {
+	public void setCommandWithOnlyPositionalArgs(final StructureCommand command, final String... arguments) {
 		this.command = command;
-		this.arguments = new Vector<String>();
-		this.arguments.addAll(arguments);
+		this.arguments = new HashMap<String, String>();
+
+		final HashMap<String, String> positionalArgList = new HashMap<String, String>();
+
+		for (int i = 0; i < arguments.length; i++) {
+			String a = arguments[i];
+			positionalArgList.put("$ARG" + (i + 1), a);
+		}
+
+		this.arguments = positionalArgList;
 	}
 
 	public void setDependsOn(final StructureService dependsOn) {
@@ -227,13 +230,22 @@ public class StructureService extends ConfigStructure implements AbstractService
 
 			final StructureCommand cmd = Configuration.instance.commands.getById(commandIdentifier);
 
-			final Vector<String> arguments = new Vector<>();
+			final HashMap<String, String> arguments = new HashMap<>();
 
-			for (final XmlNodeHelper child : el.getChildElements("argument")) {
-				arguments.add(child.getNodeValue());
+			int argpos = 0;
+			for (final XmlNodeHelper elArgument : el.getChildElements("argument")) {
+				String argName;
+
+				if (elArgument.hasAttribute("name")) {
+					argName = "$" + elArgument.getAttributeValue("name", ""); // named
+				} else {
+					argName = "$ARG" + ++argpos; // positional
+				}
+
+				arguments.put(argName, elArgument.getNodeValue());
 			}
 
-			this.setCommand(cmd, arguments);
+			this.setCommandImpl(cmd, arguments);
 		} else {
 			this.setRegistered(false);
 		}

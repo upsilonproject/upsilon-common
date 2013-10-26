@@ -1,41 +1,41 @@
 package upsilon.dataStructures;
 
-import java.util.Vector;
+import java.util.HashMap;
 
 import org.joda.time.Instant;
 
 public interface AbstractService {
-    public Vector<String> getArguments();
+	public HashMap<String, String> getArguments();
 
-    public String getDescription();
+	public String getDescription();
 
-    public Instant getEstimatedNextCheck();
+	public Instant getEstimatedNextCheck();
 
-    public abstract String getExecutable();
+	public abstract String getExecutable();
 
-    public abstract String getFinalCommandLine(AbstractService s);
+	public abstract String getFinalCommandLine(AbstractService s);
 
-    public String getIdentifier();
+	public String getIdentifier();
 
-    public abstract String getKarmaString();
+	public abstract String getKarmaString();
 
-    public Instant getLastUpdated();
+	public abstract Instant getLastChanged();
 
-    public abstract String getNodeIdentifier();
+	public Instant getLastUpdated();
 
-    public abstract String getOutput();
+	public abstract String getNodeIdentifier();
 
-    public abstract int getResultConsequtiveCount();
-    
-    public abstract Instant getLastChanged();  
+	public abstract String getOutput();
 
-    public abstract long getSecondsRemaining();
+	public abstract int getResultConsequtiveCount();
 
-    public abstract boolean isDatabaseUpdateRequired();
+	public abstract long getSecondsRemaining();
 
-    public boolean isLocal();
+	public abstract boolean isDatabaseUpdateRequired();
 
-    public abstract boolean isRegistered();
+	public boolean isLocal();
 
-    public abstract void setDatabaseUpdateRequired(boolean b);
+	public abstract boolean isRegistered();
+
+	public abstract void setDatabaseUpdateRequired(boolean b);
 }
