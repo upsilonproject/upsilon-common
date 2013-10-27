@@ -4,6 +4,8 @@ use \libAllure\Form;
 use \libAllure\ElementAlphaNumeric;
 use \libAllure\ElementEmail;
 use \libAllure\ElementPassword;
+use \libAllure\ElementHtml;
+use \libAllure\ElementInput;
 use \libAllure\Database;
 
 class FormInstallationQuestions extends Form {
@@ -11,6 +13,13 @@ class FormInstallationQuestions extends Form {
                 parent::__construct('formInstallation', 'Generate config.php - installation questions');
 
                 $this->addSection('Database');
+
+	        if ($this->isOpenShift()) {
+                        $this->addElement(new ElementHtml('dialog', 'OpenShift', '<p class = "formSection">You are running on OpenShift. The installer has completed the database section of the installer with defaults. You still need to enter the database password.</p>'));
+		}
+
+                $this->addElement(new ElementInput('dbHost', 'Database host or unix socket', 'localhost'));
+                $this->getElement('dbHost')->setMinMaxLengths(0, 128);
                 $this->addElement(new ElementAlphaNumeric('dbName', 'Database name', 'upsilon'));
                 $this->addElement(new ElementAlphaNumeric('dbUser', 'Database username'));
                 $this->addElement(new ElementPassword('dbPass', 'Database user password'));
@@ -24,6 +33,31 @@ class FormInstallationQuestions extends Form {
                 $this->requireFields('dbName', 'dbUser', 'adminUsername', 'adminPassword1', 'adminPassword2');
 
                 $this->addDefaultButtons();
+        }
+
+        public function getDsn() {
+                $hostOrSocket = $this->getElementValue('dbHost');
+
+                if (stripos($hostOrSocket, '/') !== FALSE) {
+                        $dsn = 'mysql:unix_socket=' . $hostOrSocket . ';dbname=' . $this->getElementValue('dbName');
+                } else {
+                        $dsn = 'mysql:host=' . $hostOrSocket . ';dbname=' . $this->getElementValue('dbName');
+                }
+
+                return $dsn;
+        }
+
+        public function isOpenShift() {
+                $openshiftDbHost = getenv('OPENSHIFT_MYSQL_DB_HOST');
+                return !empty($openshiftDbHost);
+        }
+
+        public function autofillOpenShiftValues() {
+                if ($this->isOpenShift()) {
+                        $this->getElement('dbHost')->setValue(getenv('OPENSHIFT_MYSQL_DB_SOCKET'));
+                        $this->getElement('dbUser')->setValue(getenv('OPENSHIFT_MYSQL_DB_USERNAME'));
+                        $this->getElement('dbName')->setValue(getenv('OPENSHIFT_APP_NAME'));
+                }
         }
 
         public function validateExtended() {
@@ -59,11 +93,10 @@ class FormInstallationQuestions extends Form {
         }
 
         private function validateDatabaseConnection() {
-                $dsn = 'mysql:dbname=' . $this->getElementValue('dbName');
                 $dbUser = $this->getElementValue('dbUser');
                 $dbPass = $this->getElementValue('dbPass');
 
-                $this->db = new Database($dsn, $dbUser, $dbPass);              
+                $this->db = new Database($this->getDsn(), $dbUser, $dbPass);              
         }
 
         private function validateDatabaseTables() {
@@ -115,7 +148,7 @@ class FormInstallationQuestions extends Form {
                 $ret .= "date_default_timezone_set('" . date_default_timezone_get() . "');\n";
                 $ret .= "ini_set('display_errors', 'on');\n";
                 $ret .= "\n";
-                $ret .= "define('CFG_DB_DSN', 'mysql:dbname={$this->getElementValue('dbName')}');\n";
+                $ret .= "define('CFG_DB_DSN', '{$this->getDsn()}');\n";
                 $ret .= "define('CFG_DB_USER', '{$this->getElementValue('dbUser')}');\n";
                 $ret .= "define('CFG_DB_PASS', '{$this->getElementValue('dbPass')}');\n";
                 $ret .= "\n// The following is configuration for advanced users only.\n";
