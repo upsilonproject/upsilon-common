@@ -29,7 +29,8 @@ def error(message = None, e = None):
 	exit(1)
 
 def mainMenu():
-	result = dialog.menu("", choices = [
+	global args
+	result = dialog.menu("Config file: " + args.config, choices = [
 		["addService", "Add Services"], 
 		["removeService", "Remove service"], 
 		["cleanCheck", "Clean & Check the config"],
