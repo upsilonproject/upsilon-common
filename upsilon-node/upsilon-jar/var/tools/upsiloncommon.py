@@ -2,6 +2,7 @@
 
 import httplib
 import sys
+import socket
 
 def getHttpClient(ssl, address, port):
 	if ssl:
@@ -12,10 +13,13 @@ def getHttpClient(ssl, address, port):
 	return httpClient
 
 def getHttpContent(client, url):
-	client.request("GET", url)
-
 	try:
+		client.request("GET", url)
 		res = client.getresponse()
+	except socket.error as e:
+		print "Could not even connect. Upsilon may not be running at this address & port."
+		print "Socket error: " + str(e)
+		sys.exit()
 	except httplib.BadStatusLine as e:
 		print "Connected, but could not parse HTTP response."
 		print "If this server is running SSL, try again with --ssl"

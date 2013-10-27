@@ -34,6 +34,9 @@
 
 					<requires>
 						<require>java-1.7.0-openjdk</require>
+						<require>python-lxml</require>
+						<require>python-prettytable</require>
+						<require>python-dialog</require>
 <!--
 						<require>logback</require>
 						<require>slf4j</require>

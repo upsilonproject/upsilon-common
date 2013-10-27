@@ -14,6 +14,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.joda.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -44,8 +45,15 @@ public class XmlConfigurationLoader implements FileChangeWatcher.Listener, Direc
 		@XmlElement(name = "error")
 		private final Vector<String> stringParseErrors = new Vector<String>();
 
+		private Instant lastParsed = Instant.now();
+
 		public void clearParseErrors() {
 			this.stringParseErrors.clear();
+		}
+
+		@XmlElement
+		public String getLastParsed() {
+			return this.lastParsed.toDateTime().toString();
 		}
 
 		@XmlElement
@@ -98,6 +106,7 @@ public class XmlConfigurationLoader implements FileChangeWatcher.Listener, Direc
 
 		ConfigStatus configStatus = this.getConfigStatus(this.path);
 		configStatus.isParseClean = false;
+		configStatus.lastParsed = Instant.now();
 
 		this.reparse();
 	}
@@ -127,6 +136,7 @@ public class XmlConfigurationLoader implements FileChangeWatcher.Listener, Direc
 
 		ConfigStatus newStatus = new ConfigStatus();
 		newStatus.path = path;
+		newStatus.lastParsed = Instant.now();
 		configFileStatuses.add(newStatus);
 
 		return newStatus;

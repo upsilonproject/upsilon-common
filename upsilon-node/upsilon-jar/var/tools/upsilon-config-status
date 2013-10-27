@@ -22,13 +22,14 @@ res = getHttpContent(client, "/internalStatus")
 
 xml = etree.XML(res)
 
-configFiles = PrettyTable(["Filename", "Schema", "Parse status"])
+configFiles = PrettyTable(["Filename", "Schema", "Parse status", "Last Parsed"])
 
 for config in xml.xpath("//configStatuses"):
 	configFiles.add_row([
 		config.xpath("./path/text()")[0],
 		bool2string(config.xpath("./isAux/text()")[0], "AUX", "MAIN"),
-		bool2string(config.xpath("./isParseClean/text()")[0], "Clean", "ERROR")
+		bool2string(config.xpath("./isParseClean/text()")[0], "Clean", "ERROR"),
+		config.xpath("./lastParsed/text()")[0]
 	])
 
 print configFiles
