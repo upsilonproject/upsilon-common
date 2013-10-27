@@ -24,6 +24,8 @@ class FormInstallationQuestions extends Form {
                 $this->addElement(new ElementAlphaNumeric('dbUser', 'Database username'));
                 $this->addElement(new ElementPassword('dbPass', 'Database user password'));
                 $this->getElement('dbPass')->setOptional(true);
+        
+		$this->autofillOpenShiftValues();
 
                 $this->addSection('Administrator');
                 $this->addElement(new ElementAlphaNumeric('adminUsername', 'First Admin Username', 'administrator'));
