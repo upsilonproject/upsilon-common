@@ -17,10 +17,12 @@
 
   <packaging>pom</packaging>
   <modules>
-    <module>upsilon-jar</module>
     <module>upsilon-node-doc</module>
     <module>upsilon-node-tgz</module>
     <module>upsilon-node-deb</module>
+    <module>upsilon-node-core</module>
+    <module>upsilon-node-standalone</module>
+    <module>upsilon-node-deployable</module>
   </modules>
 
   <profiles>
