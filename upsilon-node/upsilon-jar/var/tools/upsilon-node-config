@@ -145,7 +145,7 @@ def selectCommandTemplate(templates):
 			choices.append([ str(index), template['id'] ])
 
 		selectedChoice = dialog.menu("Command to use as template:", choices = choices)
-		selectedChoice = selectedChoice[0]
+		selectedChoice = int(selectedChoice[1]) - 1
 	except Exception as e:
 		print templates
 		error("Select command template", e)
