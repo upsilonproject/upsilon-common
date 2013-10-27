@@ -34,7 +34,14 @@ See also: http://upsilon-project.co.uk/site/index.php/Upsilon-node_Logging
     <root>
         <appender class="ch.qos.logback.core.ConsoleAppender">   
         	<encoder>   
+		<!--
+			For Developers:
         		<pattern>%-5level [%thread] %msg%n</pattern>
+
+			For Users:
+        		<pattern>%-5level %msg%n</pattern>
+		!-->
+        		<pattern>%-5level %msg%n</pattern>
         	</encoder>    
         </appender>    
     </root>   
