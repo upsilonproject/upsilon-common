@@ -159,10 +159,16 @@ public class Database {
             
             return true;
         } else {
-            this.log.error("Connection to DB is invalid, cannot update.");
+            this.log.error("Connection to DB is invalid, cannot update this time. Will attempt to re-connect for the future...");
+            
+            try {
+            	this.connect();
+            } catch (Exception e) {
+            	this.log.error("Could not re-connect to the database for future service updates. The problem reported was: " + e.getMessage(), e)
+            }
+            
+            return false;
         }
-        
-        return false;
     }
 
     private void updateNode(final StructureNode n) {
