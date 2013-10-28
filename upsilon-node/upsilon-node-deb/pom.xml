@@ -7,6 +7,15 @@
   </parent>
   <artifactId>upsilon-node-deb</artifactId>
   <packaging>pom</packaging>
+
+  <dependencies>
+	<dependency>
+		<groupId>upsilon</groupId>
+		<artifactId>upsilon-node-core</artifactId>
+		<version>0.0.10</version>
+	</dependency>
+  </dependencies>
+
   <build>
   	<plugins>
   		<plugin>

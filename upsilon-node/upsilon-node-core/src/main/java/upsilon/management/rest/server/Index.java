@@ -32,8 +32,6 @@ import upsilon.Main;
 import upsilon.configuration.XmlConfigurationLoader.ConfigStatus;
 import upsilon.util.ResourceResolver;
 
-import com.sun.jersey.core.util.Base64;
-
 @Path("/")
 public class Index {
 	@XmlRootElement
@@ -126,7 +124,7 @@ public class Index {
 
 			final Certificate c = ks.getCertificate("upsilon.teratan.net");
 
-			final String base64cert = new String(Base64.encode(c.getEncoded()));
+			final String base64cert = new String(java.util.Base64.getEncoder().encode(c.getEncoded()));
 			System.out.println(base64cert);
 
 			fis.close();
