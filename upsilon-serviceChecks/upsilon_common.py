@@ -1,7 +1,7 @@
 import urllib2
 import sys
 import json
-from pynag.Plugins import OK, CRITICAL
+from pynag.Plugins import OK, WARNING, CRITICAL
 
 def req(auth_url, auth_req_data):
 		auth_req = urllib2.Request(auth_url, data=auth_req_data)
@@ -17,10 +17,11 @@ def reqJson(url, data = None):
 		return json.loads(req(url, json.dumps(data)));
 
 
-def exit(status = OK, metadata = None):
+def exit(status = OK, metadata = None, message = None):
 	if not metadata == None:
 		print "<json>%s</json>" % json.dumps(metadata)
 
+	print message
 	sys.exit(status);
 
 class clsmetadata(dict):
