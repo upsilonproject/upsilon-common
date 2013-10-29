@@ -22,8 +22,9 @@ for supply in listdir(powerSupplies):
 if onAcPower:
 	exit(OK, None, "On AC Power")
 elif hasBattery:
+	karma = OK if batteryCharge > 25 else CRITICAL
 	metadata = clsmetadata()
-	metadata.addMetric("batteryCharge", batteryCharge, OK if batteryCharge > 25 else CRITICAL)
-	exit(WARNING, metadata, "On Battery, charge is: " + str(batteryCharge) + "%")
+	metadata.addMetric("batteryCharge", batteryCharge, karma)
+	exit(karma, metadata, "On Battery, charge is: " + str(batteryCharge) + "%")
 else:
 	exit(CRITICAL, None, "Can't detect power source!")
