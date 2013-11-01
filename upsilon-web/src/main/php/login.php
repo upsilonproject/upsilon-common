@@ -11,11 +11,6 @@ handleApiLogin();
 
 $f = new FormLogin();
 $f->setTitle('Upsilon Login');
-$f->addSection('Advanced Options');
-$f->addElement(new ElementCheckbox('lowBandwidth', 'Low bandwidth?'));
-$f->addElement(new ElementCheckbox('tutorialMode', 'Tutorial mode'));
-$f->addElement(new ElementCheckbox('privateMode', 'Private mode'));
-
 
 if ($f->validate()) {
 	header('Location: index.php');

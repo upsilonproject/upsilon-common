@@ -884,13 +884,13 @@ function getSingleServiceMetric($service, $field) {
 	$pat = '#<json>(.+)</json>#ims';
 
 	if ($field == 'karma') {
-			$metric = new stdClass;
-			$metric->date = $service['date'];
-			$metric->karma = $service['karma'];
-			$metric->value = karmaToInt($service['karma']);
+		$metric = new stdClass;
+		$metric->date = $service['date'];
+		$metric->karma = $service['karma'];
+		$metric->value = karmaToInt($service['karma']);
 
-			return $metric;
-		}
+		return $metric;
+	}
 
 		$res = preg_match($pat, $service['output'], $matches);
 
@@ -910,12 +910,10 @@ function getSingleServiceMetric($service, $field) {
 
 			if (!empty($json->metrics)) {
 				foreach ($json->metrics as $metric) {
-					if ($metric->name == $field) {
-						$metric->value = $metric->value;
-					} else {
-						return;
+					if ($metric->name != $field) {
+						continue;
 					}
-			
+		
 					$metric->date = $service['date'];
 					$metric->karma = $service['karma'];
 
@@ -1135,5 +1133,31 @@ function getClassRequirements($id) {
 
 	return $stmt->fetchAll();
 }
+
+function getElementServiceIcon($default) {
+	$el = new \libAllure\ElementSelect('icon', 'Icon', null, '<span id = "serviceIconPreview"><em>No icon selected.</em></span>');
+	$el->addOption('', '');
+
+	$listIcons = scandir('resources/images/serviceIcons/');
+
+	foreach ($listIcons as $k => $itemIcon) {
+		if ($itemIcon[0] == '.') {
+			continue;
+		}
+
+		if (stripos($itemIcon, '.png') == false) {
+			continue;
+		}
+
+		$el->addOption($itemIcon, $itemIcon);
+	}
+
+	$el->setValue($default);
+	$el->setOnChange('serviceIconChanged');
+	
+	return $el;
+}
+
+
 
 ?>

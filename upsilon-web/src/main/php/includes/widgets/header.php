@@ -59,6 +59,7 @@ if (Session::isLoggedIn()) {
 
 	$generalLinksServices = linksCollection();
 	$generalLinksServices->add('viewServiceHud.php', 'Service HUD');
+	$generalLinksServices->add('listCommands.php', 'Commands');
 	$generalLinksServices->add('listGroups.php', 'Groups');
 	$generalLinksServices->add('viewList.php', 'List');
 	$generalLinksServices->add('viewList.php?problems', 'List with problems');
