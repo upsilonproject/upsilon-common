@@ -17,13 +17,14 @@ for supply in listdir(powerSupplies):
 	if "BAT" in supply:
 		hasBattery = True
 
-		batteryCharge = open(join(powerSupplies, supply, "capacity"), 'r').read().strip()
+		batteryCharge = int(open(join(powerSupplies, supply, "capacity"), 'r').read().strip())
 
 if onAcPower:
 	exit(OK, None, "On AC Power")
 elif hasBattery:
+	karma = OK if batteryCharge > 25 else CRITICAL
 	metadata = clsmetadata()
-	metdata.addMetric("Battery charge", batteryCharge, OK if batteryCharge > 50 else CRITICAL)
-	exit(WARNING, None, "On Battery, charge is: " + str(batteryCharge) + "%")
+	metadata.addMetric("batteryCharge", batteryCharge, karma)
+	exit(karma, metadata, "On Battery, charge is: " + str(batteryCharge) + "%")
 else:
 	exit(CRITICAL, None, "Can't detect power source!")
