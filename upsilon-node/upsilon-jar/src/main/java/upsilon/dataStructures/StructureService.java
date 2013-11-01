@@ -53,6 +53,11 @@ public class StructureService extends ConfigStructure implements AbstractService
 		return this.command;
 	}
 
+	@Override
+	public String getCommandIdentifier() {
+		return this.command.getIdentifier();
+	}
+
 	public StructureService getDependancy() {
 		return this.dependsOn;
 	}
