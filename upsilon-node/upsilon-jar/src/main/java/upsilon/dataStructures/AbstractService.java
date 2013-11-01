@@ -7,6 +7,8 @@ import org.joda.time.Instant;
 public interface AbstractService {
 	public HashMap<String, String> getArguments();
 
+	public abstract String getCommandIdentifier();
+
 	public String getDescription();
 
 	public Instant getEstimatedNextCheck();

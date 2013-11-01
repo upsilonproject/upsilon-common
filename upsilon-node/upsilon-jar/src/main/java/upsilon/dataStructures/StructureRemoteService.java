@@ -24,10 +24,16 @@ public class StructureRemoteService implements AbstractService {
 	private int consecutiveCount;
 
 	private String nodeIdentifier = "???";
+	private String commandIdentifier = "???";
 
 	@Override
 	public HashMap<String, String> getArguments() {
 		return new HashMap<String, String>();
+	}
+
+	@Override
+	public String getCommandIdentifier() {
+		return this.commandIdentifier;
 	}
 
 	@Override
@@ -103,6 +109,10 @@ public class StructureRemoteService implements AbstractService {
 	@Override
 	public boolean isRegistered() {
 		return true;
+	}
+
+	public void setCommandIdentifier(String identifier) {
+		this.commandIdentifier = identifier;
 	}
 
 	@Override
