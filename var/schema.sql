@@ -122,6 +122,22 @@ CREATE TABLE `classes` (
   `title` varchar(32) DEFAULT NULL,
   `l` int(11) DEFAULT NULL,
   `r` int(11) DEFAULT NULL,
+  `icon` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `command_metadata`
+--
+
+DROP TABLE IF EXISTS `command_metadata`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `command_metadata` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `commandIdentifier` varchar(255) DEFAULT NULL,
+  `icon` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -400,11 +416,12 @@ CREATE TABLE `services` (
   `commandLine` longtext,
   `lastUpdated` datetime DEFAULT NULL,
   `lastChanged` datetime DEFAULT NULL,
-  `consecutiveCount` int(11) DEFAULT '0',
+  `consecutiveCount` int(11) NOT NULL DEFAULT '0',
   `executable` varchar(255) DEFAULT NULL,
   `estimatedNextCheck` datetime DEFAULT NULL,
   `isLocal` tinyint(4) DEFAULT NULL,
   `node` varchar(128) DEFAULT NULL,
+  `commandIdentifier` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `identifier` (`identifier`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
@@ -495,6 +512,7 @@ CREATE TABLE `users` (
   `oldServiceThreshold` int(11) DEFAULT '3600',
   `tutorialMode` int(11) DEFAULT '1',
   `enableDebug` tinyint(4) DEFAULT '0',
+  `experimentalFeatures` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -555,4 +573,4 @@ CREATE TABLE `widgets` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-09-16 16:12:39
+-- Dump completed on 2013-11-02 14:06:31
