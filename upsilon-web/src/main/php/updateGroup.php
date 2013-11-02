@@ -18,15 +18,16 @@ class FormUpdateGroup extends \libAllure\Form {
 
 		$this->addElementReadOnly('ID', $id, 'id');
 		$this->addElement(new ElementInput('title', 'Title', $this->itemGroup['title']));
-		$this->addElement($this->getGroupSelectionElement());
+		$this->addElement($this->getGroupSelectionElement($this->itemGroup['parent'], $this->itemGroup['id']));
 		$this->getElement('parent')->setValue($this->itemGroup['parent']);
 
 		$this->addDefaultButtons();
 	}
 	
-	private function getGroupSelectionElement() {
-		$sql = 'SELECT g.title FROM service_groups g ORDER BY g.title ASC';
+	private function getGroupSelectionElement($current, $self) {
+		$sql = 'SELECT g.title FROM service_groups g ORDER BY g.title WHERE g.id != :gid ASC';
 		$stmt = DatabaseFactory::getInstance()->prepare($sql);
+		$stmt->bindValue(':gid', $self);
 		$stmt->execute();
 
 		$el = new ElementSelect('parent', 'Parent');
@@ -35,6 +36,8 @@ class FormUpdateGroup extends \libAllure\Form {
 		foreach ($stmt->fetchAll() as $itemGroup) {
 			$el->addOption($itemGroup['title'], $itemGroup['title']);
 		}
+
+		$el->setValue($current);
 
 		return $el;
 	}
