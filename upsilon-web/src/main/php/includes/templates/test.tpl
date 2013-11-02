@@ -11,7 +11,7 @@
 
 	{foreach from = $links item = link}
 		{if count($link.children) > 0}
-			<div {if not $link.enabled}disabled = "disabled"{/if} data-dojo-type = "dijit/PopupMenu{if empty($sub)}Bar{/if}Item">
+			<div {if not $link.enabled}disabled = "disabled"{/if} data-dojo-type = "dijit/PopupMenuBarItem">
 				<span>{$link.title}</span>
 
 				{include file = "links.tpl" links = $link.children skipTitle = true sub = true}

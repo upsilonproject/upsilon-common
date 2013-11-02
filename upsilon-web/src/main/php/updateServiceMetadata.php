@@ -60,7 +60,7 @@ class FormUpdateMetadata extends Form {
 		$this->addElement(new ElementTextbox('actions', 'Actions', $this->metadata['actions']));
 		$this->addElement(new ElementTextbox('metrics', 'Metrics', $this->metadata['metrics']));
 		$this->addElementDefaultMetric($metadata['defaultMetric']);
-		$this->addElement($this->getElementServiceIcon($this->metadata['icon']));
+		$this->addElement(getElementServiceIcon($this->metadata['icon']));
 		$this->addElement(new ElementCheckbox('hasTasks', 'Has Tasks', $this->metadata['hasTasks']));
 		$this->addElement(new ElementCheckbox('hasEvents', 'Has Events', $this->metadata['hasEvents']));
 
@@ -150,30 +150,6 @@ class FormUpdateMetadata extends Form {
 		} else {
 			$this->addElementReadOnly('DefaultMetric', 'karma', 'defaultMetric');
 		}
-	}
-
-	private function getElementServiceIcon($default) {
-		$el = new ElementSelect('icon', 'Icon', null, '<span id = "serviceIconPreview"><em>No icon selected.</em></span>');
-		$el->addOption('', '');
-
-		$listIcons = scandir('resources/images/serviceIcons/');
-
-		foreach ($listIcons as $k => $itemIcon) {
-			if ($itemIcon[0] == '.') {
-				continue;
-			}
-
-			if (stripos($itemIcon, '.png') == false) {
-				continue;
-			}
-
-			$el->addOption($itemIcon, $itemIcon);
-		}
-
-		$el->setValue($default);
-		$el->setOnChange('serviceIconChanged');
-		
-		return $el;
 	}
 
 	public function process() {

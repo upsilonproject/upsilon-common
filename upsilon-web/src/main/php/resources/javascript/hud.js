@@ -272,7 +272,7 @@ function setupSortableTables() {
 }
 
 function serviceIconChanged() {
-	var icon = $('select#updateMetadata-icon').val();
+	var icon = $('select[name$="-icon"]').val();
 
 	if (icon != '') {
 		icon = 'resources/images/serviceIcons/' + icon;

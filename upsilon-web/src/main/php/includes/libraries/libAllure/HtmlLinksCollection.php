@@ -105,7 +105,7 @@ class HtmlLinksCollection implements \Iterator {
 			'iconUrl' => $iconUrl,
 			'enabled' => true,
 			'containerClass'=> $containerClass,
-			'children' => array(),
+			'children' => null,
 		);
 
 		return key($this->collection);
@@ -124,7 +124,7 @@ class HtmlLinksCollection implements \Iterator {
 			}
 		}
 
-		throw new Exception('Cannot add child links collection, cannot find parent by title: ' . $title);
+		throw new \Exception('Cannot add child links collection, cannot find parent by title: ' . $title);
 	}
 
 	public function getAll() {
@@ -137,6 +137,10 @@ class HtmlLinksCollection implements \Iterator {
 
 	public function getTitle() {
 		return $this->title;
+	}
+
+	public function getSize() {
+		return sizeof($this->collection);
 	}
 }
 

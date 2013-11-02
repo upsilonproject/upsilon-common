@@ -10,16 +10,16 @@ use \libAllure\DatabaseFactory;
 use \libAllure\FormHandler;
 
 class FormCreateClassInstance extends Form {
-	public function __construct() {
+	public function __construct($parent) {
 		parent::__construct('createClassInstance', 'Create class instance');
 
-		$this->addElement($this->getElementClasses());
+		$this->addElement($this->getElementClasses($parent));
 		$this->addElement(new ElementInput('title', 'Title'));
 		$this->addDefaultButtons();
 	}
 
-	private function getElementClasses() {
-		$el = new ElementSelect('class', 'Classes');
+	private function getElementClasses($parent) {
+		$el = new ElementSelect('class', 'First class');
 		
 		$sql = 'SELECT c.id, c.title FROM classes c';
 		$stmt = DatabaseFactory::getInstance()->prepare($sql);
@@ -28,6 +28,8 @@ class FormCreateClassInstance extends Form {
 		foreach ($stmt->fetchAll() as $itemClass) {
 			$el->addOption($itemClass['title'], $itemClass['id']);
 		}
+
+		$el->setValue($parent);
 
 		return $el;
 	}
@@ -49,6 +51,11 @@ class FormCreateClassInstance extends Form {
 }
 
 $fh = new FormHandler('FormCreateClassInstance');
+
+if (isset($_REQUEST['parent'])) {
+	$fh->setConstructorArgument(0, $_REQUEST['parent']);
+}
+
 $fh->setRedirect('listClasses.php');
 $fh->handle();
 
