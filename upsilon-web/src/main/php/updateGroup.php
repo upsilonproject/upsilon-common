@@ -25,7 +25,7 @@ class FormUpdateGroup extends \libAllure\Form {
 	}
 	
 	private function getGroupSelectionElement($current, $self) {
-		$sql = 'SELECT g.title FROM service_groups g ORDER BY g.title WHERE g.id != :gid ASC';
+		$sql = 'SELECT g.title FROM service_groups g WHERE g.id != :gid ORDER BY g.title ASC';
 		$stmt = DatabaseFactory::getInstance()->prepare($sql);
 		$stmt->bindValue(':gid', $self);
 		$stmt->execute();
