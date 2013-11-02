@@ -2,7 +2,7 @@
 <div class = "serviceDetail box">
 	<h4>
 {if !empty($metadata.icon)}
-<img src = "resources/images/serviceIcons/{$metadata.icon}" alt = "serviceIcon" style = "padding-top: 4px"/>
+<img src = "resources/images/serviceIcons/{$metadata.icon}" alt = "serviceIcon" class = "inlineIcon"/>
 {/if}
 	Service Configuration</h4>
 
@@ -27,7 +27,7 @@
 	<div style = "float: right; vertical-align: top;">
 		<h3>Debug info</h3>
 		<p><strong>ID:</strong> {$itemService.id}</p>
-		<p><strong>Command line:</strong> {$itemService.commandLine}</p>
+		<p><strong><abbr title = "Command identifier: {$itemService.commandIdentifier}">Command line</abbr>:</strong> {$itemService.commandLine}</p>
 
 		<p><strong>Group memberships:</strong>
 		{if $listGroupMemberships|@count eq 0}

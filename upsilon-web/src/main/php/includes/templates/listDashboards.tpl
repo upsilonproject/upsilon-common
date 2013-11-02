@@ -16,6 +16,7 @@
 			<tr>
 				<th>ID</th>
 				<th>Title</th>
+				<th>Widgets</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -23,6 +24,7 @@
 			<tr>
 				<td>{$itemDashboard.id}</td>
 				<td><a href = "viewDashboard.php?id={$itemDashboard.id}">{$itemDashboard.title}</a></td>
+				<td>{$itemDashboard.widgetCount}</td>
 			</tr>
 		{/foreach}
 		</tbody>

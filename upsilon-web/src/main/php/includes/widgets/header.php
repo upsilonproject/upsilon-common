@@ -16,7 +16,7 @@ if (Session::isLoggedIn()) {
 
 	$nowHour = intval(date('G'));
 
-	$tpl->assign('isNighttime', !($nowHour > $dtBegin && $nowHour < $dtEnd));
+	$tpl->assign('isNighttime', !($nowHour >= $dtBegin && $nowHour <= $dtEnd));
 	$tpl->assign('tutorialMode', Session::getUser()->getData('tutorialMode'));
 	$tpl->assign('enableDebug', Session::getUser()->getData('enableDebug'));
 	$tpl->assign('username', Session::getUser()->getUsername());
@@ -61,9 +61,16 @@ if (Session::isLoggedIn()) {
 	$generalLinksServices->add('viewServiceHud.php', 'Service HUD');
 	$generalLinksServices->add('listCommands.php', 'Commands');
 	$generalLinksServices->add('listGroups.php', 'Groups');
-	$generalLinksServices->add('viewList.php', 'List');
-	$generalLinksServices->add('viewList.php?problems', 'List with problems');
+	$generalLinksServices->add('#', 'List');
+
+	$generalLinksServicesList = linksCollection();
+	$generalLinksServicesList->add('viewList.php', 'Full list');
+	$generalLinksServicesList->add('viewList.php?problems', 'Services With Problems');
+	$generalLinksServicesList->add('viewList.php?ungrouped', 'Services Without Group');
+	$generalLinksServices->addChildCollection('List', $generalLinksServicesList);
+	
 	$generalLinksServices->add('listMaintPeriods.php', 'Maintenance Periods');
+
 	$generalLinks->addChildCollection('Services', $generalLinksServices);
 
 	$generalLinks->add('listClasses.php', 'Classes');

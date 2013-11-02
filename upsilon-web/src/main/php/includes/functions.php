@@ -86,8 +86,8 @@ function db() {
 	return DatabaseFactory::getInstance();
 }
 
-function linksCollection() {
-	return new HtmlLinksCollection();
+function linksCollection($title = null) {
+	return new HtmlLinksCollection($title);
 }
 
 function redirect($url) {
@@ -377,7 +377,7 @@ function getServicesBad() {
 }
 
 function getServices($groupId) {
-	$sqlSubservices = 'SELECT DISTINCT m.id membershipId, md.actions AS metaActions, md.icon, IF(md.alias IS null, s.identifier, md.alias) AS alias, IF(md.acceptableDowntimeSla IS NULL, md.acceptableDowntime, sla.content) AS acceptableDowntime, s.id, s.lastUpdated, s.lastChanged, s.description, s.commandLine, s.output, s.karma, s.secondsRemaining, s.executable, s.consecutiveCount, s.node, s.estimatedNextCheck FROM service_group_memberships m RIGHT JOIN services s ON m.service = s.identifier LEFT JOIN service_groups g ON m.`group` = g.title LEFT JOIN service_metadata md ON md.service = s.identifier LEFT JOIN acceptable_downtime_sla sla ON md.acceptableDowntimeSla = sla.id WHERE g.id = :groupId ORDER BY s.identifier';
+	$sqlSubservices = 'SELECT DISTINCT m.id membershipId, md.actions AS metaActions, IF(md.icon IS null, cmd.icon, md.icon) AS icon, IF(md.alias IS null, s.identifier, md.alias) AS alias, IF(md.acceptableDowntimeSla IS NULL, md.acceptableDowntime, sla.content) AS acceptableDowntime, s.id, s.lastUpdated, s.lastChanged, s.description, s.commandLine, s.output, s.karma, s.secondsRemaining, s.executable, s.consecutiveCount, s.node, s.estimatedNextCheck FROM service_group_memberships m RIGHT JOIN services s ON m.service = s.identifier LEFT JOIN service_groups g ON m.`group` = g.title LEFT JOIN command_metadata cmd ON s.commandIdentifier = cmd.commandIdentifier LEFT JOIN service_metadata md ON md.service = s.identifier LEFT JOIN acceptable_downtime_sla sla ON md.acceptableDowntimeSla = sla.id WHERE g.id = :groupId ORDER BY s.identifier';
 	$stmt = DatabaseFactory::getInstance()->prepare($sqlSubservices);
 	$stmt->bindValue(':groupId', $groupId);
 	$stmt->execute();
@@ -521,7 +521,7 @@ function redirectApiClients() {
 }
 
 function getServiceById($id) {
-		$sql = 'SELECT s.id, s.description, s.identifier, s.commandLine, s.karma, s.node, s.output, s.lastUpdated, s.estimatedNextCheck, s.consecutiveCount FROM services s WHERE s.id = :serviceId';
+		$sql = 'SELECT s.id, s.description, s.identifier, s.commandLine, s.karma, s.node, s.output, s.lastUpdated, s.estimatedNextCheck, s.consecutiveCount, s.commandIdentifier FROM services s WHERE s.id = :serviceId';
 		$stmt = DatabaseFactory::getInstance()->prepare($sql);
 		$stmt->bindValue(':serviceId', $id);
 		$stmt->execute();
@@ -1072,7 +1072,8 @@ function getImmediateChildrenClasses($id) {
 	$sqlImmediateChildren = <<<SQL
 SELECT 
 	n.id AS id,
-	n.title, 
+	n.title,
+	n.icon, 
 	children.count AS childrenCount,
 	(count(parent.title) - (children.depth + 1)) AS depth
 FROM 
@@ -1158,6 +1159,14 @@ function getElementServiceIcon($default) {
 	return $el;
 }
 
+function getClassParents($class) {
+	$sql = 'SELECT c.id, c.title FROM classes c WHERE c.l < :left AND c.r > :right ORDER BY c.l';
+	$stmt = db()->prepare($sql);
+	$stmt->bindValue(':left', $class['l']);
+	$stmt->bindValue(':right', $class['r']);
+	$stmt->execute();
 
+	return $stmt->fetchAll();
+}
 
 ?>

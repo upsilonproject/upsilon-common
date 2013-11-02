@@ -7,6 +7,8 @@ use \libAllure\DatabaseFactory;
 
 if (isset($_REQUEST['problems'])) {
 	$sql = 'SELECT s.id, s.identifier, s.output, s.description, s.lastUpdated, s.karma, s.secondsRemaining FROM services s WHERE s.karma != "good"';
+} else if (isset($_REQUEST['ungrouped']))  {
+	$sql = 'SELECT s.id, s.identifier, s.output, s.description, s.lastUpdated, s.karma, s.secondsRemaining FROM services s WHERE s.identifier NOT IN (SELECT g.service FROM service_group_memberships g)';
 } else {
 	$sql = 'SELECT s.id, s.identifier, s.output, s.description, s.lastUpdated, s.karma, s.secondsRemaining FROM services s';
 }

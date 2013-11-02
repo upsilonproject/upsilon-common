@@ -7,7 +7,7 @@ $links->add('createCommand.php', 'Create command');
 
 require_once 'includes/widgets/header.php';
 
-$sql = 'SELECT c.id, c.commandIdentifier, c.icon FROM command_metadata c LEFT JOIN services s ON s.commandIdentifier = c.commandIdentifier';
+$sql = 'SELECT c.id, c.commandIdentifier, c.icon, count(s.id) AS serviceCount FROM command_metadata c LEFT JOIN services s ON s.commandIdentifier = c.commandIdentifier GROUP BY c.id';
 $stmt = $db->prepare($sql);
 $stmt->execute();
 

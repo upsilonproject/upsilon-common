@@ -10,14 +10,14 @@ use \libAllure\DatabaseFactory;
 use \libAllure\ElementSelect;
 
 class FormCreateClass extends Form {
-	public function __construct() {
+	public function __construct($parent) {
 		$this->addElement(new ElementInput('title', 'Title'));
 
-		$this->addElement($this->getElementParent());
+		$this->addElement($this->getElementParent($parent));
 		$this->addDefaultButtons();
 	}
 
-	public function getElementParent() {
+	public function getElementParent($parent) {
 		$el = new ElementSelect('class', 'Parent class');
 
 		$sql = 'SELECT c.id, c.title, c.l, c.r FROM classes c ORDER BY c.title ASC';
@@ -29,6 +29,8 @@ class FormCreateClass extends Form {
 		foreach ($this->classes as $class) {
 			$el->addOption($class['title'], $class['id']);
 		}
+
+		$el->setValue($parent);
 
 		return $el;
 	}
@@ -58,5 +60,11 @@ class FormCreateClass extends Form {
 
 $fh = new FormHandler('FormCreateClass');
 $fh->setRedirect('listClasses.php');
+
+if (isset($_REQUEST['parent'])) {
+	$fh->setConstructorArgument(0, $_REQUEST['parent']);
+	$fh->setRedirect('listClasses.php?id=' . $_REQUEST['parent']);
+}
+
 $fh->handle();
 ?>

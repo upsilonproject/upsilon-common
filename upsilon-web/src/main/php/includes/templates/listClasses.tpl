@@ -8,8 +8,19 @@
 
 <div class = "box" style = "vertical-align: top;">
 		<div style = "display:inline-block; width: 40%; vertical-align: top;">
-			<h3>Detail</h3>
-			<p><strong>Title:</strong> {$itemClass.title}</p>
+			<h3>
+				{if !empty($itemClass.icon)}
+				<img src = "resources/images/serviceIcons/{$itemClass.icon}" alt = "serviceIcon" class = "inlineIcon" />
+				{/if}
+
+				Detail
+			</h3>
+			<p><strong>Title:</strong> 
+				{foreach from = $listParents item = class}
+					<a href = "listClasses.php?id={$class.id}">{$class.title}</a> &raquo;
+				{/foreach}
+				{$itemClass.title}
+			</p>
 		</div>
 
 		{if $listRequirements|@count gt 0}
@@ -41,7 +52,7 @@
 <h3>All Instances</h3>
 
 {if $listInstances|@count == 0}
-	<p>No class instances. <a href = "createClassInstance.php">Create class instance</a></p>
+	<p>No class instances. <a href = "createClassInstance.php?parent={$itemClass.id}">Create class instance</a></p>
 {else}
 <table class = "dataTable hover">
 	<thead>

@@ -20,24 +20,36 @@ require_once 'includes/widgets/header.php';
 
 $tpl->assign('listGroupMemberships', getMembershipsFromServiceIdentifier($service['identifier']));
 
-$sql = 'SELECT m.actions, m.metrics, m.defaultMetric, m.room, m.icon, m.* FROM service_metadata m WHERE m.service = :serviceIdentifier LIMIT 1';
-$stmt = DatabaseFactory::getInstance()->prepare($sql);
-$stmt->bindValue(':serviceIdentifier', $service['identifier']);
-$stmt->execute();
+function getCommandMetadata($identifier) {
+	$sql = 'SELECT m.icon FROM command_metadata m WHERE m.commandIdentifier = :identifier';
+	$stmt = DatabaseFactory::getInstance()->prepare($sql);
+	$stmt->bindValue(':identifier', $identifier);
+	$stmt->execute();
 
-
-if ($stmt->numRows() == 0) {
-	$metadata = array();
-	$metadata['actions'] = null;
-	$metadata['metrics'] = '';
-	$metadata['defaultMetric'] = null;
-} else {
-	$metadata = $stmt->fetchRow();
+	return $stmt->fetchRow();
 }
 
-$metadata['metrics'] = explodeOrEmpty("\n", trim($metadata['metrics']));
+function getServiceMetadata($identifier) {
+	$sql = 'SELECT m.actions, m.metrics, m.defaultMetric, m.room, m.icon, m.* FROM service_metadata m WHERE m.service = :serviceIdentifier LIMIT 1';
+	$stmt = DatabaseFactory::getInstance()->prepare($sql);
+	$stmt->bindValue(':serviceIdentifier', $identifier);
+	$stmt->execute();
 
-$tpl->assign('metadata', $metadata);
+	if ($stmt->numRows() == 0) {
+		$metadata = array();
+		$metadata['actions'] = null;
+		$metadata['metrics'] = '';
+		$metadata['defaultMetric'] = null;
+	} else {
+		$metadata = $stmt->fetchRow();
+	}
+
+	$metadata['metrics'] = explodeOrEmpty("\n", trim($metadata['metrics']));
+
+	return $metadata;
+}
+
+$tpl->assign('metadata', getServiceMetadata($service['identifier']));
 
 $sql = 'SELECT r.id, r.output, r.checked, r.karma FROM service_check_results r WHERE r.service = :serviceIdentifier ORDER BY r.checked DESC LIMIT 10';
 $stmt = DatabaseFactory::getInstance()->prepare($sql);

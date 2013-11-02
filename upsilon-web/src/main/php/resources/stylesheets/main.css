@@ -303,6 +303,10 @@ a.node abbr {
 	padding: .4em;
 }
 
+abbr {
+	border-bottom: 1px dashed black;
+}
+
 h1 {
 	color: white;
 	font-size: 12pt;
@@ -482,4 +486,8 @@ div.loginFormContainer {
 .gridxMain { 
     height: 300px;
     width: 100%;
+}
+
+img.inlineIcon {
+	padding-top: 4px;
 }
