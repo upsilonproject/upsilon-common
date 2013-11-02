@@ -125,7 +125,7 @@ function errorGetServices(err) {
 }
 
 function mniDashboardClicked() {
-	reqDashboard(1);
+	reqDashboard(5);
 }
 
 function loadLogout() {
@@ -271,10 +271,10 @@ function loadDashboard(dashboard) {
 
 }
 
-function reqDashboard() {
+function reqDashboard(dashboard) {
 	var req = newJsonReq();
 	req.url = "json/getDashboard",
-	req.content = { id: 1 }, 
+	req.content = { id: dashboard }, 
 	req.load = loadDashboard,
 	req.get();
 }
