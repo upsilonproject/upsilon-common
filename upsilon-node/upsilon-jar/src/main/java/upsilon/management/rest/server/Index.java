@@ -29,6 +29,7 @@ import upsilon.Configuration;
 import upsilon.Daemon;
 import upsilon.Database;
 import upsilon.Main;
+import upsilon.dataStructures.StructurePeer;
 import upsilon.configuration.XmlConfigurationLoader.ConfigStatus;
 import upsilon.util.ResourceResolver;
 
@@ -143,6 +144,17 @@ public class Index {
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getStatus() {
 		return Response.status(Status.OK).entity(new InternalStatus()).build();
+	}
+
+	@Path("/peerUpdate")
+	@GET
+	@Produces(MediaType.TEXT_HTML)
+	public Response peerUpdate() {
+		StructurePeer.updateAll();
+
+		String htmlFile = "Done!";
+
+		return Response.status(Status.OK).entity(htmlFile).build();
 	}
 
 	@GET
