@@ -13,7 +13,11 @@ class WidgetServicesFromGroup extends Widget {
 	}
 
 	public function init() {
-		$this->group = getGroup($this->getArgumentValue('group'));
+		$group = $this->getArgumentValue('group');
+
+		if (!empty($group)) {
+			$this->group = getGroup($this->getArgumentValue('group'));
+		}
 	}
 
 	public function getTitle() {
@@ -33,7 +37,7 @@ class WidgetServicesFromGroup extends Widget {
 	public function render() {
 		global $tpl;
 		$tpl->assign('ref', rand());
-		$tpl->assign('url', 'json/getServicesInGroup');
+		$tpl->assign('url', 'json/getServicesInGroup.php');
 		$tpl->assign('queryParams', json_encode(array('group' => $this->getArgumentValue('group'))));
 		$tpl->assign('callback', 'renderServiceList');
 		$tpl->assign('repeat', 60000);
@@ -41,7 +45,9 @@ class WidgetServicesFromGroup extends Widget {
 	}
 
 	public function addLinks() {
-		$this->links->add('viewGroup.php?id=' . $this->group['id'], 'Group: ' . $this->group['title']);
+		if (!empty($this->group)) {
+			$this->links->add('viewGroup.php?id=' . $this->group['id'], 'Group: ' . $this->group['title']);
+		}
 	}
 }
 

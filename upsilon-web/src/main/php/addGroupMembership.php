@@ -14,14 +14,24 @@ class FormAddMembership extends Form {
 		parent::__construct('formAddMembership', 'Form Add Membership');
 
 		$id = Sanitizer::getInstance()->filterUint('serviceId');
-
+		
 		$this->service = $this->getService($id);
 
-		$this->addElementReadOnly('Service Id', $id, 'serviceId');
+		$this->addElement($this->getElementService($id));
 		$this->addElementReadOnly('Service Identifier', $this->service['identifier']);
 		$this->addElementGroupSelect();
 		
 		$this->addDefaultButtons();
+	}
+
+	private function getElementService($id) {
+		if (empty($id)) {
+			$el = new ElementSelect();
+		} else {
+			$el = new ElementHidden('id', $id);
+		}
+		return $el;
+		
 	}
 
 	private function addElementGroupSelect() {
