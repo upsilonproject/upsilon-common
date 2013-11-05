@@ -54,8 +54,19 @@ def testsComplete():
 	exitCode = 0 if testsPassed == testsRun else 1;
 	sys.exit(exitCode)
 
+def module_exists(module_name):
+	try:
+    		__import__(module_name)
+	except ImportError:
+		return False
+	
+	return True
+
 upsilonDirectory = findUpsilonDirectory();
 configDirectory = findConfigDirectory()
+
+test("python-prettytable", module_exists("prettytable"))
+test("python-lxml", module_exists("lxml"))
 
 test("Upsilon share directory exists", os.path.isdir(upsilonDirectory))
 test("Upsilon share directory contains upsilon-node.jar", os.path.isfile(os.path.join(upsilonDirectory, "upsilon-node.jar")))

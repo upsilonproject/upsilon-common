@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>upsilon</groupId>
   <artifactId>upsilon-web</artifactId>
-  <version>1.0.0</version>
+  <version>1.4.0</version>
 
   <parent>
     <groupId>upsilon</groupId>
@@ -19,16 +19,6 @@
   <modules>
     <module>upsilon-web-tgz</module>
   </modules>   
-
-  <distributionManagement>
-    <repository>
-      <id>upsilon-project.co.uk</id>
-      <url>${deployUrl}repositories/web/maven/</url>
-    </repository>
-  </distributionManagement>
-  	
-
-
         <pluginRepositories>
                 <pluginRepository>
                         <id>sonatype-oss-public</id>
