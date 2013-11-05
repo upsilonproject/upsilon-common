@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>upsilon</groupId>
   <artifactId>upsilon</artifactId>
-  <version>3.0.0</version> 
+  <version>3.1.0</version> 
 
   <packaging>pom</packaging>
 
@@ -32,13 +32,13 @@
   </build>
   <distributionManagement>
     <repository>
-       <id>upsilon-deployment</id>
+       <id>repo-upsilon</id>
        <name>Internal Releases</name>
        <url>http://upsilon.teratan.net:8081/nexus/content/repositories/releases/</url>
     </repository>
     <snapshotRepository>
-       <id>upsilon-deployment</id>
-       <name>Internal Releases</name>
+       <id>repo-upsilon</id>
+       <name>Internal Snapshots</name>
        <url>http://upsilon.teratan.net:8081/nexus/content/repositories/snapshots/</url>
     </snapshotRepository>
   </distributionManagement>
