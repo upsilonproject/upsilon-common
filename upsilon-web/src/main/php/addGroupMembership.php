@@ -7,29 +7,32 @@ use \libAllure\Form;
 use \libAllure\FormHandler;
 use \libAllure\Sanitizer;
 use \libAllure\DatabaseFactory;
-use \liballure\ElementSelect;
+use \libAllure\ElementSelect;
+use \libAllure\ElementHidden;
 
 class FormAddMembership extends Form {
 	public function __construct() {
 		parent::__construct('formAddMembership', 'Form Add Membership');
 
-		$id = Sanitizer::getInstance()->filterUint('serviceId');
-		
-		$this->service = $this->getService($id);
-
-		$this->addElement($this->getElementService($id));
-		$this->addElementReadOnly('Service Identifier', $this->service['identifier']);
+		$this->addElement($this->getElementService());
 		$this->addElementGroupSelect();
 		
 		$this->addDefaultButtons();
 	}
 
-	private function getElementService($id) {
-		if (empty($id)) {
-			$el = new ElementSelect();
-		} else {
-			$el = new ElementHidden('id', $id);
+	private function getElementService() {
+		$sql = 'SELECT s.id, s.identifier, count(m.id) AS groups FROM services s LEFT JOIN service_group_memberships m ON m.`service` = s.identifier GROUP BY s.id ORDER BY groups DESC, s.identifier ASC';
+		$stmt = db()->prepare($sql);
+		$stmt->execute();
+
+		$el = new ElementSelect('serviceId[]', 'Service');
+		$el->setSize(10);
+		$el->multiple = true;
+
+		foreach ($stmt->fetchall() as $service) {
+			$el->addOption($service['identifier'] . ' (' . $service['groups'] . ' groups)', $service['identifier']);
 		}
+
 		return $el;
 		
 	}
@@ -45,10 +48,15 @@ class FormAddMembership extends Form {
 			$el->addOption($group['title'], $group['title']);
 		}
 
+		$group = san()->filterString('group');
+		if (!empty($group)) {
+			$el->setValue($group);
+		}
+
 		$this->addElement($el);
 	}
 
-	private function getService($id) { 
+	private function getService($id) {
 		$sql = 'SELECT s.id, s.identifier FROM services s WHERE s.id = :sid';
 		$stmt = DatabaseFactory::getInstance()->prepare($sql);
 		$stmt->bindValue(':sid', $id);
@@ -61,8 +69,22 @@ class FormAddMembership extends Form {
 		$sql = 'INSERT INTO service_group_memberships (`group`, service) VALUES (:group, :service)';
 		$stmt = DatabaseFactory::getInstance()->prepare($sql);
 		$stmt->bindValue(':group', $this->getElementValue('group'));
-		$stmt->bindValue(':service', $this->service['identifier']);
+
+		$services = $this->getElementValue('serviceId[]');
+
+		foreach ($services as $service) {
+			$stmt->bindValue(':service', $service);
+			$stmt->execute();
+		}
+
+		$sql = 'SELECT g.id FROM service_groups g WHERE g.title = :title';
+		$stmt = stmt($sql);
+		$stmt->bindValue(':title', $this->getElementValue('group'));
 		$stmt->execute();
+		$group = $stmt->fetchRowNotNull();
+
+		// hack
+		redirect('viewGroup.php?id=' . $group['id'], 'Membership Added');
 	}
 
 	public function getServiceId() {
@@ -76,7 +98,6 @@ class FormAddMembership extends Form {
 
 $f = new FormAddMembership();
 $fh = new FormHandler($f);
-$fh->setRedirect('viewService.php?id=' . $f->getServiceId(), 'Mumbership Added');
 $fh->handle();
 
 ?>
