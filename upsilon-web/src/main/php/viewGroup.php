@@ -10,6 +10,7 @@ use \libAllure\HtmlLinksCollection;
 $links = new HtmlLinksCollection();
 $links->add('updateGroup.php?id=' . $itemGroup['id'], 'Update');
 $links->add('deleteGroup.php?id=' . $itemGroup['id'], 'Delete');
+$links->add('addGroupMembership.php?group=' . $itemGroup['title'], 'Add services');
 
 require_once 'includes/widgets/header.php';
 

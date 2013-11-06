@@ -5,6 +5,6 @@
 	<strong><a href = "viewService.php?id={$itemUngroupedService.id}">{$itemUngroupedService.description}</a></strong> ({$itemUngroupedService.id}) 
 {/foreach}
 
-	<a href = "addGroupMembership.php">Add many...</a>
+	<a href = "addGroupMembership.php">Add to groups...</a>
 </p>
 {/if}

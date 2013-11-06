@@ -12,7 +12,7 @@ $tpl->assign('itemService', $service);
 
 $links = linksCollection(); 
 $links->add('updateServiceMetadata.php?id=' . $service['id'], 'Update metadata');
-$links->add('addGroupMembership.php?serviceId=' . $service['id'], 'Add to Group');
+$links->add('addGroupMembership.php?serviceId[]=' . $service['id'], 'Add to Group');
 $links->add('deleteService.php?identifier=' . $service['identifier'], 'Delete');
 
 $title = 'View Service';
