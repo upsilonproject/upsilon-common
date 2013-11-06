@@ -67,6 +67,7 @@ configDirectory = findConfigDirectory()
 
 test("python-prettytable", module_exists("prettytable"))
 test("python-lxml", module_exists("lxml"))
+test("python-dialog", module_exists("dialog"))
 
 test("Upsilon share directory exists", os.path.isdir(upsilonDirectory))
 test("Upsilon share directory contains upsilon-node.jar", os.path.isfile(os.path.join(upsilonDirectory, "upsilon-node.jar")))
