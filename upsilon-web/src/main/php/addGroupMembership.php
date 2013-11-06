@@ -21,7 +21,7 @@ class FormAddMembership extends Form {
 	}
 
 	private function getElementService() {
-		$sql = 'SELECT s.id, s.identifier, count(m.id) AS groups FROM services s LEFT JOIN service_group_memberships m ON m.`service` = s.identifier GROUP BY s.id ORDER BY groups DESC, s.identifier ASC';
+		$sql = 'SELECT s.id, s.identifier, count(m.id) AS groups, s.node FROM services s LEFT JOIN service_group_memberships m ON m.`service` = s.identifier GROUP BY s.id ORDER BY node ASC, groups DESC, s.identifier ASC';
 		$stmt = db()->prepare($sql);
 		$stmt->execute();
 
@@ -30,7 +30,7 @@ class FormAddMembership extends Form {
 		$el->multiple = true;
 
 		foreach ($stmt->fetchall() as $service) {
-			$el->addOption($service['identifier'] . ' (' . $service['groups'] . ' groups)', $service['identifier']);
+			$el->addOption($service['node'] . '::' . $service['identifier'] . ' (' . $service['groups'] . ' groups)', $service['identifier']);
 		}
 
 		return $el;
