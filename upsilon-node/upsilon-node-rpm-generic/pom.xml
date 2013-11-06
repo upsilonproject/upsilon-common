@@ -23,7 +23,7 @@
 					<group>Applications/System</group>
 					<copyright>GPLv3</copyright>
 					<distribution>Fedora</distribution>
-					<version>${releaseVersion}</version>
+					<version>${project.version}</version>
 					<release>1.generic</release>
 					<changelogFile>changelog.txt</changelogFile>
 					<name>upsilon-node</name>
