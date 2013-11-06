@@ -1,0 +1,27 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.require_plugin "vagrant-libvirt"
+
+Vagrant.configure("2") do |config|
+  config.ssh.private_key_path="/root/.vagrant.d/insecure_private_key"
+
+  config.vm.define :centos64 do |centos64|
+  	centos64.vm.box = "centos64"
+	centos64.vm.network :public_network, :adaptor => 1
+  end
+
+  config.vm.define :fedora19 do |fedora19|
+  	fedora19.vm.box = "fedora19"
+    fedora19.vm.network :public_network, :adapter => 1
+  end
+
+  config.vm.define :debian7 do |debian7|
+  	debian7.vm.box = "debian7"
+    debian7.vm.network :public_network, :adapter => 1
+  end
+
+  config.vm.provider :libvirt do |libvirt|
+  end
+end
+
