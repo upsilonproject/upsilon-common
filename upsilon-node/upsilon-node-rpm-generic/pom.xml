@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>upsilon</groupId>
 		<artifactId>upsilon-node</artifactId>
-		<version>0.122.0</version>
+		<version>0.123.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>upsilon-node-rpm-generic</artifactId>
 	<packaging>rpm</packaging>
@@ -23,7 +23,7 @@
 					<group>Applications/System</group>
 					<copyright>GPLv3</copyright>
 					<distribution>Fedora</distribution>
-					<version>${releaseVersion}</version>
+					<version>${project.version}</version>
 					<release>1.generic</release>
 					<changelogFile>changelog.txt</changelogFile>
 					<name>upsilon-node</name>

@@ -8,12 +8,13 @@
 	<parent>
 		<groupId>upsilon</groupId>
 		<artifactId>upsilon-node</artifactId>
-		<version>0.122.0</version>
+		<version>0.123.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>upsilon-node-nsis</artifactId>
 	<packaging>pom</packaging>
 	
 <build>
+	<finalName>upsilon-node-${releaseVersion}</finalName>
 		<resources>
 		    <resource>
 			<directory>src/main/resources/</directory>
@@ -22,6 +23,20 @@
 		</resources>
 
     <plugins>
+<plugin>
+    <groupId>org.codehaus.mojo</groupId>
+    <artifactId>build-helper-maven-plugin</artifactId>
+    <version>1.8</version>
+    <executions>
+      <execution>
+        <id>parse-version</id>
+        <goals>
+          <goal>parse-version</goal>
+        </goals>
+      </execution>
+    </executions>
+</plugin>
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>nsis-maven-plugin</artifactId>

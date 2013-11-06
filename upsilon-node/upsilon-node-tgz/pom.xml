@@ -8,11 +8,12 @@
 	<parent>
 		<groupId>upsilon</groupId>
 		<artifactId>upsilon-node</artifactId>
-		<version>0.122.0</version>
+		<version>0.123.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>upsilon-node-tgz</artifactId>
 
 	<build>
+		<finalName>upsilon-node-${project.version}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
