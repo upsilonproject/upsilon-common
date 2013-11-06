@@ -7,3 +7,7 @@ var/*.png
 **/*.swp
 **/*.pyc
 **/.directory
+var/upsilonVagrant/*.rpm
+var/upsilonVagrant/*.deb
+var/upsilonVagrant/*.tar.gz
+var/upsilonVagrant/*.tar.zip
