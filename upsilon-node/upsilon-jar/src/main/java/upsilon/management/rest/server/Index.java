@@ -150,9 +150,13 @@ public class Index {
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public Response peerUpdate() {
-		StructurePeer.updateAll();
+		new Thread() {
+			public void run() {
+				StructurePeer.updateAll();
+			}
+		}.run();
 
-		String htmlFile = "Done!";
+		String htmlFile = "Peer update queued.";
 
 		return Response.status(Status.OK).entity(htmlFile).build();
 	}
