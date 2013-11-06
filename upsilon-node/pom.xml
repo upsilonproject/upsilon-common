@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>upsilon</groupId>
   <artifactId>upsilon-node</artifactId>
-  <version>0.123.0-SNAPSHOT</version>
+  <version>0.124.0-SNAPSHOT</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <releaseVersion>${project.version}</releaseVersion>
