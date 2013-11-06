@@ -13,6 +13,7 @@
 	<artifactId>upsilon-node-tgz</artifactId>
 
 	<build>
+		<finalName>upsilon-node-${project.version}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
