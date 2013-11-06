@@ -59,8 +59,8 @@ Section "upsilon-node"
     SetOutPath $INSTDIR
     CreateShortCut "$SMPROGRAMS\upsilon\upsilon Program Directory.lnk" "$INSTDIR\" "" "$INSTDIR\logodarkbg.ico" 0
     File src/main/nsis/README.txt
-    File ../upsilon-jar/target/upsilon-node-${UPSILON_NODE_VERSION}.jar
-    Rename upsilon-node-${UPSILON_NODE_VERSION}.jar upsilon-node.jar
+    File ../upsilon-jar/target/upsilon-node-${UPSILON_NODE_RELEASE_VERSION}.jar
+    Rename upsilon-node-${UPSILON_NODE_RELEASE_VERSION}.jar upsilon-node.jar
 
     File ../../var/logodarkbg.ico
 
