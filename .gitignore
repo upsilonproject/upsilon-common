@@ -12,3 +12,4 @@ var/upsilonVagrant/*.deb
 var/upsilonVagrant/*.tar.gz
 var/upsilonVagrant/*.zip
 var/upsilonVagrant/*.jar
+**/*.versionsBackup
