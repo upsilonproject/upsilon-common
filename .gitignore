@@ -10,4 +10,5 @@ var/*.png
 var/upsilonVagrant/*.rpm
 var/upsilonVagrant/*.deb
 var/upsilonVagrant/*.tar.gz
-var/upsilonVagrant/*.tar.zip
+var/upsilonVagrant/*.zip
+var/upsilonVagrant/*.jar
