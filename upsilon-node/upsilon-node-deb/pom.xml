@@ -6,7 +6,7 @@
    <parent>
  	<groupId>upsilon</groupId>
  	<artifactId>upsilon-node</artifactId>
-  	<version>0.126.0</version>
+  	<version>0.127.0-SNAPSHOT</version>
   </parent>
  
   <build>
