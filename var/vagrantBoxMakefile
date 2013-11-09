@@ -1,0 +1,11 @@
+BOXNAME := $(notdir $(shell pwd))
+
+default:
+	echo "Building box: $(BOXNAME)"
+	tar cvf ${BOXNAME}.box box.img metadata.json
+
+install: 
+	vagrant box add ${BOXNAME} ${BOXNAME}.box
+
+clean:
+	rm -f ${BOXNAME}.box
