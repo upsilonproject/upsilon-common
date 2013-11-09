@@ -96,6 +96,11 @@ class FormAddMembership extends Form {
 	}
 }
 
+$groups = getGroup();
+if (empty($groups)) {
+	redirect('listGroups.php', 'You need to create some groups.');
+}
+
 $f = new FormAddMembership();
 $fh = new FormHandler($f);
 $fh->handle();
