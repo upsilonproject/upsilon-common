@@ -2,7 +2,7 @@
 	<h2>Groups</h2>
 	
 	{if $listGroups|@count == 0}
-	<p>There are no groups defined at the moment. Create a group by going to "Group Actions" &raquo; "Create Group" on the menu.</p>
+	<p>There are no groups defined at the moment. Create a group by going to <strong>Group Actions</strong> &raquo; <strong>Create Group</strong> on the menu.</p>
 	{else}
 	<table class = "dataTable">
 		<thead>

@@ -7,7 +7,7 @@
 
 <div class = "blockContainer">
 {if empty($listInstances)}
-	<p>This dashboard is empty. Select "Create Widget Instance" from the Dashboard menu.</p>
+	<p>This dashboard is empty. Select <strong>Actions</strong> &raquo; <strong>Create Widget Instance</strong>" from the Dashboard menu.</p>
 {else}
 		{foreach from = $listInstances item = widget}
 			{if $widget.instance->isShown()}

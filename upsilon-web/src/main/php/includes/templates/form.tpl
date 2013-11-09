@@ -6,7 +6,7 @@
 	{/if}
 {else}
 <div class = "{if isset($form->containerClass)}{$form->containerClass}{else}box{/if}">
-	<h4>{$form->getTitle()}</h4>
+	<h2>{$form->getTitle()}</h2>
 {/if}
 
 	<!-- FORM:{$form->getName()} (rendered by template engine) !-->
