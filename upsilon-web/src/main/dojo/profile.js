@@ -5,13 +5,14 @@
 		releaseName: "dojo-upsilon",
 
 		action: "release",
-
+/**
 		layerOptimize: "shrinksafe", 
 		optimize: "shrinksafe",
 		cssOptimize: "comments",
+**/
 		mini: true,
 		stripConsole: "warn",
-		selectorEngine:"lite",
+		selectorEngine: "lite",
 		insertAbsMids: false,
 
 		packages:[
