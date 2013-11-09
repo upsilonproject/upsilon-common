@@ -6,7 +6,7 @@
 {/if}
 
 <div class = "box">
-	<h3>Nodes</h3>
+	<h2>Nodes</h2>
 
 {if empty($listNodes)}
 	<p>0 nodes in database.</p> 
