@@ -25,7 +25,7 @@ xml = etree.XML(resp)
 
 internalStatus = PrettyTable(["Property", "Status"])
 internalStatus.add_row(["Version", xml.xpath("//version/text()")[0]])
-internalStatus.add_row(["Encryption", bool2string(xml.xpath("//crypto/text()")[0], "Enabled", "Disabled")])
+internalStatus.add_row(["Encryption (SSL/TLS)", bool2string(xml.xpath("//crypto/text()")[0], "Enabled", "Disabled")])
 internalStatus.add_row(["Start time", xml.xpath("//startTime/text()")[0]])
 internalStatus.add_row(["PID", xml.xpath("//pid/text()")[0]])
 internalStatus.add_row(["Java VM", xml.xpath("//vm/text()")[0]])
