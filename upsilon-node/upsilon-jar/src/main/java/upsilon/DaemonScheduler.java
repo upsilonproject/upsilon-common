@@ -75,12 +75,12 @@ public class DaemonScheduler extends Daemon {
 			this.setStatus("executing queued services");
 			this.executeQueuedServices();
 
+			this.setStatus("Sleeping before next execution: " + Configuration.instance.queueMaintainerDelay);
+			Util.lazySleep(Configuration.instance.queueMaintainerDelay);
+
 			this.setStatus("updating db and peers");
 			Database.updateAll();
 			StructurePeer.updateAll();
-
-			this.setStatus("Sleeping before next execution: " + Configuration.instance.queueMaintainerDelay);
-			Util.lazySleep(Configuration.instance.queueMaintainerDelay);
 		}
 
 		DaemonScheduler.LOG.warn("Queue maintenance thread shutdown.");
