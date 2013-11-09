@@ -15,13 +15,13 @@ rm -rf target/dojo-upsilon/dijit/themes/soria
 rm -rf target/dojo-upsilon/dijit/themes/tundra
 rm -rf target/dojo-upsilon/dojox/mobile
 
-find target/dojo-upsilon/dijit/form/nls -maxdepth 1 -type d ! -name uk ! -name '.' | xargs rm -rf {} \;
-find target/dojo-upsilon/dijit/_editor/nls -maxdepth 1 -type d ! -name uk ! -name '.' | xargs rm -rf {} \;
-find target/dojo-upsilon/dojox/editor/plugins/nls -maxdepth 1 -type d ! -name uk ! -name '.' | xargs rm -rf {} \;
-find target/dojo-upsilon/dojox/grid/enhanced/nls -maxdepth 1 -type d ! -name uk ! -name '.' | xargs rm -rf {} \;
-find target/dojo-upsilon/gridx/nls -maxdepth 1 -type d ! -name uk ! -name '.' | xargs rm -rf {} \;
-find target/dojo-upsilon/dojo/cldr/nls -maxdepth 1 -type d ! -name uk ! -name '.' | xargs rm -rf {} \;
-find target/dojo-upsilon/dojo/nls -maxdepth 1 -type d ! -name uk ! -name '.' | xargs rm -rf {} \;
+#find target/dojo-upsilon/dijit/form/nls -maxdepth 1 -type d ! -name uk ! -name '.' | xargs rm -rf {} \;
+#find target/dojo-upsilon/dijit/_editor/nls -maxdepth 1 -type d ! -name uk ! -name '.' | xargs rm -rf {} \;
+#find target/dojo-upsilon/dojox/editor/plugins/nls -maxdepth 1 -type d ! -name uk ! -name '.' | xargs rm -rf {} \;
+#find target/dojo-upsilon/dojox/grid/enhanced/nls -maxdepth 1 -type d ! -name uk ! -name '.' | xargs rm -rf {} \;
+#find target/dojo-upsilon/gridx/nls -maxdepth 1 -type d ! -name uk ! -name '.' | xargs rm -rf {} \;
+#find target/dojo-upsilon/dojo/cldr/nls -maxdepth 1 -type d ! -name uk ! -name '.' | xargs rm -rf {} \;
+#find target/dojo-upsilon/dojo/nls -maxdepth 1 -type d ! -name uk ! -name '.' | xargs rm -rf {} \;
 
 echo "Size of release before clean: `find target/dojo-upsilon | wc -l` files, `du -hs target/dojo-upsilon/`"
 
