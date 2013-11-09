@@ -12,10 +12,7 @@ def bool2string(string, txt_true = "True", txt_false = "False"):
 	else:
 		return txt_false
 
-parser = argparse.ArgumentParser();
-parser.add_argument('--address', '-a', help = "Hostname or IP address of upsilon-node", default = "localhost")
-parser.add_argument('--port', '-p', help = "Port", default = 4000)
-parser.add_argument('--ssl', action = "store_true")
+parser = commonArgumentParser()
 args = parser.parse_args();
 
 client = getHttpClient(args.ssl, args.address, args.port);

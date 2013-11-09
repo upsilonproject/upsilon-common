@@ -4,6 +4,7 @@ import shutil
 import time
 from sys import exit
 import argparse
+from upsiloncommon import *
 
 try:
 	from dialog import *
@@ -20,13 +21,6 @@ args = parser.parse_args()
 
 REGEX_IDENTIFIER = ("^[a-z0-9_]+$", "Please enter an identifier")
 
-def error(message = None, e = None):
-	print message
-
-	if not e == None:
-		print "Exception:", str(e)
-
-	exit(1)
 
 def mainMenu():
 	global args
