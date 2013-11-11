@@ -6,8 +6,8 @@
 
 		action: "release",
 
-		layerOptimize: "shrinksafe", 
-		optimize: "shrinksafe",
+		layerOptimize: "shrinksafe", // shrinksafe
+		optimize: "shrinksafe", // shrinksafe
 		cssOptimize: "comments",
 		mini: true,
 		stripConsole: "warn",
