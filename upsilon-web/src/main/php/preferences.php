@@ -22,7 +22,7 @@ class UserPreferences extends Form {
 		$this->addSection('Display');
 		$this->addElement(new ElementNumeric('dtBegin', 'Daytime begin', Session::getUser()->getData('daytimeBegin')));
 		$this->addElement(new ElementNumeric('dtEnd', 'Daytime end', Session::getUser()->getData('daytimeEnd')));
-		$this->addElement(new ElementCheckbox('tutorialMode', 'Tutorial mode', Session::getUser()->getData('tutorialMode')));
+		$this->addElement(new ElementCheckbox('tutorialMode', 'Tutorial mode', Session::getUser()->getData('tutorialMode'), '<div class = "box tutorialMessage">This is an example tutorial message.</div>'));
 
 		$this->addSection('Behavior');
 		$this->addElement(new ElementCheckbox('promptBeforeDeletions', 'Prompet me before deletions?', Session::getUser()->getData('promptBeforeDeletions')));
