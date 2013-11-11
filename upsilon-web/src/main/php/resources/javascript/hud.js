@@ -124,25 +124,33 @@ window.showGoodGroups = cookieOrDefault("groups", false);
 window.showEmptyGroups = cookieOrDefault("showEmptyGroups", false);
 
 function toggleEmptyGroups() {
-	$('.metricGroup').each(function(index,container) {
-		container = $(container);
-		var services = container.find('.metricList li');
+	require([
+		"dojo/query"
+	], function(query) {
+		query('.metricGroup').forEach(function(container, index) {
+			var services = query(container).query('.metricList li');
 
-		if (!window.showEmptyGroups && services.size() == 0) {
-			container.hide();
-		}
+			if (window.showEmptyGroups && services.length == 0) {
+				query(container).style('display', 'none');
+			}
+		});
 	});
 }
 
 function toggleNightVision() {
 	window.nighttime = !window.nighttime;
-	var stylesheet = $('link[title=nighttime]');
 
-	if (window.nighttime) {
-		$(stylesheet).attr('rel', 'stylesheet');
-	} else {
-		$(stylesheet).attr('rel', 'disabled');
-	}
+	require([
+		"dojo/query",
+	], function (query) {
+		var stylesheet = query('link[title=nighttime]');
+
+		if (window.nighttime) {
+			stylesheet.attr('rel', 'stylesheet');
+		} else {
+			stylesheet.attr('rel', 'disabled');
+		}
+	});
 }
 
 function toggleSingleGroup(group) {
@@ -150,38 +158,43 @@ function toggleSingleGroup(group) {
 }
 
 function toggleGroups() {
-	var desc = $('.metricListContainer').each(function(index,container) {
-		container = $(container);
-		var desc  = container.find('.metricListDescription');
-		var services = container.find('.metricList li');
+	require([
+		"dojo/query",
+		"dojo/NodeList-traverse",
+	], function(query) {
+		query('.metricListContainer').forEach(function(container, index) {
+			var desc = query(container).query('.metricListDescription');
+			var services = query(container).query('.metricList li');
 
-		desc.empty();
-		services.show();
-		services.children().show();
+			desc.empty();
+			services.style('display', 'block');
 
-		var servicesGood = services.find('div span.metricIndicator.good').parent().parent('li');
-		var servicesBad = services.find('div span.metricIndicator.bad').parent().parent('li');
-		var servicesSkipped = services.find('div span.metricIndicator.skipped').parent().parent('li');
-		var servicesWarning = services.find('div span.metricIndicator.warning').parent().parent('li');
+			var servicesGood = services.query('div span.metricIndicator.good').parent().parent('li');
+			var servicesBad = services.query('div span.metricIndicator.bad').parent().parent('li');
+			var servicesSkipped = services.query('div span.metricIndicator.skipped').parent().parent('li');
+			var servicesWarning = services.query('div span.metricIndicator.warning').parent().parent('li');
 
-		if (!window.showGoodGroups) {
-			if ((servicesGood.size() + servicesWarning.size()) == services.size()) {
-				servicesGood.hide();
-				servicesWarning.hide();
-				desc.append($('<div style = "display:inline-block"><span class = "metricIndicator good grouped">~</span></div> <div class = "metricText">All <strong>' + servicesGood.size() + '</strong> services are good.</div>'));
+			if (!window.showGoodGroups) {
+				if ((servicesGood.length + servicesWarning.length) == services.length) {
+					servicesGood.style('display', 'none');
+					servicesWarning.style('display', 'none');
+					var indicator = dojo.toDom('<div style = "display:inline-block"><span class = "metricIndicator good grouped">~</span></div> <div class = "metricText">All <strong>' + servicesGood.length + '</strong> services are good.</div>');
+					query(desc)[0].appendChild(indicator);
 
-				if (servicesWarning.size() > 0) {
-					desc.append(' <br /><span class = "warning"><strong>' + servicesWarning.size() + '</strong> have a warning</span>.')
+					if (servicesWarning.length > 0) {
+						desc.appendChild(dojo.toDom(' <br /><span class = "warning"><strong>' + servicesWarning.length + '</strong> have a warning</span>.'));
+					}
+
+					query(desc).click = console.log; // FIXME
 				}
 
-				desc.click(toggleSingleGroup)
+				if (servicesSkipped.length > 0) {
+					servicesSkipped.style('display', 'none');
+					var indicator = dojo.toDom('<div style = "display:inline-block"><span class = "metricIndicator skipped grouped">~</span></div> <div class = "metricText">Skipped <strong>' + servicesSkipped.length + '</strong> services</div>');
+					dojo.append(desc, indicator);
+				}			
 			}
-
-			if (servicesSkipped.size() > 0) {
-				servicesSkipped.hide();
-				desc.append($('<div style = "display:inline-block"><span class = "metricIndicator skipped grouped">~</span></div> <div class = "metricText">Skipped <strong>' + servicesSkipped.size() + '</strong> services</div>'));
-			}			
-		}
+		});
 	});
 }
 

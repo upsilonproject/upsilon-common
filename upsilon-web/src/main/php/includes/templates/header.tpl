@@ -13,8 +13,6 @@
 
 	<link rel = "shortcut icon" href = "resources/images/icons/logo96pxdarkbg.png" title = "Shortcut icon" type = "image/png" />
 
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-
 	<script src="resources/javascript/masonry.js"></script>
 	<script src="resources/dojo/dojo/dojo.js"></script>
 	<script src="resources/javascript/hud.js"></script>
