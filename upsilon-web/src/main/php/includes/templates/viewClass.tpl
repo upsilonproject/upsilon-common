@@ -3,7 +3,7 @@
 {else}
 {foreach from = $listClassInstances item = itemClassInstance} 
 	<div class = "box">
-	<h4>title ({$itemClassInstance.classTitle})</h4>
+	<h2>title ({$itemClassInstance.classTitle})</h2>
 
 	<table>
 		<thead>

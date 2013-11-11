@@ -5,13 +5,20 @@
 		releaseName: "dojo-upsilon",
 
 		action: "release",
+<<<<<<< HEAD
 
 		layerOptimize: "shrinksafe", // shrinksafe
 		optimize: "shrinksafe", // shrinksafe
+=======
+/**
+		layerOptimize: "shrinksafe", 
+		optimize: "shrinksafe",
+>>>>>>> 19a26511fa35a6844030561de13daf900b3348ab
 		cssOptimize: "comments",
+**/
 		mini: true,
 		stripConsole: "warn",
-		selectorEngine:"lite",
+		selectorEngine: "lite",
 		insertAbsMids: false,
 
 		packages:[

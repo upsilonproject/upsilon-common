@@ -8,13 +8,13 @@
 
 <div class = "box" style = "vertical-align: top;">
 		<div style = "display:inline-block; width: 40%; vertical-align: top;">
-			<h3>
+			<h2>
 				{if !empty($itemClass.icon)}
 				<img src = "resources/images/serviceIcons/{$itemClass.icon}" alt = "serviceIcon" class = "inlineIcon" />
 				{/if}
 
 				Detail
-			</h3>
+			</h2>
 			<p><strong>Title:</strong> 
 				{foreach from = $listParents item = class}
 					<a href = "listClasses.php?id={$class.id}">{$class.title}</a> &raquo;
@@ -37,7 +37,7 @@
 </div>
 
 <div class = "box">
-<h3>Sub Classes</h3>
+<h2>Sub Classes</h2>
 
 {if $listSubClasses|@count eq 0}
 	<p>No child classes.</p>
@@ -49,7 +49,7 @@
 </div>
 
 <div class = "box">
-<h3>All Instances</h3>
+<h2>All Instances</h2>
 
 {if $listInstances|@count == 0}
 	<p>No class instances. <a href = "createClassInstance.php?parent={$itemClass.id}">Create class instance</a></p>

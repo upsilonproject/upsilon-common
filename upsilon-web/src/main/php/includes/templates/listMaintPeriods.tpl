@@ -1,5 +1,5 @@
 <div class = "box">
-	<h4>Maintenence Periods</h4>
+	<h2>Maintenence Periods</h2>
 
 	<table class = "sortable">
 		<thead>

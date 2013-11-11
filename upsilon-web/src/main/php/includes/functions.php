@@ -581,9 +581,44 @@ function getTasks() {
 	return $tasks;
 }
 
+function array_utf8_encode_recursive($dat) { 
+	if (is_string($dat)) { 
+        	return utf8_encode($dat); 
+        } 
+        
+	if (is_object($dat)) { 
+            $ovs= get_object_vars($dat); 
+            $new=$dat; 
+            foreach ($ovs as $k =>$v)    { 
+                $new->$k=array_utf8_encode_recursive($new->$k); 
+            } 
+            return $new; 
+        } 
+          
+        if (!is_array($dat)) return $dat; 
+
+          $ret = array(); 
+          foreach($dat as $i=>$d) $ret[$i] = array_utf8_encode_recursive($d); 
+          return $ret; 
+} 
+																										
 function outputJson($content) {
 	header('Content-Type: application/json');
-	echo json_encode($content);
+	$content = array_utf8_encode_recursive($content);
+	$encoded = json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+	if ($encoded) {
+		echo $encoded;
+	} else {
+		if (function_exists('json_last_error_msg')) {
+			$msg = json_last_error_msg();
+		} else {
+			$msg = json_last_error();
+		}
+
+		throw new Exception('JSON Encode error:' . $msg);
+	}
+
 	exit;
 }
 
@@ -595,7 +630,7 @@ function denyApiAccess($message = 'API Access Forbidden. Did you authenticate?')
 	header('HTTP/1.0 403 Forbidden');
 	header('Content-Type: application/json');
 
-	outputJson($message);
+	eutputJson($message);
 }
 
 function validateAcceptableDowntime($el) {

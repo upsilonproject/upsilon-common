@@ -69,14 +69,14 @@ public class DaemonScheduler extends Daemon {
 	@Override
 	public void run() {
 		while (this.run) {
-			this.setStatus("Sleeping before next execution: " + Configuration.instance.queueMaintainerDelay);
-			Util.lazySleep(Configuration.instance.queueMaintainerDelay);
-
 			this.setStatus("Queueing services");
 			this.queueServices();
 
 			this.setStatus("executing queued services");
 			this.executeQueuedServices();
+
+			this.setStatus("Sleeping before next execution: " + Configuration.instance.queueMaintainerDelay);
+			Util.lazySleep(Configuration.instance.queueMaintainerDelay);
 
 			this.setStatus("updating db and peers");
 			Database.updateAll();

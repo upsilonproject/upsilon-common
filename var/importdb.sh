@@ -24,3 +24,5 @@ mysql -u root $sqlpassword -e 'DROP DATABASE IF EXISTS upsilon; '
 mysql -u root $sqlpassword -e 'CREATE DATABASE upsilon'
 mysql -u root $sqlpassword upsilon < schema.sql 
 mysql -u root $sqlpassword upsilon < initialData.sql
+
+echo " "

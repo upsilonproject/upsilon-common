@@ -1,10 +1,10 @@
 <div>
 <div class = "serviceDetail box">
-	<h4>
+	<h2>
 {if !empty($metadata.icon)}
 <img src = "resources/images/serviceIcons/{$metadata.icon}" alt = "serviceIcon" class = "inlineIcon"/>
 {/if}
-	Service Configuration</h4>
+	Service Configuration</h2>
 
 	<div style = "float: left; vertical-align: top;">
 		<h3>Basics</h3>
@@ -57,7 +57,7 @@
 </div>
 
 <div class = "box" id = "graphContainer">
-	<h4 id = "graphTitle">Graph</h4>
+	<h2 id = "graphTitle">Graph</h2>
 
 	{include file = "widgetGraphMetric.tpl"}
 
@@ -73,7 +73,7 @@
 </div>
 
 <div class = "recentResults box">
-	<h4>Results</h4>
+	<h2>Results</h2>
 
 {if $listResults|@count == 0}
 	<p>No results stored in the results table.</p>

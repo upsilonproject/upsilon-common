@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>upsilon</groupId>
 		<artifactId>upsilon-node</artifactId>
-		<version>0.128.0-SNAPSHOT</version>
+		<version>0.128.0</version>
 	</parent>
 
 	<dependencies>
@@ -56,11 +56,6 @@
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 			<version>4.2.2</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>14.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hamcrest</groupId>

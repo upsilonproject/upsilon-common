@@ -1,7 +1,6 @@
 package upsilon;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -20,9 +19,6 @@ import upsilon.dataStructures.StructureService;
 import upsilon.util.GlobalConstants;
 import upsilon.util.Util;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.CharStreams;
-
 public class RobustProcessExecutor implements Callable<Integer> {
 
 	private final Logger log = LoggerFactory.getLogger("RPE");
@@ -33,8 +29,8 @@ public class RobustProcessExecutor implements Callable<Integer> {
 
 	private final String[] executableAndArguments;
 
-	public static final ExecutorService monitoringThreadPool = Executors.newFixedThreadPool(6, Util.getThreadFactory("RPE monitor"));
-	public static final ExecutorService executingThreadPool = Executors.newFixedThreadPool(6, Util.getThreadFactory("RPE executor"));
+	public static final ExecutorService monitoringThreadPool = Executors.newFixedThreadPool(6, Util.newThreadFactory("RPE monitor"));
+	public static final ExecutorService executingThreadPool = Executors.newFixedThreadPool(6, Util.newThreadFactory("RPE executor"));
 
 	public RobustProcessExecutor(final StructureService service) {
 		this.service = service;
@@ -127,13 +123,13 @@ public class RobustProcessExecutor implements Callable<Integer> {
 
 	private String getOutput() throws IOException {
 		String output = "";
-		final String errorStream = CharStreams.toString(new InputStreamReader(this.p.getErrorStream(), Charsets.UTF_8));
+		final String errorStream = Util.isToString(this.p.getErrorStream());
 
 		if (!errorStream.isEmpty()) {
 			output = "STDERROR: " + errorStream;
 		}
 
-		output += CharStreams.toString(new InputStreamReader(this.p.getInputStream(), Charsets.UTF_8));
+		output += Util.isToString(this.p.getInputStream());
 
 		return output.trim();
 	}
