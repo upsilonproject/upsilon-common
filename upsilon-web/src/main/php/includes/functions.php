@@ -726,7 +726,7 @@ function deleteGroupByName($name) {
 	$stmt->bindValue(':groupTitle', $name);
 	$stmt->execute();
 
-	$sql = 'DELETE FROM groups WHERE name = :groupTitle';
+	$sql = 'DELETE FROM service_groups WHERE title = :groupTitle';
 	$stmt = DatabaseFactory::getInstance()->prepare($sql);
 	$stmt->bindValue(':groupTitle', $name);
 	$stmt->execute();
