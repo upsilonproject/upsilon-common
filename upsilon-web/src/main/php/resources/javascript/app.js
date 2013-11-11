@@ -1,5 +1,8 @@
 function onLoad() {
-	showFormLogin();
+	setupHeader();
+	setupToolbar();
+
+	reqUpdatePermissions();
 }
 
 function main() {
@@ -11,12 +14,17 @@ function main() {
 	});
 }
  
-function applyPermissionsToToolbar(permissions) {
+function applyPermissionsToToolbar() {
 	require([
 		"dijit/registry"
 	], function(_registry){
+		permissions = window.permissions;
+
 		_registry.byId("mniDashboard").set("disabled", !permissions.viewDashboard);
 		_registry.byId("mniServices").set("disabled", !permissions.viewServices);
+		_registry.byId("mniNodes").set("disabled", !permissions.viewNodes);
+		_registry.byId("mniLogout").set("disabled", !permissions.loggedIn);
+		_registry.byId("mniLogin").set("disabled", permissions.loggedIn);
 	});
 } 
 
@@ -27,9 +35,12 @@ function loadUpdatePermissions(perms) {
 } 
 
 function reqUpdatePermissions() {
+	window.permissions = { loggedIn: false };
+
 	var req = newJsonReq();
 	req.url = "json/sessionPermissions";
 	req.load = loadUpdatePermissions;
+	req.error = applyPermissionsToToolbar;
 	req.get();
 }
 
@@ -42,8 +53,11 @@ function initGridNodes() {
 		"gridx/Grid",
 		"dojo/store/Memory",
 		"gridx/core/model/cache/Sync",
-		"gridx/modules/VirtualVScroller"
-	], function (Grid, Store, Cache, scroller) {
+		"gridx/modules/VirtualVScroller",
+		"gridx/modules/ColumnResizer",
+		"gridx/modules/Filter",
+		"gridx/modules/filter/FilterBar",
+	], function (Grid, Store, Cache, scroller, resizer, filter, filterBar) {
 		grid = new Grid({
 			id: "gridNodes",
 			cacheClass: Cache, 
@@ -51,10 +65,13 @@ function initGridNodes() {
 			structure: [
 		        {field: "identifier", name: "Identifier"},
 		        {field: "karma", name: "Karma"},
-			{field: "instanceApplicationVersion", name: "Version"}
+			{field: "instanceApplicationVersion", name: "Version", hidden: true},
+			{field: "nodeType", name: "Type"},
+			{field: "serviceCount", name: "Service count"},
+			{field: "lastUpdated", name: "Last updated Relative"}
 		    ],
 		    modules: [
-		              scroller
+		              scroller, resizer, filter, filterBar
             ]
 		    	
 		});
@@ -79,6 +96,7 @@ function loadListNodes(nodes) {
 		new Dialog({
 			title: "List of nodes",
 			content: grid,  
+			resizable: true,
 			style: "width: 640px; height: 480px",
 		}).show(); 
 		
@@ -105,14 +123,15 @@ function setupToolbar() {
 		"dijit/MenuBarItem",
 	], function(MenuBar, MenuBarItem) {
 		window.mainToolbar = new MenuBar({});
-
-		mainToolbar.addChild(new MenuBarItem({id: "mniDashboard", label: "Dashboard", onClick: mniDashboardClicked }));
-		mainToolbar.addChild(new MenuBarItem({id: "mniNodes", label: "Nodes", onClick: mniNodesClicked})); 
-		mainToolbar.addChild(new MenuBarItem({id: "mniServices", label: "Services", onClick: mniServicesClicked }));
-		mainToolbar.addChild(new MenuBarItem({id: "mniLogout", label: "Logout", onClick: mniLogoutClicked }));
-
 		mainToolbar.placeAt("wrapper");
 		mainToolbar.startup();  
+
+		mainToolbar.addChild(new MenuBarItem({id: "mniDashboard", label: "Dashboard", onClick: mniDashboardClicked, disabled: true }));
+		mainToolbar.addChild(new MenuBarItem({id: "mniNodes", label: "Nodes", onClick: mniNodesClicked, disabled: true})); 
+		mainToolbar.addChild(new MenuBarItem({id: "mniServices", label: "Services", onClick: mniServicesClicked, disabled: true }));
+		mainToolbar.addChild(new MenuBarItem({id: "mniLogout", label: "Logout", onClick: mniLogoutClicked, disabled: true }));
+		mainToolbar.addChild(new MenuBarItem({id: "mniLogin", label: "Login", onClick: showFormLogin, disabled: true }));
+
 	});
 }
 
@@ -129,17 +148,10 @@ function mniDashboardClicked() {
 }
 
 function loadLogout() {
-	setupHeader();
-	setupToolbar();
-
 	reqUpdatePermissions();
 }
 
 function loadLogin(res, a, b, c) {
-	console.log(res, a, b, c);
-	setupHeader();
-	setupToolbar();
-
 	reqUpdatePermissions();
 }
 
@@ -147,12 +159,14 @@ function showFormLogin() {
 	require([
 		"dijit/layout/ContentPane",
 	], function(container) {
-		reqLogin("administrator", "password");
+		var username = window.prompt("username?");
+		var password = window.prompt("password");
+		reqLogin(username, password);
 	});
 }
 
 function errorLogin() {
-	window.alert("hiihi");
+	window.alert("Login failed.");
 }
 
 function reqLogin(username, password) {
@@ -167,8 +181,9 @@ function reqLogin(username, password) {
 	req.get();
 }
 
-function newJsonReq() {
+function newJsonReq(url) {
 	return {
+		url: url,
 		handleAs: "json", 
 		error: displayError,
 		get: function() {
@@ -197,7 +212,7 @@ function renderWidgetProblemServices(widget, container) {
 		list = "<h2>Problem Services</h2>";
 
 		dojo.forEach(services, function(service) {
-			list += '<span class = "metricIndictator ' + service.karma.toLowerCase() + '">' + service.karma + '</span> ' + service.identifier + "<br />"; 
+			list += '<span class = "metricIndictator ' + service.karma.toLowerCase() + '">' + service.lastChangedRelative + '</span> ' + service.identifier + "<br />"; 
 		}); 
 		
 		container.set("content", list); 
@@ -280,14 +295,10 @@ function reqDashboard(dashboard) {
 }
 
 function reqGetServices() {
-	var req = {
-		url: "json/getServices",
-		handleAs: "json",
-		load: "loadGetServices",
-		error: "errorGetServices"
-	}
-
-	dojo.xhrGet(req);
+	var req = newJsonReq();
+	req.url = "json/getServices";
+	req.load = loadGetServices;
+	req.get();
 }
 
 function serviceGroupsModel() {

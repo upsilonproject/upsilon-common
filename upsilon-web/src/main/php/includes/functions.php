@@ -306,7 +306,7 @@ function parseAcceptableDowntime(&$service) {
 		$dt = getFailedDowntimeRule($downtime);
 
 		if ($dt != false && $service['karma'] != 'GOOD') {
-			$service['karma'] = 'skipped';
+			$service['karma'] = 'SKIPPED';
 			$service['output'] = '[DT:' . $dt . '] ' . $service['output'];
 		}
 	}
@@ -366,7 +366,7 @@ function getFailedDowntimeRule(array $downtime) {
 }
 
 function getServicesBad() {
-	$sql = 'SELECT s.id, s.identifier, m.icon, IF(m.criticalCast IS NULL OR s.karma != "GOOD", s.karma, m.criticalCast) AS karma, s.consecutiveCount, s.output, s.description, s.executable, s.estimatedNextCheck, s.lastUpdated, s.lastChanged, IF(m.alias IS null, s.identifier, m.alias) AS alias, IF(m.acceptableDowntimeSla IS NULL, m.acceptableDowntime, sla.content) AS acceptableDowntime FROM services s LEFT JOIN service_metadata m ON s.identifier = m.service LEFT JOIN acceptable_downtime_sla sla ON m.acceptableDowntimeSla = sla.id WHERE s.karma != "GOOD"   ';
+	$sql = 'SELECT s.id, s.identifier, m.icon, IF(m.criticalCast IS NULL OR s.karma != "GOOD", s.karma, m.criticalCast) AS karma, s.consecutiveCount, s.output, s.description, s.executable, s.estimatedNextCheck, s.lastUpdated, s.lastChanged, IF(m.alias IS null, s.identifier, m.alias) AS alias, IF(m.acceptableDowntimeSla IS NULL, m.acceptableDowntime, sla.content) AS acceptableDowntime FROM services s LEFT JOIN service_metadata m ON s.identifier = m.service LEFT JOIN acceptable_downtime_sla sla ON m.acceptableDowntimeSla = sla.id WHERE s.karma != "GOOD" ORDER BY s.lastChanged DESC ';
 	$stmt = DatabaseFactory::getInstance()->prepare($sql);
 	$stmt->execute();
 
@@ -630,7 +630,7 @@ function denyApiAccess($message = 'API Access Forbidden. Did you authenticate?')
 	header('HTTP/1.0 403 Forbidden');
 	header('Content-Type: application/json');
 
-	eutputJson($message);
+	outputJson($message);
 }
 
 function validateAcceptableDowntime($el) {
@@ -726,7 +726,7 @@ function deleteGroupByName($name) {
 	$stmt->bindValue(':groupTitle', $name);
 	$stmt->execute();
 
-	$sql = 'DELETE FROM groups WHERE name = :groupTitle';
+	$sql = 'DELETE FROM service_groups WHERE title = :groupTitle';
 	$stmt = DatabaseFactory::getInstance()->prepare($sql);
 	$stmt->bindValue(':groupTitle', $name);
 	$stmt->execute();
