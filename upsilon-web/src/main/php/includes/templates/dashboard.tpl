@@ -37,7 +37,7 @@
 
 <script type = "text/javascript">
 {literal}
-$(document).ready(function() {
+dojo.addOnLoad(function() {
 	layoutBoxes();
 	{/literal}
 	{if $itemDashboard->isServicesGrouped()}

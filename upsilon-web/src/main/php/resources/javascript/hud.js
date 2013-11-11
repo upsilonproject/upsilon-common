@@ -227,19 +227,6 @@ function(domConstruct, on, query, keys) {
 });
 
 
-function setupCollapseableForms() {
-	$('p.collapseable').each(function(index,sectionTitle) {
-		sectionTitle = $(sectionTitle);
-
-		var list = $('<div />');
-
-		list.append(sectionTitle.nextUntil('p.collapseable', 'fieldset'));
-
-		sectionTitle.after(list);
-
-	});
-}
-
 function setupEnhancedSelectBoxes() {
 	require(["dojo/query", "dijit/form/Select", "dojo/_base/array"], function(query, Select, array) {
 		var selects = query("select");
