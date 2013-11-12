@@ -7,7 +7,7 @@ use \libAllure\ElementAlphaNumeric;
 
 class FormCreateCommand extends \libAllure\Form {
 	public function __construct() {
-		$this->addElement(new ElementAlphaNumeric('identifier', 'Identifier'));
+		$this->addElement(new ElementAlphaNumeric('identifier', 'Command identifier', null, 'The &lt;command id = &quot;<strong>...</strong>&quot; /&gt; in a upsilon-node configuration file. If you have a service in the web interface with this command, you can hover over its "command line" to show the command identifier. eg: checkPing, checkHttpd'));
 		$this->addDefaultButtons();
 	}
 

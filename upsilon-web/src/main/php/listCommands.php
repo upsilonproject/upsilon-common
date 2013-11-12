@@ -1,5 +1,6 @@
 <?php
 
+$title = _('Commands');
 require_once 'includes/common.php';
 
 $links = linksCollection();
