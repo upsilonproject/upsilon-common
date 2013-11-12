@@ -21,7 +21,6 @@
 <script type = "text/javascript">
 setupSortableTables();
 setupEnhancedSelectBoxes();
-setupCollapseableForms();
 
 {literal}
 require(["dojo/parser"], function(parser) {

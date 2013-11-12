@@ -59,7 +59,7 @@ console.log(roomId, roomSvg);
 	});
 }
 
-$(document).ready(function() {
+dojo.addOnLoad(function() {
 	var svgSelector = 'div#roomContainer{/literal}{$itemRoom.id}{literal} svg';
 
 	$(svgSelector).svg({onLoad: function(svg) {

@@ -1,6 +1,11 @@
 <div class = "box">
 	<h2>Commands</h2>
 
+	{if empty($listCommands)}
+		<p>There are 0 commands.</p>
+		<p>Commands are used to add common metadata to services, like add a "ping" icon to all ping commands.</p>
+		<p>To create a command, go to <strong>Actions</strong> &raquo; <strong>Create Command</strong>.</p>
+	{else}
 	<table>
 		<thead>
 			<tr>
@@ -23,4 +28,5 @@
 		{/foreach}
 		</tbody>
 	</table>
+	{/if}
 </div>
