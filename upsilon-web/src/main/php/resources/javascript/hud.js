@@ -164,6 +164,7 @@ function toggleSingleGroup(group) {
 function toggleGroups() {
 	require([
 		"dojo/query",
+		"dojo/NodeList-manipulate",
 		"dojo/NodeList-traverse",
 	], function(query) {
 		query('.metricListContainer').forEach(function(container, index) {
@@ -195,7 +196,7 @@ function toggleGroups() {
 				if (servicesSkipped.length > 0) {
 					servicesSkipped.style('display', 'none');
 					var indicator = dojo.toDom('<div style = "display:inline-block"><span class = "metricIndicator skipped grouped">~</span></div> <div class = "metricText">Skipped <strong>' + servicesSkipped.length + '</strong> services</div>');
-					desc.append(desc, indicator);
+					desc.append(indicator);
 				}			
 			}
 		});
