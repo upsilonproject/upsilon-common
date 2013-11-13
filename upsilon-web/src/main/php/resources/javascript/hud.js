@@ -38,11 +38,15 @@ function updateGraph(results) {
 		"dojox/charting/themes/Claro",
 		"dojo/date/locale",
 		"dojox/charting/plot2d/StackedAreas",
-		"dojox/charting/axis2d/Default"
-	], function(Chart, theme, stamp) {
+		"dojox/charting/axis2d/Default",
+		"dojo/query",
+		"dojo/dom-construct",
+		"dojo/NodeList-manipulate"
+	], function(Chart, theme, stamp, qquery, construct) {
 		window.stamp = stamp;
 
-		$('#graphService' + results.graphIndex).empty();
+		var d = qquery('#graphService' + results.graphIndex);
+		d.clear();
 
 		/*
 		xaxis: {mode: "time", timeformat: "%a\n %H:%M"},
@@ -63,10 +67,10 @@ function updateGraph(results) {
 		c.addAxis("x", {vertical: false, titleOrientation: "away", font: "sans-serif", labelFunc: labelDateAxis });
 		c.addAxis("y", {vertical: true, titleOrientation: "axis", font: "sans-serif" });
 
-		$(results.services).each(function(index, service) {
+		results.services.forEach(function(service, index) {
 			axisData = []
 
-			$(service.metrics).each(function(index, result) {
+			service.metrics.forEach(function(result, index) {
 				axisData.push({y: result.value, x: result.date})
 			});
 
@@ -91,14 +95,14 @@ window.plotMarkings = {};
 
 function fetchServiceMetricResultGraph(metric, id, graphIndex) {
 	data = {
-		"services": id,
+		"services[]": id,
 		"metric": metric,
 		"graphIndex": graphIndex
 	}
 
 	window.serviceResultGraphUrl = 'viewServiceResultGraph.php';
 
-	$.getJSON(window.serviceResultGraphUrl, data, updateGraph);
+	request(window.serviceResultGraphUrl, data, updateGraph);
 }
 
 
@@ -191,7 +195,7 @@ function toggleGroups() {
 				if (servicesSkipped.length > 0) {
 					servicesSkipped.style('display', 'none');
 					var indicator = dojo.toDom('<div style = "display:inline-block"><span class = "metricIndicator skipped grouped">~</span></div> <div class = "metricText">Skipped <strong>' + servicesSkipped.length + '</strong> services</div>');
-					dojo.append(desc, indicator);
+					desc.append(desc, indicator);
 				}			
 			}
 		});
@@ -297,58 +301,74 @@ function requestRescanWidgets() {
 	proBar.set("value", 50);
 }
 
-function renderServiceList(data, stuff, req) {
-	container = $('.widgetRef' + req.htmlRef);
-	container.addClass('metricListContainer');
-	container.empty();
+function renderServiceList(data, ref) {
+	require([
+		"dojo/query",
+		"dojo/dom-construct",
+		"dojo/NodeList-manipulate"
+	], function(query, construct) {
+		generate = construct.toDom;
 
-	list = $('<ul class = "metricList" />');
-	container.append(list);
+		container = query('.widgetRef' + ref);
+		container.addClass('metricListContainer');
+		container.empty();
 
-	$(data).each(function(index, service) {
-		metric = $('<li />');
-		indicator = $('<span class = "metricIndicator" />');
-		indicator.addClass(service.karma.toLowerCase());
+		list = query(generate('<ul class = "metricList"></ul>'));
 
-		if (service.icon != null) {
-			indicator.append($('<img src = "resources/images/serviceIcons/' + service.icon + '" /><br />'));
-		}
+		data.forEach(function(service, index) {
+			indicator = query(generate('<span class = "metricIndicator" />'));
+			indicator.addClass(service.karma.toLowerCase());
 
-		indicator.append('<span>' + service.lastChangedRelative + '</span>');
-		indicator = $('<div class = "metricIndicatorContainer" />').append(indicator);
+			if (service.icon != null) {
+				indicator.append(dojo.toDom('<img src = "resources/images/serviceIcons/' + service.icon + '" /><br />'));
+			}
+			
+			indicator.append(dojo.toDom('<span>' + service.lastChangedRelative + '</span>'));
+			indicator = query(generate('<div class = "metricIndicatorContainer" />')).append(indicator);
 
-		metric.append(indicator);
+			metric = query(generate('<li />'));
+			metric.append(indicator);
 
-		text = $('<div class = "metricText" />');
-		text.append('<span class = "metricDetail">' + service.estimatedNextCheckRelative + '</span>');
-		text.append('<a href = "viewService.php?id=' + service.id + '"><span class = "metricTitle">' + service.alias + '</span></a>');
-		metric.append(text);
+			text = query(generate('<div class = "metricText" />'));
+			text.append('<span class = "metricDetail">' + service.estimatedNextCheckRelative + '</span>');
+			text.append('<a href = "viewService.php?id=' + service.id + '"><span class = "metricTitle">' + service.alias + '</span></a>');
+			metric.append(text);
 
-		metric.append
-
-		list.append(metric);
+			list.append(metric);
+		});
+	
+		container.append(list);
+		layoutBoxes();
 	});
-
-	layoutBoxes();
-	toggleGroups();
 }
 
-function updateMetricList(url, ref, callback, qp, repeat) {
-	var fn = function() {
-		var req = $.ajax({
-			url: url,
-			success: callback,
-			failure: window.alert,
-			dataType: 'json',
-			data: qp
+function request(url, queryParams, callback, callbackObject, repeat) {
+	function doRequest() {
+		require([
+			"dojo/request/xhr"
+		], function (xhr) {
+			xhr(url, { handleAs: "json", query: queryParams }).then(
+				function(data) {
+					try{
+						callback(data, callbackObject);
+					} catch (err) {
+						console.log("err in ajax complete() handle", err)
+					}
+				},
+				function(err) {
+					console.log("err", url, err);
+				}
+			)
 		});
-
-		req.htmlRef = ref;
 	}
 	
-	fn();
+	doRequest();
 
 	if (repeat > 0) {
-		setInterval(fn, repeat);
+		setInterval(doRequest, repeat);
 	}
+}
+
+function updateMetricList(ref) {
+	request("json/getServices", null, renderServiceList, ref, 1000);
 }

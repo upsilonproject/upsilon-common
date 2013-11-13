@@ -4,7 +4,7 @@
 
 <script type = "text/Javascript">
 var qp = {$queryParams};
-updateMetricList("{$url}", "{$ref}", {$callback}, qp, "{$repeat}");
+request("{$url}", qp, {$callback}, "{$ref}", "{$repeat}");
 </script>
 
 
