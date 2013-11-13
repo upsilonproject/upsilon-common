@@ -339,6 +339,7 @@ function renderServiceList(data, ref) {
 		});
 	
 		container.append(list);
+		toggleGroups();
 		layoutBoxes();
 	});
 }
