@@ -49,13 +49,12 @@ class FormUpdateGroup extends \libAllure\Form {
 		$stmt->bindValue(':new_title', $this->getElementValue('title'));
 		$stmt->execute();
 		
-		$sql = 'UPDATE service_groups SET title = :title, parent = :parent, acceptableDowntimeSla = :maintPeriod WHERE id = :id';
+		$sql = 'UPDATE service_groups SET title = :title, parent = :parent WHERE id = :id';
 		$stmt = DatabaseFactory::getInstance()->prepare($sql);
 
 		$stmt->bindValue(':id', $this->itemGroup['id']);
 		$stmt->bindValue(':title', $this->getElementValue('title'));
 		$stmt->bindValue(':parent', $this->getElementValue('parent'));
-		$stmt->bindValue(':maintPeriod', $this->getElementValue('maintPeriod'));
 		$stmt->execute();
 	}
 }
