@@ -803,7 +803,7 @@ function deleteUsergroupById($id) {
 }
 
 function getServiceGroups() {
-	$sql = 'SELECT g.id, g.title, p.id AS parentId, p.title AS parentName, count(m.id) AS serviceCount FROM service_groups g LEFT JOIN service_group_memberships m ON g.title = m.group LEFT JOIN service_groups p ON g.parent = p.title GROUP BY g.id ORDER BY g.title ASC';
+	$sql = 'SELECT g.id, g.title, g.description, p.id AS parentId, p.title AS parentName, count(m.id) AS serviceCount FROM service_groups g LEFT JOIN service_group_memberships m ON g.title = m.group LEFT JOIN service_groups p ON g.parent = p.title GROUP BY g.id ORDER BY g.title ASC';
 	$stmt = DatabaseFactory::getInstance()->prepare($sql);
 	$stmt->execute();
 
