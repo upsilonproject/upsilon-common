@@ -43,6 +43,10 @@ tr:nth-child(even) {
 	background-color: orange !important;
 }
 
+.old {
+	background-color: yellow !important;
+}
+
 table {
 	width: 100%;
 }
