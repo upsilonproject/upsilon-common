@@ -8,13 +8,13 @@
 	{/if}
 
 	<h2>{$subresultsTitle|default:'Subresults'}</h2>
-	<ul class = "subresults" id = "subresultsService{$service.id}">&nbsp;</ul>
+	<ul class = "subresults" id = "subresultsService{$service.id}">
 		<li><p style = "text-align: center"><img src = "resources/images/loading.gif" alt = "loading icon" /></p></li>
 	</ul>
 
 	<script type = "text/javascript">
 	{literal}
-	request("json/getSubresults.php", {serviceId: {/literal}{$service.id}{literal}}, renderSubresults, "#subresultsService{/literal}{$service.id}{literal}")
+	request("json/getSubresults.php", {serviceId: {/literal}{$service.id}{literal}}, renderSubresults, "#subresultsService{/literal}{$service.id}{literal}", 60000)
 	{/literal}
 	</script>
 </div>
