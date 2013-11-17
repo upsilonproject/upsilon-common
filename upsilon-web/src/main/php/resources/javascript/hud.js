@@ -302,6 +302,38 @@ function requestRescanWidgets() {
 	proBar.set("value", 50);
 }
 
+function renderSubresults(data, ref) {
+	require([
+		"dojo/query",
+		"dojo/dom-construct",
+		"dojo/NodeList-manipulate"
+	], function(query, construct) {
+		generate = construct.toDom;
+
+		list = query(ref);
+		list.empty();
+
+		data.forEach(function(result, index) {
+			row = query(generate("<li />"));
+
+			metricIndicator = query(generate('<span class = "metricIndicator">&nbsp;</span>'));
+			metricIndicator.addClass(result.karma);
+			row.append(metricIndicator);
+
+			row.append(generate("<span>" + result.name + "</span>"));
+
+			if (typeof result.comment != "undefined" && result.comment.length > 0) {
+				desc = generate('<span class = "subtle">');
+				desc.innerHTML = " (" + result.comment + ")";
+				row.append(desc);
+			}
+
+			list.append(query(row));
+		});
+	});
+
+}
+
 function renderServiceList(data, ref) {
 	require([
 		"dojo/query",

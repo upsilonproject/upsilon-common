@@ -6,15 +6,15 @@
 	<p><strong>Last Updated:</strong> {$service.lastUpdatedRelative}</p>
 
 	{/if}
-	{if isset($service.listSubresults)} 
 
 	<h2>{$subresultsTitle|default:'Subresults'}</h2>
-	<ul class = "subresults">
-	{foreach from = $service.listSubresults item = subResult}
-		<li><span class = "metricIndicator {$subResult.karma|strtolower}">&nbsp;</span>{$subResult.name} {if not empty($subResult.comment)}<span class = "subtle">({$subResult.comment})</span>{/if}</li>
-	{/foreach}
+	<ul class = "subresults" id = "subresultsService{$service.id}">&nbsp;</ul>
+		<li><p style = "text-align: center"><img src = "resources/images/loading.gif" alt = "loading icon" /></p></li>
 	</ul>
-	{else}
-	No subresults!
-	{/if}
+
+	<script type = "text/javascript">
+	{literal}
+	request("json/getSubresults.php", {serviceId: {/literal}{$service.id}{literal}}, renderSubresults, "#subresultsService{/literal}{$service.id}{literal}")
+	{/literal}
+	</script>
 </div>

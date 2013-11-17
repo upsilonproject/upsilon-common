@@ -236,6 +236,8 @@ function parseOutputJson(&$service) {
 					$service['listSubresults'][$key]['karma'] = $service['karma'];
 				}
 
+				$service['listSubresults'][$key]['karma'] = strtolower($service['listSubresults'][$key]['karma']);
+
 				// name
 				if (isset($result['name'])) {
 					$service['listSubresults'][$key]['name'] = san()->escapeStringForHtml($result['name']);
@@ -520,7 +522,7 @@ function redirectApiClients() {
 	}
 }
 
-function getServiceById($id) {
+function getServiceById($id, $parseOutput = false) {
 		$sql = 'SELECT s.id, s.description, s.identifier, s.commandLine, s.karma, s.node, s.output, s.lastUpdated, s.estimatedNextCheck, s.consecutiveCount, s.commandIdentifier FROM services s WHERE s.id = :serviceId';
 		$stmt = DatabaseFactory::getInstance()->prepare($sql);
 		$stmt->bindValue(':serviceId', $id);
@@ -528,9 +530,11 @@ function getServiceById($id) {
 
 		if ($stmt->numRows() == 0) {
 			throw new Exception("Service not found");
+
 		}
 
 		$service = $stmt->fetchRowNotNull();
+		$parseOutput && parseOutputJson($service);
 		$service['estimatedNextCheckRelative'] = getRelativeTime($service['estimatedNextCheck'], true);
 		$service['lastUpdatedRelative'] = getRelativeTime($service['lastUpdated'], true);
 
