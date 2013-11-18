@@ -1,0 +1,89 @@
+#!/usr/bin/python
+
+import yum 
+import argparse
+from upsiloncommon import error, getHttpClient, getHttpContent
+import re
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-c", "--command", required = True)
+args = parser.parse_args()
+
+def installPackagesYum(lookedUpCommand):
+	print "yum install:", lookedUpCommand
+	error("wont actually install pkg")
+
+	yb=yum.YumBase()
+	yb.conf.cache = 1 # enable cache
+	installed = yb.rpmdb.returnPackages()
+
+	for package in packages:
+	    if package in installed:
+	       print('{0} is already installed, skipping...'.format(package))
+	    else:
+	       print('Installing {0}'.format(package))
+	       yb.install(package)
+	       yb.resolveDeps()
+	       yb.buildTransaction()
+
+	yb.processTransaction()
+
+def getOsPackageSystem():
+	if which("rpm"):
+		return installPackagesYum
+
+	return None
+
+def which(program):
+	import os
+	def is_exe(fpath):
+		return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+
+	fpath, fname = os.path.split(program)
+	if fpath:
+		if is_exe(program):
+			return program
+	else:
+		for path in os.environ["PATH"].split(os.pathsep):
+		    path = path.strip('"')
+		    exe_file = os.path.join(path, program)
+		    if is_exe(exe_file):
+			return exe_file
+
+	return None
+
+def lookupCommand(command):
+	client = getHttpClient(False, "upsilon-project.co.uk")
+	content = getHttpContent(client, "/site/index.php/" + command)
+
+	# <span class="get-command rpm-fedora">nagios-plugins-pin
+	search = '<span class="get-command ([\w\-\ ]+)">(.+)</span>'
+	m = re.search(search, content)
+
+	if len(m.groups()) == 2:
+		return {
+			"classes": m.group(1).split(' '),
+			"content": m.group(2)
+		}
+	else:
+		return None
+
+def promptInstall(lookedUpCommand): 
+	print "Classes:", ", ".join(lookedUpCommand['classes'])
+	print "Content:", lookedUpCommand['content']
+	return True
+
+### 
+
+lookedUpCommand = lookupCommand(args.command)
+
+if lookedUpCommand == None:
+	error("Command not found.");
+else:
+	if promptInstall(lookedUpCommand):
+		osInstaller = getOsPackageSystem()
+
+		if osInstaller == None:
+			error("This tool does not support installation of packages on your OS.");
+		else:
+			osInstaller(lookedUpCommand)
