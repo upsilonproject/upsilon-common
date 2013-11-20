@@ -4,8 +4,9 @@ import httplib
 import sys
 import socket
 import argparse
+from urlparse import urlparse
 
-def getHttpClient(ssl, address, port):
+def getHttpClient(ssl, address, port = 80):
 	if ssl:
 		httpClient = httplib.HTTPSConnection(address + ":" + str(port), timeout=2)
 	else:
@@ -25,6 +26,15 @@ def getHttpContent(client, url):
 		print "Connected, but could not parse HTTP response."
 		print "If this server is running SSL, try again with --ssl"
 		sys.exit()
+
+	if res.status == 302 and res.getheader('Location'):
+		res.read()
+		return getHttpContent(client, "/" + res.getheader('Location'));
+	if res.status == 301:
+		res.read()
+		parts = urlparse(res.getheader('Location'))
+		location = parts.path
+		return getHttpContent(client, location);
 
 	if res.status != 200:
 		error("Requested: %s, Expected HTTP 200, got HTTP %d" % (url, res.status))
