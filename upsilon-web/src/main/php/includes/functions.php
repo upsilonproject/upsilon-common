@@ -368,7 +368,7 @@ function getFailedDowntimeRule(array $downtime) {
 }
 
 function getServicesBad() {
-	$sql = 'SELECT s.id, s.identifier, m.icon, IF(m.criticalCast IS NULL OR s.karma != "GOOD", s.karma, m.criticalCast) AS karma, s.consecutiveCount, s.output, s.description, s.executable, s.estimatedNextCheck, s.lastUpdated, s.lastChanged, IF(m.alias IS null, s.identifier, m.alias) AS alias, IF(m.acceptableDowntimeSla IS NULL, m.acceptableDowntime, sla.content) AS acceptableDowntime FROM services s LEFT JOIN service_metadata m ON s.identifier = m.service LEFT JOIN acceptable_downtime_sla sla ON m.acceptableDowntimeSla = sla.id WHERE s.karma != "GOOD" ORDER BY s.lastChanged DESC ';
+	$sql = 'SELECT s.id, s.identifier, IF(m.icon IS NULL, cmd.icon, m.icon) AS icon, IF(m.criticalCast IS NULL OR s.karma != "GOOD", s.karma, m.criticalCast) AS karma, s.consecutiveCount, s.output, s.description, s.executable, s.estimatedNextCheck, s.lastUpdated, s.lastChanged, IF(m.alias IS null, s.identifier, m.alias) AS alias, IF(m.acceptableDowntimeSla IS NULL, m.acceptableDowntime, sla.content) AS acceptableDowntime FROM services s LEFT JOIN service_metadata m ON s.identifier = m.service LEFT JOIN command_metadata cmd ON s.commandIdentifier = cmd.commandIdentifier LEFT JOIN acceptable_downtime_sla sla ON m.acceptableDowntimeSla = sla.id WHERE s.karma != "GOOD" ORDER BY s.lastChanged DESC ';
 	$stmt = DatabaseFactory::getInstance()->prepare($sql);
 	$stmt->execute();
 
