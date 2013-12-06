@@ -63,18 +63,22 @@ function initGridNodes() {
 			cacheClass: Cache, 
 			store: new Store({data: [{identifier: "foo"}]}),
 			structure: [
-		        {field: "identifier", name: "Identifier"},
-		        {field: "karma", name: "Karma"},
-			{field: "instanceApplicationVersion", name: "Version", hidden: true},
-			{field: "nodeType", name: "Type"},
-			{field: "serviceCount", name: "Service count"},
-			{field: "lastUpdated", name: "Last updated Relative"}
-		    ],
-		    modules: [
+				{field: "identifier", name: "Identifier"},
+				{field: "karma", name: "Karma"},
+				{field: "instanceApplicationVersion", name: "Version", hidden: true},
+				{field: "nodeType", name: "Type"},
+				{field: "serviceCount", name: "Service count"},
+				{field: "lastUpdated", name: "Last updated Relative"}
+			],
+			modules: [
 		              scroller, resizer, filter, filterBar
-            ]
+            		]
 		    	
 		});
+
+		grid.filterBar.closeButton = false;
+		grid.filterBar.refresh();
+		console.log(grid.filterBar.closeButton);
 		grid.startup();
 	});
 }
@@ -83,7 +87,7 @@ function loadListNodes(nodes) {
 	require([
 	     "dijit/Dialog", 
 	     "dijit/registry",
-		 "dojo/store/Memory",
+	     "dojo/store/Memory",
 	     "dojo/domReady!" 
      ], function (Dialog, registry, Store) {
 		if (!registry.byId("gridNodes")) {
@@ -148,7 +152,11 @@ function mniDashboardClicked() {
 }
 
 function loadLogout() {
-	reqUpdatePermissions();
+	require([
+		"dijit/registry"
+	], function (registry) {
+		reqUpdatePermissions();
+	});
 }
 
 function loadLogin(res, a, b, c) {
@@ -309,23 +317,29 @@ function serviceGroupsModel() {
 
 function mniServicesClicked() {
 	require([
+		"dojo/_base/window",
 		"dijit/Tree",
 		"dojo/store/JsonRest",
 		"dijit/tree/ObjectStoreModel",
 		"dojo/store/Memory"
-	], function(Tree, JsonRestStore, ObjectStoreModel, Memory) {
-		st = new JsonRestStore({
-			target: "/foo"
+	], function(win, Tree, JsonRestStore, ObjectStoreModel, Memory) {
+		store = new JsonRestStore({
+			target: "/json/getServiceGroup",
+			labelAttribute: "description"
 		});
 
-		st = new Memory({
-			data: []
+		model = new dijit.tree.ObjectStoreModel({
+			store: store,
+			derferItemLoadingUntilExpanded: true,
+			query: { id: 11281081 },
+
 		});
+
+		window.st = store;
+		window.mo = model;
 
 		tree = new Tree({
-			store: new ObjectStoreModel({ store: st}),
-			query: { id: 0 },
-			labelAttr: "foo", 
+			model: model,
 		});
 
 		tree.placeAt("wrapper");

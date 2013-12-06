@@ -264,6 +264,10 @@ function parseOutputJson(&$service) {
 			$service['events'] = $json['events'];
 		}
 
+		if (isset($json['news'])) {
+			$service['news'] = $json['news'];
+		}
+
 		$service['stabilityProbibility'] = rand(1, 100);
 	}
 
@@ -374,6 +378,14 @@ function getServicesBad() {
 
 	$problemServices = $stmt->fetchAll();
 	$problemServices = enrichServices($problemServices);
+
+	foreach ($problemServices as $key => $service) {
+		if ($service['karma'] == 'OLD') {
+			unset($problemServices[$key]);
+		}
+	}
+
+	$problemServices = array_values($problemServices);
 
 	return $problemServices;
 }
