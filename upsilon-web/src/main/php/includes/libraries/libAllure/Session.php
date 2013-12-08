@@ -19,6 +19,8 @@
 
 namespace libAllure;
 
+if (defined(__FILE__)) { return; } else { define(__FILE__, true); }
+
 require_once 'libAllure/Exceptions.php';
 require_once 'libAllure/Logger.php';
 require_once 'libAllure/AuthBackend.php';
@@ -27,6 +29,10 @@ require_once 'libAllure/User.php';
 
 class Session {
 	private static $sessionName = '';
+	private static $cookieLifetime = 0; // 0 = until browser is closed
+	public static $cookieDomain = null;
+	public static $cookieSecure = false;
+	public static $cookieHttpOnly = true;
 
 	// static copy of $_SESSION['user']
 	private static $user;
@@ -66,6 +72,8 @@ class Session {
 		$credCheck = AuthBackend::getBackend()->checkCredentials($username, $password);
 
 		if ($credCheck) {
+			session_regenerate_id();
+
 			// Create account if it does not exist.
 			self::checkLocalAccount($username);
 
@@ -109,8 +117,9 @@ class Session {
 		}
 	}
 
-	public static function setSessionExpiry() {}
-	public static function setCookieExpiry() {}
+	public static function setCookieLifetimeInSeconds($cookieLifetime) {
+		self::$cookieLifetime = $cookieLifetime;
+	}
 
 	public static function start() {
 		if (!(DatabaseFactory::getInstance() instanceof Database)) {
@@ -121,6 +130,7 @@ class Session {
 			session_name(self::$sessionName);
 		}
 
+		session_set_cookie_params(self::$cookieLifetime, '/', self::$cookieDomain, self::$cookieSecure, self::$cookieHttpOnly);
 		session_start();
 	}
 
