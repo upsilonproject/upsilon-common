@@ -107,7 +107,11 @@ function fetchServiceMetricResultGraph(metric, id, graphIndex) {
 
 
 function layoutBoxes() {
-	new Masonry('div.blockContainer', {itemSelector: 'div.block', columnWidth: 200, isFitWidth: true });
+	if (typeof(window.boxLayoutManager) == "undefined") {
+		window.boxLayoutManager = new Masonry('div.blockContainer', {itemSelector: 'div.block', columnWidth: 200, isFitWidth: true });
+	}
+
+	window.boxLayoutManager.layout();
 }
 
 function cookieOrDefault(cookieName, defaultValue) {
@@ -393,6 +397,8 @@ function renderNewsList(data, ref) {
 			storyHtml.append("<strong>" + news['time'] + '</strong> <a href = "' + news['url'] + '">' + news['title'] + '</a>');
 			container.append(storyHtml);
 		});
+
+		layoutBoxes();
 	});
 }
 
@@ -426,3 +432,5 @@ function request(url, queryParams, callback, callbackObject, repeat) {
 function updateMetricList(ref) {
 	request("json/getServices", null, renderServiceList, ref, 1000);
 }
+
+setInterval(layoutBoxes, 60000);
