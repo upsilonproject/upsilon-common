@@ -236,6 +236,8 @@ function parseOutputJson(&$service) {
 					$service['listSubresults'][$key]['karma'] = $service['karma'];
 				}
 
+				$service['listSubresults'][$key]['karma'] = strtolower($service['listSubresults'][$key]['karma']);
+
 				// name
 				if (isset($result['name'])) {
 					$service['listSubresults'][$key]['name'] = san()->escapeStringForHtml($result['name']);
@@ -260,6 +262,10 @@ function parseOutputJson(&$service) {
 
 		if (isset($json['events'])) {
 			$service['events'] = $json['events'];
+		}
+
+		if (isset($json['news'])) {
+			$service['news'] = $json['news'];
 		}
 
 		$service['stabilityProbibility'] = rand(1, 100);
@@ -366,12 +372,20 @@ function getFailedDowntimeRule(array $downtime) {
 }
 
 function getServicesBad() {
-	$sql = 'SELECT s.id, s.identifier, m.icon, IF(m.criticalCast IS NULL OR s.karma != "GOOD", s.karma, m.criticalCast) AS karma, s.consecutiveCount, s.output, s.description, s.executable, s.estimatedNextCheck, s.lastUpdated, s.lastChanged, IF(m.alias IS null, s.identifier, m.alias) AS alias, IF(m.acceptableDowntimeSla IS NULL, m.acceptableDowntime, sla.content) AS acceptableDowntime FROM services s LEFT JOIN service_metadata m ON s.identifier = m.service LEFT JOIN acceptable_downtime_sla sla ON m.acceptableDowntimeSla = sla.id WHERE s.karma != "GOOD" ORDER BY s.lastChanged DESC ';
+	$sql = 'SELECT s.id, s.identifier, IF(m.icon IS NULL, cmd.icon, m.icon) AS icon, IF(m.criticalCast IS NULL OR s.karma != "GOOD", s.karma, m.criticalCast) AS karma, s.consecutiveCount, s.output, s.description, s.executable, s.estimatedNextCheck, s.lastUpdated, s.lastChanged, IF(m.alias IS null, s.identifier, m.alias) AS alias, IF(m.acceptableDowntimeSla IS NULL, m.acceptableDowntime, sla.content) AS acceptableDowntime FROM services s LEFT JOIN service_metadata m ON s.identifier = m.service LEFT JOIN command_metadata cmd ON s.commandIdentifier = cmd.commandIdentifier LEFT JOIN acceptable_downtime_sla sla ON m.acceptableDowntimeSla = sla.id WHERE s.karma != "GOOD" ORDER BY s.lastChanged DESC ';
 	$stmt = DatabaseFactory::getInstance()->prepare($sql);
 	$stmt->execute();
 
 	$problemServices = $stmt->fetchAll();
 	$problemServices = enrichServices($problemServices);
+
+	foreach ($problemServices as $key => $service) {
+		if ($service['karma'] == 'OLD') {
+			unset($problemServices[$key]);
+		}
+	}
+
+	$problemServices = array_values($problemServices);
 
 	return $problemServices;
 }
@@ -520,7 +534,7 @@ function redirectApiClients() {
 	}
 }
 
-function getServiceById($id) {
+function getServiceById($id, $parseOutput = false) {
 		$sql = 'SELECT s.id, s.description, s.identifier, s.commandLine, s.karma, s.node, s.output, s.lastUpdated, s.estimatedNextCheck, s.consecutiveCount, s.commandIdentifier FROM services s WHERE s.id = :serviceId';
 		$stmt = DatabaseFactory::getInstance()->prepare($sql);
 		$stmt->bindValue(':serviceId', $id);
@@ -528,9 +542,11 @@ function getServiceById($id) {
 
 		if ($stmt->numRows() == 0) {
 			throw new Exception("Service not found");
+
 		}
 
 		$service = $stmt->fetchRowNotNull();
+		$parseOutput && parseOutputJson($service);
 		$service['estimatedNextCheckRelative'] = getRelativeTime($service['estimatedNextCheck'], true);
 		$service['lastUpdatedRelative'] = getRelativeTime($service['lastUpdated'], true);
 
@@ -803,7 +819,7 @@ function deleteUsergroupById($id) {
 }
 
 function getServiceGroups() {
-	$sql = 'SELECT g.id, g.title, p.id AS parentId, p.title AS parentName, count(m.id) AS serviceCount FROM service_groups g LEFT JOIN service_group_memberships m ON g.title = m.group LEFT JOIN service_groups p ON g.parent = p.title GROUP BY g.id ORDER BY g.title ASC';
+	$sql = 'SELECT g.id, g.title, g.description, p.id AS parentId, p.title AS parentName, count(m.id) AS serviceCount FROM service_groups g LEFT JOIN service_group_memberships m ON g.title = m.group LEFT JOIN service_groups p ON g.parent = p.title GROUP BY g.id ORDER BY g.title ASC';
 	$stmt = DatabaseFactory::getInstance()->prepare($sql);
 	$stmt->execute();
 

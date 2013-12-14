@@ -1,6 +1,6 @@
 <div class = "widgetRef{$ref}"> 
 	<script type = "text/Javascript">
-updateMetricList("json/getServices", "{$ref}");
+updateMetricList("{$ref}");
 	</script>
 </div>
 

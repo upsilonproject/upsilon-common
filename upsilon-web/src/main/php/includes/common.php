@@ -44,6 +44,7 @@ if ((@include 'includes/config.php') !== false) {
 	$backend->setSalt(null, CFG_PASSWORD_SALT);
 	$backend->registerAsDefault();
 
+	Session::setCookieLifetimeInSeconds(31104000);
 	Session::start();
 
 	if (!defined('ANONYMOUS_PAGE') && !Session::isLoggedIn()) {

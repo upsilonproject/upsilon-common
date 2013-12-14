@@ -10,7 +10,7 @@ $id = Sanitizer::getInstance()->filterUint('id');
 
 $group = getGroup($id);
 
-deleteGroupByName($group['name']);
+deleteGroupByName($group['title']);
 
-redirect('listGroups.php', 'Deleted group: '. $group['name']); 
+redirect('listGroups.php', 'Deleted group: '. $group['title']); 
 ?>

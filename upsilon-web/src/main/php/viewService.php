@@ -20,17 +20,8 @@ require_once 'includes/widgets/header.php';
 
 $tpl->assign('listGroupMemberships', getMembershipsFromServiceIdentifier($service['identifier']));
 
-function getCommandMetadata($identifier) {
-	$sql = 'SELECT m.icon FROM command_metadata m WHERE m.commandIdentifier = :identifier';
-	$stmt = DatabaseFactory::getInstance()->prepare($sql);
-	$stmt->bindValue(':identifier', $identifier);
-	$stmt->execute();
-
-	return $stmt->fetchRow();
-}
-
 function getServiceMetadata($identifier) {
-	$sql = 'SELECT m.actions, m.metrics, m.defaultMetric, m.room, m.icon, m.* FROM service_metadata m WHERE m.service = :serviceIdentifier LIMIT 1';
+	$sql = 'SELECT sm.actions, sm.metrics, sm.defaultMetric, sm.room, cm.id AS commandMetadataId, IF(sm.icon IS NULL, cm.icon, sm.icon) AS icon, sm.criticalCast, sm.goodCast FROM services s LEFT JOIN service_metadata sm ON s.identifier = sm.service LEFT JOIN command_metadata cm ON s.commandIdentifier = cm.commandIdentifier WHERE s.identifier = :serviceIdentifier LIMIT 1';
 	$stmt = DatabaseFactory::getInstance()->prepare($sql);
 	$stmt->bindValue(':serviceIdentifier', $identifier);
 	$stmt->execute();

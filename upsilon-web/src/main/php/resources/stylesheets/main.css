@@ -260,6 +260,9 @@ form fieldset:nth-of-type(odd) {
 	color: gray;
 }
 
+#footer a {
+	padding: 1em;
+}
 
 svg g[inkscape\:label="floors"] {
 	fill: white;
@@ -490,4 +493,9 @@ div.loginFormContainer {
 
 img.inlineIcon {
 	padding-top: 4px;
+}
+
+ul {
+	list-style: none;
+	padding-left: 0;
 }

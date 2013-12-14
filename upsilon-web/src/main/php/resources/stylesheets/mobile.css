@@ -10,6 +10,10 @@ span.metricIndicator {
 	width: 3em;
 }
 
+div.metricIndicatorContainer {
+	display: inline-block;
+}
+
 ul {
 	list-style: none;
 	padding: 0;
@@ -37,6 +41,10 @@ tr:nth-child(even) {
 
 .warning {
 	background-color: orange !important;
+}
+
+.old {
+	background-color: yellow !important;
 }
 
 table {

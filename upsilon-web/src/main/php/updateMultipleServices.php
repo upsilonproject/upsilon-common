@@ -10,6 +10,7 @@ class FormUpdateMultiple extends \libAllure\Form {
 
 		$this->addElement(new \libAllure\ElementHidden($source, '', $id));
 		$this->addElement($this->getElementServices($services));
+		$this->addElement($this->getElementSelectMaintPeriod());
 
 		$this->addDefaultButtons();
 	}
@@ -26,10 +27,39 @@ class FormUpdateMultiple extends \libAllure\Form {
 		return $el;		
 	}
 
+	private function getElementSelectMaintPeriod() {
+		$el = new \libAllure\ElementSelect('acceptableDowntimeSla', 'Maint Period');
+		$el->addOption('(none)', null);
+
+		$sql = 'SELECT s.id, s.title FROM acceptable_downtime_sla s';
+		$stmt = db()->prepare($sql);
+		$stmt->execute();
+
+		foreach ($stmt->fetchAll() as $sla) {
+			$el->addOption($sla['title'], $sla['id']);
+		}
+
+		return $el;
+	}
+
+
 	public function process() {
-		$sql = 'UPDATE service_metadata SET acceptableDowntimeSla = :acceptableDowntimeSla';
+		$sql = 'INSERT IGNORE INTO service_metadata (service) VALUES (:service)';
+		$stmt = db()->prepare($sql);
 
+		foreach ($this->getElementValue('serviceIds[]') as $serviceId) {
+			$stmt->bindValue(':service', $serviceId);
+			$stmt->execute();
+		}
 
+		$sql = 'UPDATE service_metadata SET acceptableDowntimeSla = :acceptableDowntimeSla WHERE service = :service';
+		$stmt = db()->prepare($sql);
+		$stmt->bindValue(':acceptableDowntimeSla', $this->getElementValue('acceptableDowntimeSla'));
+
+		foreach ($this->getElementValue('serviceIds[]') as $serviceId) {
+			$stmt->bindValue(':service', $serviceId);
+			$stmt->execute();
+		}
 	}
 }
 
