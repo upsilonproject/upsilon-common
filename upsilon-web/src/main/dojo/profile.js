@@ -43,6 +43,8 @@
 					"dojo/domReady",
 					"dojo/request/xhr",
 					"dojo/parser",
+					"dojo/query",
+					"dojo/NodeList-manipulate",
 					"dijit/_base",
 					"dijit/_base/focus",
 					"dijit/_base/place",
