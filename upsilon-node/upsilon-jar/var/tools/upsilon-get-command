@@ -84,7 +84,7 @@ def promptInstall(lookedUpCommand):
 lookedUpCommand = lookupCommand(args.command)
 
 if lookedUpCommand == None or lookedUpCommand['content'] == "(none)":
-	error("Command not found.");
+	error("Found the command webpage, but there was no auto-installation instructions. Try reading the page on the upsilon wiki. ");
 else:
 	if promptInstall(lookedUpCommand):
 		osInstaller = getOsPackageSystem()
