@@ -14,8 +14,9 @@ foreach ($services as $service) {
 	}
 
 	foreach ($service['news'] as $key => $story) {
+		$story['time'] = strtotime($story['time']);
 		$news[] = $story;
-		$times[$key] = $story['time'];
+		$times[] = $story['time'];
 	}
 }
 

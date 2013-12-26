@@ -142,3 +142,7 @@ div.box h2, div.block h2 {
 	margin: 0;
 	font-size: 12pt;
 }
+
+div#rootContainer {
+	height: 100%;
+}

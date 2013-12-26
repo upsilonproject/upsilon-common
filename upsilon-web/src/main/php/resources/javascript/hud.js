@@ -27,9 +27,13 @@ function rawPlot(plot, ctx) {
 }
 
 function labelDateAxis(date) {
-	var d = new Date(date * 1000);
-	
-	return window.stamp.format(d, {selector:"date", datePattern: "HH:mm" });
+	return formatUnixTimestamp(date);
+}
+
+function formatUnixTimestamp(timestamp) {
+	var d = new Date(timestamp * 1000);
+
+	return dojo.date.locale.format(d, {selector:"date", datePattern: "HH:mm" });
 }
 
 function updateGraph(results) {
@@ -43,8 +47,6 @@ function updateGraph(results) {
 		"dojo/dom-construct",
 		"dojo/NodeList-manipulate"
 	], function(Chart, theme, stamp, qquery, construct) {
-		window.stamp = stamp;
-
 		var d = qquery('#graphService' + results.graphIndex);
 		d.clear();
 
@@ -387,14 +389,15 @@ function renderNewsList(data, ref) {
 	require([
 		"dojo/query",
 		"dojo/dom-construct",
-		"dojo/NodeList-manipulate"
+		"dojo/NodeList-manipulate",
+		"dojo/date/locale"
 	], function(query, construct) {
 		container = query(".widgetRef" + ref);
 		container.empty();
 
 		data.forEach(function(news, index) {
 			storyHtml = query(construct.toDom("<p />"));
-			storyHtml.append("<strong>" + news['time'] + '</strong> <a href = "' + news['url'] + '">' + news['title'] + '</a>');
+			storyHtml.append("<strong>" + formatUnixTimestamp(news['time']) + '</strong> <span class = "subtle">' + news['source'] +  '</span> <a href = "' + news['url'] + '">' + news['title'] + '</a>');
 			container.append(storyHtml);
 		});
 
@@ -433,4 +436,3 @@ function updateMetricList(ref) {
 	request("json/getServices", null, renderServiceList, ref, 1000);
 }
 
-setInterval(layoutBoxes, 60000);
