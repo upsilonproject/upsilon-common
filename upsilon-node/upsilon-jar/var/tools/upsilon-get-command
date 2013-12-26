@@ -10,27 +10,27 @@ parser.add_argument("-c", "--command", required = True)
 args = parser.parse_args()
 
 def installPackagesYum(lookedUpCommand):
-	print "yum install:", lookedUpCommand
-	error("wont actually install pkg")
+	package = lookedUpCommand['content']
+	
+	print "Using Yum to install:", package
 
 	yb=yum.YumBase()
 	yb.conf.cache = 1 # enable cache
-	installed = yb.rpmdb.returnPackages()
 
-	for package in packages:
-	    if package in installed:
-	       print('{0} is already installed, skipping...'.format(package))
-	    else:
-	       print('Installing {0}'.format(package))
-	       yb.install(package)
-	       yb.resolveDeps()
-	       yb.buildTransaction()
+	package = yb.pkgSack.returnNewestByNameArch(patterns=[package])
+	package = package[0]
+
+	print('Installing {0}'.format(package))
+	yb.install(package)
+	yb.resolveDeps()
+	yb.buildTransaction()
 
 	yb.processTransaction()
 
-def getOsPackageSystem():
-	if which("rpm"):
-		return installPackagesYum
+def getOsPackageSystem(classes):
+	if "rpm-fedora" in classes or "rpm-rhel" in classes:
+		if which("rpm") :
+			return installPackagesYum
 
 	return None
 
@@ -61,10 +61,15 @@ def lookupCommand(command):
 	m = re.search(search, content)
 
 	if len(m.groups()) == 2:
-		return {
+		cmd = {
 			"classes": m.group(1).split(' '),
-			"content": m.group(2)
+			"content": m.group(2),
+			"definitions": []
 		}
+
+		search = '<pre class = "commandDefinition" title = "(.+)">'
+		m = re.search(search, content);
+		print m.groups()
 	else:
 		return None
 
@@ -81,7 +86,7 @@ if lookedUpCommand == None:
 	error("Command not found.");
 else:
 	if promptInstall(lookedUpCommand):
-		osInstaller = getOsPackageSystem()
+		osInstaller = getOsPackageSystem(lookedUpCommand['classes'])
 
 		if osInstaller == None:
 			error("This tool does not support installation of packages on your OS.");
