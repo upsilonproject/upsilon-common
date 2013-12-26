@@ -6,11 +6,11 @@ import socket
 import argparse
 from urlparse import urlparse
 
-def getHttpClient(ssl, address, port = 80):
+def getHttpClient(ssl, address, port = 80, timeout = 10):
 	if ssl:
-		httpClient = httplib.HTTPSConnection(address + ":" + str(port), timeout=2)
+		httpClient = httplib.HTTPSConnection(address + ":" + str(port), timeout=timeout)
 	else:
-		httpClient = httplib.HTTPConnection(address + ":" + str(port), timeout=2)
+		httpClient = httplib.HTTPConnection(address + ":" + str(port), timeout=timeout)
 	
 	return httpClient
 
@@ -50,6 +50,7 @@ def commonArgumentParser():
 	parser.add_argument('--address', '-a', help = "Hostname or IP address of upsilon-node", default = "localhost")
 	parser.add_argument('--port', '-p', help = "Port", default = 4000)
 	parser.add_argument('--ssl', action = "store_true")
+	parser.add_argument('--timeout', '-t', type = int, default = 10)
 
 	return parser
 

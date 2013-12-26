@@ -149,6 +149,7 @@ class FormInstallationQuestions extends Form {
                 $ret .= "<?php\n";
                 $ret .= "date_default_timezone_set('" . date_default_timezone_get() . "');\n";
                 $ret .= "ini_set('display_errors', 'on');\n";
+                $ret .= "ini_set('session.gc_maxlifetime', '31557600');\n";
                 $ret .= "\n";
                 $ret .= "define('CFG_DB_DSN', '{$this->getDsn()}');\n";
                 $ret .= "define('CFG_DB_USER', '{$this->getElementValue('dbUser')}');\n";

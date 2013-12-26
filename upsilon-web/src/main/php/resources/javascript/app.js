@@ -1,8 +1,19 @@
-function onLoad() {
-	setupHeader();
-	setupToolbar();
+if (typeof String.prototype.endsWith !== 'function') {
+	String.prototype.endsWith = function(suffix) {
+		return this.indexOf(suffix, this.length - suffix.length) !== -1;
+	};
+}
 
-	reqUpdatePermissions();
+function onLoad() {
+	try {
+		setupHeader();
+		setupToolbar();
+		setupRootContainer();
+
+		reqUpdatePermissions();
+	} catch (err) {
+		displayError(err);
+	}
 }
 
 function main() {
@@ -17,14 +28,16 @@ function main() {
 function applyPermissionsToToolbar() {
 	require([
 		"dijit/registry"
-	], function(_registry){
+	], function(registry){
 		permissions = window.permissions;
 
-		_registry.byId("mniDashboard").set("disabled", !permissions.viewDashboard);
-		_registry.byId("mniServices").set("disabled", !permissions.viewServices);
-		_registry.byId("mniNodes").set("disabled", !permissions.viewNodes);
-		_registry.byId("mniLogout").set("disabled", !permissions.loggedIn);
-		_registry.byId("mniLogin").set("disabled", permissions.loggedIn);
+		registry.byId("mniDashboard").set("disabled", !permissions.viewDashboard);
+		registry.byId("mniServices").set("disabled", !permissions.viewServices);
+		registry.byId("mniNodes").set("disabled", !permissions.viewNodes);
+		registry.byId("mniLogout").set("disabled", !permissions.loggedIn);
+		registry.byId("mniLogin").set("disabled", permissions.loggedIn);
+
+		window.registry = registry;
 	});
 } 
 
@@ -40,7 +53,6 @@ function reqUpdatePermissions() {
 	var req = newJsonReq();
 	req.url = "json/sessionPermissions";
 	req.load = loadUpdatePermissions;
-	req.error = applyPermissionsToToolbar;
 	req.get();
 }
 
@@ -63,18 +75,22 @@ function initGridNodes() {
 			cacheClass: Cache, 
 			store: new Store({data: [{identifier: "foo"}]}),
 			structure: [
-		        {field: "identifier", name: "Identifier"},
-		        {field: "karma", name: "Karma"},
-			{field: "instanceApplicationVersion", name: "Version", hidden: true},
-			{field: "nodeType", name: "Type"},
-			{field: "serviceCount", name: "Service count"},
-			{field: "lastUpdated", name: "Last updated Relative"}
-		    ],
-		    modules: [
+				{field: "identifier", name: "Identifier"},
+				{field: "karma", name: "Karma"},
+				{field: "instanceApplicationVersion", name: "Version", hidden: true},
+				{field: "nodeType", name: "Type"},
+				{field: "serviceCount", name: "Service count"},
+				{field: "lastUpdated", name: "Last updated Relative"}
+			],
+			modules: [
 		              scroller, resizer, filter, filterBar
-            ]
+            		]
 		    	
 		});
+
+		grid.filterBar.closeButton = false;
+		grid.filterBar.refresh();
+		console.log(grid.filterBar.closeButton);
 		grid.startup();
 	});
 }
@@ -83,7 +99,7 @@ function loadListNodes(nodes) {
 	require([
 	     "dijit/Dialog", 
 	     "dijit/registry",
-		 "dojo/store/Memory",
+	     "dojo/store/Memory",
 	     "dojo/domReady!" 
      ], function (Dialog, registry, Store) {
 		if (!registry.byId("gridNodes")) {
@@ -139,16 +155,16 @@ function loadGetServices(services) {
 	console.log(services);
 }
 
-function errorGetServices(err) {
-	window.alert("err get services" + err);
-}
-
 function mniDashboardClicked() {
 	reqDashboard(5);
 }
 
 function loadLogout() {
-	reqUpdatePermissions();
+	require([
+		"dijit/registry"
+	], function (registry) {
+		reqUpdatePermissions();
+	});
 }
 
 function loadLogin(res, a, b, c) {
@@ -254,13 +270,14 @@ function loadDashboard(dashboard) {
 	require([
 	    "dijit/layout/StackContainer",
 	    "dijit/layout/ContentPane",
-	    "dijit/registry"
-    ], function(Container, ContentPane, registry){
+	    "dijit/registry",
+	    "dojo/dom-construct",
+    ], function(Container, ContentPane, registry, domcon){
 	    	setTitle("Dashboard: " + dashboard.dashboard.title);
 
 		if (!registry.byId("dashboardWidgetContainer")) {
 			var container = new Container({id: "dashboardWidgetContainer", class: "blockContainer"});
-			container.placeAt("wrapper"); 
+			container.placeAt("content");
 		}
 		 
 		var container = registry.byId("dashboardWidgetContainer");
@@ -308,29 +325,6 @@ function serviceGroupsModel() {
 }
 
 function mniServicesClicked() {
-	require([
-		"dijit/Tree",
-		"dojo/store/JsonRest",
-		"dijit/tree/ObjectStoreModel",
-		"dojo/store/Memory"
-	], function(Tree, JsonRestStore, ObjectStoreModel, Memory) {
-		st = new JsonRestStore({
-			target: "/foo"
-		});
-
-		st = new Memory({
-			data: []
-		});
-
-		tree = new Tree({
-			store: new ObjectStoreModel({ store: st}),
-			query: { id: 0 },
-			labelAttr: "foo", 
-		});
-
-		tree.placeAt("wrapper");
-		tree.startup();
-	});
 }
 
 function setTitle(newTitle) {
@@ -353,6 +347,76 @@ function setupHeader() {
 		});
 
 		header.placeAt("wrapper");
+	});
+}
+
+function clickedTreeNode(item) {
+	switchContentToGroup(item);
+}
+
+function switchContentToGroup(group) {
+	require([
+		"dijit/registry",
+	], function(registry) {
+		content = registry.byId("content");
+		content.set("content", "Group:" + group.title + "<br />ID:" + group.id);
+	});
+}
+
+function setupRootContainer() {
+	require([
+		"dijit/registry",
+		"dijit/layout/BorderContainer",
+		"dijit/layout/ContentPane",
+		"dijit/Tree",
+		"dojo/store/JsonRest",
+		"dijit/tree/ObjectStoreModel",
+		"dojo/store/Memory"
+	], function(registry, BorderContainer, ContentPane, Tree, JsonRestStore, ObjectStoreModel, Memory) {
+		if (registry.byId("navTree") == null) {
+			contentBody = new ContentPane({
+				id: "content",
+				content: "main content",
+				region: "center"
+			});
+
+			store = new JsonRestStore({
+				target: "/json/getServiceGroup/",
+				getRoot: function (onItem, onError) {
+					this.get(7888395).then(onItem, onError);
+				},
+				getChildren: function(group, onComplete, onError) {
+					onComplete(group.listSubgroups);
+				},
+				getLabel: function(group) {
+					return group.title;
+				},
+				mayHaveChildren: function(o) {
+					return true;
+				}
+			});
+
+			tree = new Tree({
+				id: "navTree",
+				region: "center",
+				model: store,
+				onClick: clickedTreeNode
+			});
+			tree.startup();
+
+			rootContainer = new BorderContainer({
+				id: "rootContainer",
+				liveSplitters: true,
+			});
+
+			contentTree = new ContentPane({ content: tree, region: "left", splitter: true});
+			contentTree.startup();
+
+			rootContainer.addChild(contentTree);
+			rootContainer.addChild(contentBody);
+			rootContainer.placeAt("wrapper");
+			rootContainer.startup();
+		}
 	});
 }
 

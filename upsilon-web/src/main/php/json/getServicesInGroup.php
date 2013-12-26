@@ -2,6 +2,6 @@
 
 require_once 'jsonCommon.php';
 
-outputJson(getServices(san()->filterUint('group')));
+outputJson(getServices(san()->filterUint('id')));
 
 ?>

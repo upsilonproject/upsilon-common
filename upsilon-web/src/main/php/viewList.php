@@ -9,6 +9,9 @@ if (isset($_REQUEST['problems'])) {
 	$sql = 'SELECT s.id, s.identifier, s.output, s.description, s.lastUpdated, s.karma, s.secondsRemaining FROM services s WHERE s.karma != "good"';
 } else if (isset($_REQUEST['ungrouped']))  {
 	$sql = 'SELECT s.id, s.identifier, s.output, s.description, s.lastUpdated, s.karma, s.secondsRemaining FROM services s WHERE s.identifier NOT IN (SELECT g.service FROM service_group_memberships g)';
+} else if (isset($_REQUEST['maintPeriod'])) {
+	$id = san()->filterUint('maintPeriod');
+	$sql = 'SELECT s.id, s.identifier, s.output, s.description, s.lastUpdated, s.karma, s.secondsRemaining FROM services s LEFT JOIN service_metadata m ON s.identifier = m.service WHERE m.acceptableDowntimeSla = ' . $id;
 } else {
 	$sql = 'SELECT s.id, s.identifier, s.output, s.description, s.lastUpdated, s.karma, s.secondsRemaining FROM services s';
 }

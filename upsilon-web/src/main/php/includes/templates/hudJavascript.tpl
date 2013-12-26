@@ -8,10 +8,13 @@
 
 <script type = "text/javascript">
 {literal}
-dojo.addOnLoad(function() {
+require([
+	"dojo/ready"
+], function() {
 	toggleEmptyGroups();
 	toggleGroups();
 	layoutBoxes(true);
+	setInterval(layoutBoxes, 60000);
 });
 {/literal}
 </script>

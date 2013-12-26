@@ -1,4 +1,9 @@
 RewriteEngine  on
+
+RewriteCond %{REQUEST_URI} !\.php$ [NC]
+RewriteCond %{REQUEST_URI} [^/]$
+RewriteRule ^(.*)/(\d+)$ $1.php?id=$2 [END]
+
 RewriteCond %{REQUEST_URI} !\.php$ [NC]
 RewriteCond %{REQUEST_URI} [^/]$
 RewriteRule ^(.*)$ $1.php [L]

@@ -27,7 +27,9 @@
 	<div style = "float: right; vertical-align: top;">
 		<h3>Debug info</h3>
 		<p><strong>ID:</strong> {$itemService.id}</p>
-		<p><strong><abbr title = "Command identifier: {$itemService.commandIdentifier}">Command line</abbr>:</strong> {$itemService.commandLine}</p>
+		<p><strong><abbr title = "Command identifier: {$itemService.commandIdentifier}">Command line</abbr>:</strong> {$itemService.commandLine} 
+		{if $metadata.commandMetadataId}(<a href = "updateCommand.php?id={$metadata.commandMetadataId}">{$itemService.commandIdentifier}</a>){/if}
+		</p>
 
 		<p><strong>Group memberships:</strong>
 		{if $listGroupMemberships|@count eq 0}

@@ -15,7 +15,7 @@ def bool2string(string, txt_true = "True", txt_false = "False"):
 parser = commonArgumentParser()
 args = parser.parse_args();
 
-client = getHttpClient(args.ssl, args.address, args.port);
+client = getHttpClient(args.ssl, args.address, args.port, args.timeout);
 resp = getHttpContent(client, "/internalStatus")
 
 xml = etree.XML(resp)

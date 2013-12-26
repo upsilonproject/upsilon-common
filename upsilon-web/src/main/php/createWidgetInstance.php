@@ -25,7 +25,7 @@ class FormCreateWidgetInstance extends Form {
 	private function getElementClass() {
 		$el = new ElementSelect('class', 'Class');
 
-		$sql = 'SELECT w.* FROM widgets w ';
+		$sql = 'SELECT w.* FROM widgets w ORDER BY w.class';
 		$stmt = DatabaseFactory::getInstance()->prepare($sql);
 		$stmt->execute();
 
