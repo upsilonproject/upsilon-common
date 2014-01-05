@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import errno
 import yum 
 import argparse
 from upsiloncommon import error, getHttpClient, getHttpContent
@@ -11,26 +12,31 @@ args = parser.parse_args()
 
 def installPackagesYum(lookedUpCommand):
 	print "yum install:", lookedUpCommand
-	error("wont actually install pkg")
+	packageName = lookedUpCommand['content']
 
 	yb=yum.YumBase()
-	yb.conf.cache = 1 # enable cache
-	installed = yb.rpmdb.returnPackages()
+	packageSearchResults = yb.rpmdb.searchNevra(name=packageName)
+	#installed = yb.rpmdb.returnPackages()
 
-	for package in packages:
-	    if package in installed:
-	       print('{0} is already installed, skipping...'.format(package))
-	    else:
-	       print('Installing {0}'.format(package))
-	       yb.install(package)
-	       yb.resolveDeps()
-	       yb.buildTransaction()
+	try:
+		if len(packageSearchResults) == 0:
+			print('Installing: {0}'.format(packageName))
+			yb.install(name=packageName)
+			yb.resolveDeps()
+			yb.buildTransaction()
+			yb.processTransaction()
+		else:
+			print('{0} is already installed, skipping...'.format(packageName))
+	except IOError as e:
+		if e[0] == errno.EACCES:
+			error("Permission denied. Yum requires that you have root privileges to install a package.")
+		else:
+			error(e)
 
-	yb.processTransaction()
-
-def getOsPackageSystem():
-	if which("rpm"):
-		return installPackagesYum
+def getOsPackageSystem(classes):
+	if "rpm-fedora" in classes or "rpm-rhel" in classes:
+		if which("rpm") :
+			return installPackagesYum
 
 	return None
 
@@ -57,14 +63,19 @@ def lookupCommand(command):
 	content = getHttpContent(client, "/site/index.php/" + command)
 
 	# <span class="get-command rpm-fedora">nagios-plugins-pin
-	search = '<span class="get-command ([\w\-\ ]+)">(.+)</span>'
+	search = '<span class="get-command ([\w\-\ ]+)">([\w_-]+)</span>'
 	m = re.search(search, content)
 
 	if len(m.groups()) == 2:
-		return {
+		cmd = {
 			"classes": m.group(1).split(' '),
-			"content": m.group(2)
+			"content": m.group(2),
+			"definitions": []
 		}
+
+		search = '<pre class = "commandDefinition" title = "(.+)">'
+		m = re.search(search, content);
+		print m.groups()
 	else:
 		return None
 
@@ -77,11 +88,11 @@ def promptInstall(lookedUpCommand):
 
 lookedUpCommand = lookupCommand(args.command)
 
-if lookedUpCommand == None:
-	error("Command not found.");
+if lookedUpCommand == None or lookedUpCommand['content'] == "(none)":
+	error("Found the command webpage, but there was no auto-installation instructions. Try reading the page on the upsilon wiki. ");
 else:
 	if promptInstall(lookedUpCommand):
-		osInstaller = getOsPackageSystem()
+		osInstaller = getOsPackageSystem(lookedUpCommand['classes'])
 
 		if osInstaller == None:
 			error("This tool does not support installation of packages on your OS.");

@@ -14,7 +14,7 @@ class WidgetNews extends Widget {
 
 		$group = $this->getArgumentValue('group');
 
-		$tpl->assign('ref', 'news');
+		$tpl->assign('ref', uniqid());
 		$tpl->assign('url', 'json/getNews?group=' . $group);
 		$tpl->assign('callback', 'renderNewsList');
 		$tpl->assign('queryParams', json_encode(array()));
