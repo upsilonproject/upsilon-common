@@ -80,6 +80,11 @@
 			<artifactId>logback-classic</artifactId>
 			<version>1.0.13</version>
 		</dependency>
+		<dependency>
+			<groupId>com.rabbitmq</groupId>
+			<artifactId>amqp-client</artifactId>
+			<version>3.2.3</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>upsilon-node-${releaseVersion}-nodeps</finalName>

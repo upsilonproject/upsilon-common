@@ -17,6 +17,7 @@ import upsilon.configuration.XmlConfigurationLoader;
 import upsilon.dataStructures.CollectionOfStructures;
 import upsilon.dataStructures.StructureNode;
 import upsilon.dataStructures.StructurePeer;
+import upsilon.management.amqp.AmqpListener;
 import upsilon.util.ResourceResolver;
 import upsilon.util.SslUtil;
 import upsilon.util.UPath;
@@ -133,7 +134,7 @@ public class Main implements UncaughtExceptionHandler {
 			try {
 				Database.instance.disconnect();
 			} catch (Exception e) {
-				LOG.error("SQL Error during disconnect: " + e.getMessage());
+				Main.LOG.error("SQL Error during disconnect: " + e.getMessage());
 			}
 		}
 
@@ -180,7 +181,11 @@ public class Main implements UncaughtExceptionHandler {
 			this.startDaemon(new DaemonRest());
 		}
 
-		this.startDaemon(new DaemonScheduler());
+		if (Configuration.instance.daemonAmqpEnabled) {
+			this.startDaemon(new DaemonScheduler());
+		}
+
+		this.startDaemon(new AmqpListener());
 
 		Main.LOG.debug("Best guess at node type: " + this.guessNodeType());
 	}

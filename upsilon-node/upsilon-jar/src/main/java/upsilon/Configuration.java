@@ -30,6 +30,7 @@ public class Configuration {
 
 	public Duration executorDelay = GlobalConstants.DEF_TIMER_EXECUTOR_DELAY;
 	public boolean daemonRestEnabled = GlobalConstants.DEF_DAEMON_REST_ENABLED;
+	public boolean daemonAmqpEnabled = GlobalConstants.DEF_DAEMON_AMQP_ENABLED;
 	public boolean isCryptoEnabled = GlobalConstants.DEF_CRYPTO_ENABLED;
 	public int restPort = GlobalConstants.DEF_REST_PORT;
 	public Duration queueMaintainerDelay = GlobalConstants.DEF_TIMER_QUEUE_MAINTAINER_DELAY;
@@ -42,11 +43,19 @@ public class Configuration {
 	public int maxThreadsRestKernel = 1;
 	public int maxThreadsRestWorkers = 1;
 
+	public void clear() {
+		this.commands.clear();
+		this.services.clear();
+		this.peers.clear();
+		this.remoteServices.clear();
+		this.remoteNodes.clear();
+	}
+
 	public void parseTrustFingerprint(String fingerprint) {
 		fingerprint = fingerprint.trim();
 		fingerprint = fingerprint.replace(" ", "");
 		fingerprint = fingerprint.replace(":", "");
-	 	fingerprint = fingerprint.toLowerCase();
+		fingerprint = fingerprint.toLowerCase();
 
 		final Pattern p = Pattern.compile("[a-z|0-9]{40}");
 		final Matcher m = p.matcher(fingerprint);
@@ -59,25 +68,26 @@ public class Configuration {
 			Configuration.LOG.info("Trusting certificate with SHA1 fingerprint: " + fingerprint);
 		}
 	}
- 
-	public void update(final XmlNodeHelper node) { 
+
+	public void update(final XmlNodeHelper node) {
 		synchronized (this) {
 			if (this.initialFileParsed == false) {
 				this.restPort = node.getAttributeValueOrDefault("restPort", GlobalConstants.DEF_REST_PORT);
 				this.queueMaintainerDelay = Duration.parse(node.getAttributeValueOrDefault("queueMaintainerDelay", GlobalConstants.DEF_TIMER_QUEUE_MAINTAINER_DELAY.toString()));
 				this.daemonRestEnabled = node.getAttributeValueOrDefault("daemonRestEnabled", GlobalConstants.DEF_DAEMON_REST_ENABLED);
+				this.daemonRestEnabled = node.getAttributeValueOrDefault("daemonAmqpEnabled", GlobalConstants.DEF_DAEMON_AMQP_ENABLED);
 				this.isCryptoEnabled = node.getAttributeValueOrDefault("crypto", GlobalConstants.DEF_CRYPTO_ENABLED);
 				this.maxThreadsRestKernel = node.getAttributeValueOrDefault("maxThreadsRestKernel", 1);
 				this.maxThreadsRestWorkers = node.getAttributeValueOrDefault("maxThreadsRestWorkers", 1);
-	
+
 				if (node.hasChildElement("keystore")) {
 					this.passwordKeystore = node.getFirstChildElement("keystore").getAttributeValueOrDefault("password", "");
 				}
-	
+
 				if (node.hasChildElement("truststore")) {
 					this.passwordTrustStore = node.getFirstChildElement("truststore").getAttributeValueOrDefault("password", "");
 				}
-	
+
 				if (node.hasChildElement("database")) {
 					final XmlNodeHelper dbElement = node.getFirstChildElement("database");
 					final String hostname = dbElement.getAttributeValueUnchecked("hostname");
@@ -85,28 +95,20 @@ public class Configuration {
 					final String password = dbElement.getAttributeValueUnchecked("password");
 					final String dbname = dbElement.getAttributeValueUnchecked("dbname");
 					final int port = dbElement.getAttributeValueOrDefault("port", 3306);
-	
+
 					Database.instance = new Database(hostname, username, password, port, dbname);
-	
+
 					try {
 						Database.instance.connect();
 					} catch (final Exception e) {
 						Configuration.LOG.warn("Cannot connect to database: " + e.getMessage());
 					}
-	
+
 					Configuration.LOG.info("Registered DB instance: hostname: {} user: {} port: {} dbname: {}", new Object[] { hostname, username, port, dbname });
 				}
-	
+
 				this.initialFileParsed = true;
 			}
-		} 
-	}
-
-	public void clear() {
-		commands.clear();
-		services.clear();
-		peers.clear();
-		remoteServices.clear();
-		remoteNodes.clear();  
+		}
 	}
 }
