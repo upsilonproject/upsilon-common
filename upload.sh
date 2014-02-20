@@ -1,7 +1,7 @@
 echo $2
 VERSION=$2
 
-basepath="/public_html/"
+basepath="public_html"
 
 srcs=()
 
