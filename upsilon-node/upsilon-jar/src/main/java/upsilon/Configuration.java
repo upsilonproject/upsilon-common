@@ -75,7 +75,7 @@ public class Configuration {
 				this.restPort = node.getAttributeValueOrDefault("restPort", GlobalConstants.DEF_REST_PORT);
 				this.queueMaintainerDelay = Duration.parse(node.getAttributeValueOrDefault("queueMaintainerDelay", GlobalConstants.DEF_TIMER_QUEUE_MAINTAINER_DELAY.toString()));
 				this.daemonRestEnabled = node.getAttributeValueOrDefault("daemonRestEnabled", GlobalConstants.DEF_DAEMON_REST_ENABLED);
-				this.daemonRestEnabled = node.getAttributeValueOrDefault("daemonAmqpEnabled", GlobalConstants.DEF_DAEMON_AMQP_ENABLED);
+				this.daemonAmqpEnabled = node.getAttributeValueOrDefault("daemonAmqpEnabled", GlobalConstants.DEF_DAEMON_AMQP_ENABLED);
 				this.isCryptoEnabled = node.getAttributeValueOrDefault("crypto", GlobalConstants.DEF_CRYPTO_ENABLED);
 				this.maxThreadsRestKernel = node.getAttributeValueOrDefault("maxThreadsRestKernel", 1);
 				this.maxThreadsRestWorkers = node.getAttributeValueOrDefault("maxThreadsRestWorkers", 1);

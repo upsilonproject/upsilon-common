@@ -182,10 +182,10 @@ public class Main implements UncaughtExceptionHandler {
 		}
 
 		if (Configuration.instance.daemonAmqpEnabled) {
-			this.startDaemon(new DaemonScheduler());
+			this.startDaemon(new AmqpListener());
 		}
 
-		this.startDaemon(new AmqpListener());
+		this.startDaemon(new DaemonScheduler());
 
 		Main.LOG.debug("Best guess at node type: " + this.guessNodeType());
 	}
