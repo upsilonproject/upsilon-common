@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import upsilon.Daemon;
+import upsilon.Main;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -16,7 +17,7 @@ public class AmqpListener extends Daemon implements Runnable {
 	private QueueingConsumer consumer;
 	private boolean run = true;
 
-	private Thread listeningThread;
+	private Channel channel;
 
 	public AmqpListener() throws Exception {
 		String hostname = "localhost";
@@ -28,12 +29,22 @@ public class AmqpListener extends Daemon implements Runnable {
 	@Override
 	public void run() {
 		try {
+			this.channel.basicConsume("upsilon", this.consumer);
+
 			while (this.run) {
 				QueueingConsumer.Delivery delivery = this.consumer.nextDelivery();
 
 				String message = new String(delivery.getBody());
-
 				AmqpListener.LOG.debug("recv: " + message);
+
+				switch (message) {
+				case "query-version":
+					this.channel.basicPublish("upsilon", "upsilon", null, ("version: " + Main.getVersion()).getBytes());
+					this.channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
+					break;
+				default:
+					LOG.warn("Unsupported message: " + message);
+				}
 			}
 		} catch (Exception e) {
 			this.stop();
@@ -46,10 +57,11 @@ public class AmqpListener extends Daemon implements Runnable {
 
 		try {
 			Connection connection = factory.newConnection();
-			Channel channel = connection.createChannel();
-			channel.queueDeclare("upsilon", false, false, false, null);
+			this.channel = connection.createChannel();
+			this.channel.exchangeDeclare("ex_upsilon", "fanout");
+			this.channel.queueDeclare("upsilon", false, false, false, null);
 
-			this.consumer = new QueueingConsumer(channel);
+			this.consumer = new QueueingConsumer(this.channel);
 		} catch (Exception e) {
 			AmqpListener.LOG.error("Could not complete initial AMQP binding: " + e.getMessage(), e);
 			return;
@@ -60,8 +72,6 @@ public class AmqpListener extends Daemon implements Runnable {
 		// channel.basicConsume("upsilon", true, this.consumer);
 
 		this.run = true;
-		this.listeningThread = new Thread(this, "amqpListener");
-		this.listeningThread.start();
 	}
 
 	@Override
