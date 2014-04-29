@@ -1,1 +1,0 @@
-./buildDojo.sh
