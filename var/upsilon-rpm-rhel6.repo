@@ -1,6 +1,0 @@
-[Upsilon]
-name=Upsilon
-baseurl=http://upsilon-project.co.uk/repositories/yum-rpm-rhel6/
-enabled=1
-metadata_expire=1m
-gpgcheck=0
