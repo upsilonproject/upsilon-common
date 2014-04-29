@@ -1,5 +1,0 @@
-<config comment = "slave">
-	<command id = "hostname" exec = "hostname" />
- 
-	<service id = "hostname" commandRef = "hostname" />
-</config>

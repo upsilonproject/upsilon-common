@@ -1,6 +1,0 @@
-<config>
-	<system crypto = "false" />
-	
-	<command id = "echo" exec = "echo" />
-	<service id = "echo" commandRef = "echo" />
-</config>

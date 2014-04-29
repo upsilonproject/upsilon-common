@@ -1,8 +1,0 @@
-/var/log/upsilon.log {
-	missingok
-	notifempty
-	rotate 7
-	compress
-	daily
-	create 0600 root root
-}

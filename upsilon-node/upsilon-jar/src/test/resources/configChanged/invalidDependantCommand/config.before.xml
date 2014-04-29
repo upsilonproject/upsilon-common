@@ -1,5 +1,0 @@
-<config>
-	<command id = "echoCmd" exec = "echo" />
-	  
-	<service id = "helloWorld" commandRef = "echoCmd" />
-</config> 

@@ -1,6 +1,0 @@
-ERROR
-<config>
-	<command identifier = "echo" />
-	
-	<service identifier = "helloWorld" />
-</config>
